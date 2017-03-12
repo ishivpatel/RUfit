@@ -12,9 +12,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 
 /**
  * Created by shiv on 3/3/2017.
@@ -38,8 +41,8 @@ public class LoginActivity extends AppCompatActivity {
 
         if (auth.getCurrentUser() != null) {
 
-           // startActivity(new Intent(LoginActivity.this, MainActivity.class));
-            //finish();
+           // startActivity(new Intent(LoginActivity.this, DashboardActivity.class));
+            finish();
         }
 
         // connect the views
@@ -80,25 +83,24 @@ public class LoginActivity extends AppCompatActivity {
                         .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
-                                // If sign in fails, display a message to the user. If sign in succeeds
-                                // the auth state listener will be notified and logic to handle the
-                                // signed in user can be handled in the listener.
-                                if (!task.isSuccessful()) {
-                                    // there was an error
-                                    if (password.length() < 6) {
-                                        inputPassword.setError(getString(R.string.minimum_password));
-                                    } else {
-                                        Toast.makeText(LoginActivity.this, getString(R.string.auth_failed), Toast.LENGTH_LONG).show();
-                                    }
-                                } else {
-                                    //Successfully Signed In
-                                    auth.signOut();
-                                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                    startActivity(intent);
+                                if (task.isSuccessful()) {
+                                    //GOTO Dashboard
                                     finish();
                                 }
                             }
-                        });
+                        }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        if (e instanceof FirebaseAuthInvalidCredentialsException){
+                            Toast.makeText(LoginActivity.this, "Invalid Password", Toast.LENGTH_LONG).show();
+                        }
+                        if (e instanceof FirebaseAuthInvalidUserException){
+                            Toast.makeText(LoginActivity.this, "Invalid Email/ Email not registered", Toast.LENGTH_LONG).show();
+                        }else{
+                            Toast.makeText(LoginActivity.this, e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
             }
 
         });

@@ -12,9 +12,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 
 /**
  * Created by shiv on 3/3/2017.
@@ -25,6 +27,12 @@ public class SignupActivity extends AppCompatActivity {
     private TextView signInText;
     private FirebaseAuth auth;
     private Button btnCreateAccount;
+
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(SignupActivity.this, LoginActivity.class));
+        finish();
+    }
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,7 +53,6 @@ public class SignupActivity extends AppCompatActivity {
                 finish();
             }
         });
-
 
         btnCreateAccount.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,21 +88,20 @@ public class SignupActivity extends AppCompatActivity {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 Toast.makeText(SignupActivity.this, "createUserWithEmail:onComplete:" + task.isSuccessful(), Toast.LENGTH_SHORT).show();
-                                // If sign in fails, display a message to the user. If sign in succeeds
-                                // the auth state listener will be notified and logic to handle the
-                                // signed in user can be handled in the listener.
-                                if (!task.isSuccessful()) {
-                                    Toast.makeText(SignupActivity.this, "Authentication failed." + task.getException(),
-                                            Toast.LENGTH_SHORT).show();
-                                } else {
-
-                                    //Succesfully Created User
-                                    startActivity(new Intent(SignupActivity.this, MainActivity.class));
+                                if (task.isSuccessful()) {
                                     finish();
                                 }
                             }
-                        });
-
+                        }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        if(e instanceof FirebaseAuthUserCollisionException){
+                            Toast.makeText(SignupActivity.this, "E-mail Already in Use", Toast.LENGTH_SHORT).show();
+                        }else{
+                            Toast.makeText(SignupActivity.this, e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
             }
         });
     }
