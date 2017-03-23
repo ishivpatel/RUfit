@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/workout_history"
+            android:icon="@drawable/history"
+            android:title="Workout History" />
+        <item
+            android:id="@+id/add_workout"
+            android:icon="@drawable/log_workout"
+            android:title="Add Workout" />
+        <item
+            android:id="@+id/add_shoe"
+            android:icon="@drawable/shoe"
+            android:title="Add Shoes" />
+        <item
+            android:id="@+id/leaderboard"
+            android:icon="@drawable/leaderboard"
+            android:title="Leaderboard" />
+        <item
+            android:id="@+id/goals"
+            android:icon="@drawable/goals"
+            android:title="Goals" />
+
+    </group>
+
+    <item android:title="App Configuration">
+        <menu>
+            <item
+                android:id="@+id/about"
+                android:icon="@drawable/about"
+                android:title="About" />
+            <item
+                android:id="@+id/settings"
+                android:icon="@drawable/settings"
+                android:title="setting" />
+            <item
+                android:id="@+id/signout"
+                android:icon="@drawable/signout"
+                android:title="Sign Out" />
+        </menu>
+    </item>
+
+</menu>

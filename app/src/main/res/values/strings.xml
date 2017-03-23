@@ -9,5 +9,7 @@
     <string name="auth_failed">invalid pass</string>
     <string name="sign_up_button">Create Account</string>
     <string name="register">No account yet? Create one</string>
+    <string name="navigation_drawer_open">open</string>
+    <string name="navigation_drawer_close">close</string>
 
 </resources>
