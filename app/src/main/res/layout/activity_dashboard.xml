@@ -26,4 +26,13 @@
         android:text="Welcome User"
         android:textSize="25sp"
         android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tempTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/user_name"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="62dp"
+        android:text="Personal Info" />
 </RelativeLayout>

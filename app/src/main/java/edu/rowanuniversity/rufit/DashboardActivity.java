@@ -30,7 +30,7 @@ public class DashboardActivity extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
 
         if(auth.getCurrentUser() == null){
-            Intent intent = new Intent(DashboardActivity.this, LoginActivity.class);
+            Intent intent = new Intent(DashboardActivity.this, SignupActivity.class);
             startActivity(intent);
         }else{
             updateUser();
@@ -55,12 +55,22 @@ public class DashboardActivity extends AppCompatActivity {
         //Unique UUID For each user for Database
         myRef  = database.getReference(ROOT).child(user.getUid());
         //TODO: ADD Actual Values
-        myRef.setValue("Created a User");
+        //myRef.setValue(true);
         Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
 
         username = (TextView) findViewById(R.id.user_name);
         username.setText(user.getEmail());
 
+
+
+        //For testing -- delete
+        TextView personalInfo = (TextView) findViewById(R.id.tempTextView);
+        personalInfo.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(DashboardActivity.this, PersonalInfoActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     public void onResume(){
