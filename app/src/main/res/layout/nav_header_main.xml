@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    >
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/imageView"
+        android:layout_width="95dp"
+        android:layout_height="95dp"
+        android:src="@drawable/run_image"
+        app:civ_border_width="1dp"
+        app:civ_border_color="@color/colorPrimary"
+        android:layout_marginTop="10dp"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/imageView"
+        android:layout_marginTop="15dp"
+        android:text="user@rufit.com"
+        android:textAlignment="center"
+        android:textSize="30sp"
+        android:textStyle="bold|italic"
+        android:textColor="@color/rowanYellow"
+        />
+
+</RelativeLayout>
