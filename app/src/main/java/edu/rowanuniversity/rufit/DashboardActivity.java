@@ -62,7 +62,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
     public void updateUser(){
         user = auth.getCurrentUser();
-        text = user.getEmail();
+        //text = user.getEmail();
         //Unique UUID For each user for Database
         myRef  = database.getReference(ROOT).child(user.getUid());
         //TODO: ADD Actual Values
@@ -72,7 +72,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         username = (TextView) findViewById(R.id.user_name);
         drawerusername = (TextView) findViewById(R.id.drawer_user_name);
         username.setText(user.getEmail());
-        drawerusername.setText(user.getEmail());
+        //drawerusername.setText(user.getEmail());
 
 
 
