@@ -76,14 +76,14 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
 
 
-        //For testing -- delete
-        TextView personalInfo = (TextView) findViewById(R.id.tempTextView);
-        personalInfo.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Intent intent = new Intent(DashboardActivity.this, PersonalInfoActivity.class);
-                startActivity(intent);
-            }
-        });
+        //*For testing -- delete
+        //TextView personalInfo = (TextView) findViewById(R.id.tempTextView);
+        //personalInfo.setOnClickListener(new View.OnClickListener() {
+          //  public void onClick(View v) {
+            //    Intent intent = new Intent(DashboardActivity.this, PersonalInfoActivity.class);
+              //  startActivity(intent);
+            //}
+        //});
     }
 
     public void onResume(){
@@ -117,7 +117,9 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
         } else if (id == R.id.goals) {
 
-
+        }else if(id == R.id.personalInfo){
+            Intent intent = new Intent(this, PersonalInfoActivity.class);
+            startActivity(intent);
         } else if (id == R.id.about) {
 
         }

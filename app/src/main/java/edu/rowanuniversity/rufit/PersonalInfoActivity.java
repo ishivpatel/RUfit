@@ -5,8 +5,10 @@ import edu.rowanuniversity.rufit.rufitObjects.*;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.v7.app.AppCompatActivity;
 
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -29,7 +31,7 @@ import com.google.firebase.database.ValueEventListener;
  * Purpose : Main activity for displaying and editting user's personal information
  * Last Update : 03.26.2017
  *
- * TODO : Handle error - if user doesn't not have any personal information in db
+ * TODO : improve error handling. im sure this thing can break easily if wrong input is input
  */
 
 public class PersonalInfoActivity extends AppCompatActivity {
@@ -45,9 +47,13 @@ public class PersonalInfoActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.personal_info_activity);
+
+        Toolbar t = (Toolbar) findViewById(R.id.topToolBar);
+        setSupportActionBar(t);
+        getSupportActionBar().setTitle("");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true); //doesn't do anything yet
 
         //text display fields
         usernameView = (TextView) findViewById(R.id.usernameView);
@@ -170,7 +176,7 @@ public class PersonalInfoActivity extends AppCompatActivity {
                 gPicker.setMinValue(0);
                 gPicker.setMaxValue(1); //size  = 2
                 gPicker.setDisplayedValues(new String[]{"Male", "Female"}); // display Male and Female
-                gPicker.setValue(uInfo.getGender().equals("Male") ? 0 : 1); // if index 0, then male, else female
+                gPicker.setValue(uInfo.getGender() != null && uInfo.getGender().equals("Male") ? 0 : 1); // if index 0, then male, else female
 
                 //close dialog box on clicking cancel button
                 dialogCancelButton.setOnClickListener(new View.OnClickListener() {
@@ -275,25 +281,45 @@ public class PersonalInfoActivity extends AppCompatActivity {
      */
     private void showData(DataSnapshot dataSnapshot) {
         DataSnapshot d = dataSnapshot.child("users");
-        uInfo = new UserInfo();
-        //set username
-        uInfo.setUsername(d.child(userID).getValue(UserInfo.class).getUsername().toString());
-        //set age
-        uInfo.setAge(d.child(userID).getValue(UserInfo.class).getAge());
-        //set gender
-        uInfo.setGender(d.child(userID).getValue(UserInfo.class).getGender());
-        //set height
-        uInfo.setHeight(d.child(userID).getValue(UserInfo.class).getHeight());
-        //set weight
-        uInfo.setWeight(d.child(userID).getValue(UserInfo.class).getWeight());
-
-        //update text displays
-        usernameView.setText(uInfo.getUsername());
-        ageView.setText("" + uInfo.getAge());
-        genderView.setText(uInfo.getGender());
-        heightView.setText(((uInfo.getHeight()/12) + "' " + uInfo.getHeight()%12 + "\""));
-        weightView.setText(uInfo.getWeight() + " lbs.");
         emailView.setText(user.getEmail());
+
+        //handling for when users are created with no personal info.
+        if(!(d.child(userID).hasChild("username"))) {
+            usernameView.setText("Add Username!");
+        }
+        if(!(d.child(userID).hasChild("age"))) {
+            ageView.setText("Add your age!");
+        }
+        if(!(d.child(userID).hasChild("gender"))) {
+            genderView.setText("Add gender!");
+        }
+        if(!(d.child(userID).hasChild("weight"))) {
+            weightView.setText("Add weight!");
+        }
+        if(!(d.child(userID).hasChild("height"))) {
+            heightView.setText("Add height!");
+        }
+
+        if(d.child(userID).hasChildren()) {
+            uInfo = new UserInfo();
+            //set username
+            uInfo.setUsername(d.child(userID).getValue(UserInfo.class).getUsername().toString());
+            //set age
+            uInfo.setAge(d.child(userID).getValue(UserInfo.class).getAge());
+            //set gender
+            uInfo.setGender(d.child(userID).getValue(UserInfo.class).getGender());
+            //set height
+            uInfo.setHeight(d.child(userID).getValue(UserInfo.class).getHeight());
+            //set weight
+            uInfo.setWeight(d.child(userID).getValue(UserInfo.class).getWeight());
+
+            //update text displays
+            usernameView.setText(uInfo.getUsername());
+            ageView.setText("" + uInfo.getAge());
+            genderView.setText(uInfo.getGender());
+            heightView.setText(((uInfo.getHeight() / 12) + "' " + uInfo.getHeight() % 12 + "\""));
+            weightView.setText(uInfo.getWeight() + " lbs.");
+        }
     }
 }
 

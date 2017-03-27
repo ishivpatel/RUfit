@@ -6,16 +6,35 @@
     android:layout_gravity="center"
     android:orientation="vertical">
 
+    <android.support.v7.widget.Toolbar
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/Red"
+        android:id="@+id/topToolBar"
+        >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_gravity="center_horizontal|top"
+            android:src="@drawable/rufit_logo_nbg"
+            />
+
+    </android.support.v7.widget.Toolbar>
+
+
     <!--Title label -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:paddingLeft="10px"
-        android:paddingTop="20px"
-        android:paddingBottom="20px"
+        android:layout_gravity="left"
+        android:paddingLeft="4dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
         android:text="Personal Information"
-        android:textSize="18sp" />
+        android:textSize="21sp"
+        android:textColor="@color/black"/>
 
     <View
         android:layout_width="match_parent"
@@ -28,16 +47,17 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingBottom="50px"
-        android:paddingTop="50px"
+        android:paddingBottom="16dp"
+        android:paddingTop="16dp"
+
         >
 
         <!--Username label -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="20px"
-            android:paddingTop="20px"
+            android:paddingLeft="7dp"
+            android:paddingTop="4dp"
             android:text="Username"
             android:textSize="18sp"/>
 
@@ -51,9 +71,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
-            android:paddingLeft="10px"
-            android:paddingRight="20px"
-            android:paddingTop="20px"
+            android:paddingLeft="4dp"
+            android:paddingRight="7dp"
+            android:paddingTop="4dp"
             android:textSize="18sp"
             android:text="Username" />
 
@@ -71,16 +91,16 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingBottom="50px"
-        android:paddingTop="50px"
+        android:paddingBottom="16dp"
+        android:paddingTop="16dp"
         >
 
         <!-- age label -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="20px"
-            android:paddingTop="20px"
+            android:paddingLeft="7dp"
+            android:paddingTop="4dp"
             android:text="Age"
             android:textSize="18sp"/>
 
@@ -94,9 +114,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
-            android:paddingLeft="10px"
-            android:paddingRight="20px"
-            android:paddingTop="20px"
+            android:paddingLeft="4dp"
+            android:paddingRight="7dp"
+            android:paddingTop="4dp"
             android:textSize="18sp"
             android:text="---" />
 
@@ -113,16 +133,16 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingBottom="50px"
-        android:paddingTop="50px"
+        android:paddingBottom="16dp"
+        android:paddingTop="16dp"
         >
 
         <!--gender label -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="20px"
-            android:paddingTop="20px"
+            android:paddingLeft="7dp"
+            android:paddingTop="4dp"
             android:text="Gender"
             android:textSize="18sp"/>
 
@@ -136,9 +156,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
-            android:paddingLeft="10px"
-            android:paddingRight="20px"
-            android:paddingTop="20px"
+            android:paddingLeft="4dp"
+            android:paddingRight="7dp"
+            android:paddingTop="4dp"
             android:textSize="18sp"
             android:text="---" />
 
@@ -155,16 +175,16 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingBottom="50px"
-        android:paddingTop="50px"
+        android:paddingBottom="16dp"
+        android:paddingTop="16dp"
         >
 
         <!-- Height label-->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="20px"
-            android:paddingTop="20px"
+            android:paddingLeft="7dp"
+            android:paddingTop="4dp"
             android:text="Height"
             android:textSize="18sp"/>
 
@@ -178,9 +198,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
-            android:paddingLeft="10px"
-            android:paddingRight="20px"
-            android:paddingTop="20px"
+            android:paddingLeft="4dp"
+            android:paddingRight="7dp"
+            android:paddingTop="4dp"
             android:textSize="18sp"
             android:text="---"/>
 
@@ -197,16 +217,16 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingBottom="50px"
-        android:paddingTop="50px"
+        android:paddingBottom="16dp"
+        android:paddingTop="16dp"
         >
 
         <!-- weight label-->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="20px"
-            android:paddingTop="20px"
+            android:paddingLeft="7dp"
+            android:paddingTop="4dp"
             android:text="Weight"
             android:textSize="18sp"/>
 
@@ -220,9 +240,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
-            android:paddingLeft="10px"
-            android:paddingRight="20px"
-            android:paddingTop="20px"
+            android:paddingLeft="4dp"
+            android:paddingRight="7dp"
+            android:paddingTop="4dp"
             android:textSize="18sp"
             android:text="---" />
 
@@ -238,16 +258,16 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingBottom="50px"
-        android:paddingTop="50px"
+        android:paddingBottom="16dp"
+        android:paddingTop="16dp"
         >
 
         <!-- email label-->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="20px"
-            android:paddingTop="20px"
+            android:paddingLeft="7dp"
+            android:paddingTop="4dp"
             android:text="E-Mail"
             android:textSize="18sp"/>
 
@@ -261,9 +281,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
-            android:paddingLeft="10px"
-            android:paddingRight="20px"
-            android:paddingTop="20px"
+            android:paddingLeft="4dp"
+            android:paddingRight="7dp"
+            android:paddingTop="4dp"
             android:textSize="18sp"
             android:text="---" />
 

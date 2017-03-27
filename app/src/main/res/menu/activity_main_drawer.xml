@@ -24,6 +24,11 @@
             android:id="@+id/goals"
             android:icon="@drawable/goals"
             android:title="Goals" />
+        <item
+            android:id="@+id/personalInfo"
+            android:icon="@drawable/pinfo"
+            android:title="Personal Info"
+            />
 
     </group>
 

@@ -12,11 +12,6 @@
         android:textColor="@color/black"
         android:text="Change Username"/>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@android:color/darker_gray"/>
-
     <EditText
         android:id="@+id/editText"
         android:layout_width="match_parent"
