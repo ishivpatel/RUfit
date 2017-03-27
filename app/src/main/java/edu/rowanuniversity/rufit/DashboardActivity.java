@@ -22,7 +22,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     FirebaseAuth auth;
     FirebaseDatabase database;
     DatabaseReference myRef;
-    TextView username;
+    TextView username, drawerusername;
     FirebaseUser user;
     final String ROOT = "users";
     String text = "Hello";
@@ -70,7 +70,9 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
 
         username = (TextView) findViewById(R.id.user_name);
+        drawerusername = (TextView) findViewById(R.id.drawer_user_name);
         username.setText(user.getEmail());
+        drawerusername.setText(user.getEmail());
 
 
 
@@ -99,12 +101,12 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
         if (id == R.id.workout_history) {
             // Handle the login
-           /* Intent intent = new Intent(this, LoginActivity.class);
+           /* Intent intent = new Intent(this, WorkoutHistory.class);
             startActivityForResult(intent, 1);*/
 
         } else if (id == R.id.add_workout) {
 
-            /*Intent intent = new Intent(this, CreateProfile.class);
+            /*Intent intent = new Intent(this, AddWorkoutManually.class);
             startActivityForResult(intent, 2);*/
         } else if (id == R.id.add_shoe) {
 

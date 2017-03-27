@@ -25,6 +25,7 @@
         android:layout_alignParentStart="true"
         android:layout_below="@+id/imageView"
         android:layout_marginTop="15dp"
+        android:id="@+id/drawer_user_name"
         android:text="user@rufit.com"
         android:textAlignment="center"
         android:textSize="30sp"
