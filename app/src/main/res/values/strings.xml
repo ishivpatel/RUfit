@@ -11,5 +11,8 @@
     <string name="register">No account yet? Create one</string>
     <string name="navigation_drawer_open">open</string>
     <string name="navigation_drawer_close">close</string>
+    <string name="about_us_details">RUfit is a run tracking app.
+                                    \n Track and log your Runs</string>
+    <string name="about_label">About RUfit</string>
 
 </resources>
