@@ -7,9 +7,11 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,10 +25,10 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     FirebaseAuth auth;
     FirebaseDatabase database;
     DatabaseReference myRef;
-    TextView username, drawerusername;
+    TextView drawerusername;
     FirebaseUser user;
     final String ROOT = "users";
-    String text = "Hello";
+    String text = "Welcome!";
     Toolbar toolbar;
     NavigationView navigationView;
 
@@ -70,11 +72,10 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         myRef  = database.getReference(ROOT).child(user.getUid());
         Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
 
-        username = (TextView) findViewById(R.id.user_name);
-        username.setText(user.getEmail());
-
         drawerusername.setText(user.getEmail());
 
+        //Save for later
+        //populateDash();
     }
 
     public void onResume(){
@@ -128,6 +129,21 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    /**
+     * Populates user's dashboard with their personal information to cards
+     */
+    public void populateDash() {
+        //User can click card to quickstart new run
+        CardView startRunCard = (CardView) findViewById(R.id.cardStartRun);
+
+        //Components for 1st goal progress
+        ProgressBar goalBar = (ProgressBar) findViewById(R.id.goalBar1);
+        TextView userGoal = (TextView) findViewById(R.id.goal1);
+        TextView userGoalPercent = (TextView) findViewById(R.id.goalPercent1);
+
+
     }
 
     @Override
