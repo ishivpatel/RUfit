@@ -9,6 +9,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,11 +47,11 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
+        View header = navigationView.getHeaderView(0);
+        drawerusername = (TextView) header.findViewById(R.id.drawer_user_name);
 
         auth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
-
 
         if(auth.getCurrentUser() == null){
             Intent intent = new Intent(DashboardActivity.this, SignupActivity.class);
@@ -65,13 +66,11 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         //text = user.getEmail();
         //Unique UUID For each user for Database
         myRef  = database.getReference(ROOT).child(user.getUid());
-        //TODO: ADD Actual Values
-        //myRef.setValue(true);
         Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
 
         username = (TextView) findViewById(R.id.user_name);
-        drawerusername = (TextView) findViewById(R.id.drawer_user_name);
         username.setText(user.getEmail());
+
         //drawerusername.setText(user.getEmail());
 
 
@@ -84,6 +83,9 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
               //  startActivity(intent);
             //}
         //});
+
+        drawerusername.setText(user.getEmail());
+
     }
 
     public void onResume(){
@@ -102,12 +104,12 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         if (id == R.id.workout_history) {
             // Handle the login
            /* Intent intent = new Intent(this, WorkoutHistory.class);
-            startActivityForResult(intent, 1);*/
+            startActivity(intent);*/
 
         } else if (id == R.id.add_workout) {
 
             /*Intent intent = new Intent(this, AddWorkoutManually.class);
-            startActivityForResult(intent, 2);*/
+            startActivity(intent);*/
         } else if (id == R.id.add_shoe) {
 
 
@@ -121,11 +123,12 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             Intent intent = new Intent(this, PersonalInfoActivity.class);
             startActivity(intent);
         } else if (id == R.id.about) {
-
+            Intent intent = new Intent(DashboardActivity.this, AboutActivity.class);
+            startActivity(intent);
         }
         else if(id == R.id.settings){
            /* Intent intent = new Intent(this, SettingsActivity.class);
-            startActivityForResult(intent, 3);*/
+            startActivity(intent);*/
         }
         else if(id == R.id.signout){
             auth.signOut();

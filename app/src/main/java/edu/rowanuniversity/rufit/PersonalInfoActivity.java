@@ -1,21 +1,17 @@
 package edu.rowanuniversity.rufit;
 
-import edu.rowanuniversity.rufit.rufitObjects.*;
-
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.design.widget.AppBarLayout;
 import android.support.v7.app.AppCompatActivity;
-
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.TextView;
-
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -24,6 +20,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import edu.rowanuniversity.rufit.rufitObjects.UserInfo;
 
 /**
  * Created by Catherine Dougherty on 3/19/2017.
@@ -40,6 +38,7 @@ public class PersonalInfoActivity extends AppCompatActivity {
     private FirebaseDatabase database;
     private FirebaseAuth auth;
     private FirebaseUser user;
+    private ImageView backbutton;
     DatabaseReference myRef;
     private String userID;
     final Context context = this;
@@ -53,7 +52,15 @@ public class PersonalInfoActivity extends AppCompatActivity {
         Toolbar t = (Toolbar) findViewById(R.id.topToolBar);
         setSupportActionBar(t);
         getSupportActionBar().setTitle("");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true); //doesn't do anything yet
+        //getSupportActionBar().setDisplayHomeAsUpEnabled(true); //doesn't do anything yet
+        backbutton = (ImageView) findViewById(R.id.backbutton_personalinfoactivity);
+
+        backbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         //text display fields
         usernameView = (TextView) findViewById(R.id.usernameView);
@@ -206,6 +213,7 @@ public class PersonalInfoActivity extends AppCompatActivity {
                 final Dialog dialog = new Dialog(context);
                 dialog.setContentView(R.layout.height_dialog);
 
+
                 //Retrieve components
                 Button dialogCancelButton = (Button) dialog.findViewById(R.id.customDialogCancel);
                 Button dialogSubmitButton = (Button) dialog.findViewById(R.id.customDialogSubmit);
@@ -273,6 +281,7 @@ public class PersonalInfoActivity extends AppCompatActivity {
             }
         });
     }
+
 
     /*
      * This method updates text displays of user's personal information whenever it

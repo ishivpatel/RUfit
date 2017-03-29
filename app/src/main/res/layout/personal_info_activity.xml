@@ -21,6 +21,14 @@
             android:src="@drawable/rufit_logo_nbg"
             />
 
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="35dp"
+            android:layout_gravity="start"
+            android:id="@+id/backbutton_personalinfoactivity"
+            android:src="@drawable/back_button"
+            />
+
     </android.support.v7.widget.Toolbar>
 
 
