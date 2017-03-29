@@ -50,6 +50,8 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         View header = navigationView.getHeaderView(0);
         drawerusername = (TextView) header.findViewById(R.id.drawer_user_name);
 
+
+
         auth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
 
@@ -70,19 +72,6 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
         username = (TextView) findViewById(R.id.user_name);
         username.setText(user.getEmail());
-
-        //drawerusername.setText(user.getEmail());
-
-
-
-        //*For testing -- delete
-        //TextView personalInfo = (TextView) findViewById(R.id.tempTextView);
-        //personalInfo.setOnClickListener(new View.OnClickListener() {
-          //  public void onClick(View v) {
-            //    Intent intent = new Intent(DashboardActivity.this, PersonalInfoActivity.class);
-              //  startActivity(intent);
-            //}
-        //});
 
         drawerusername.setText(user.getEmail());
 

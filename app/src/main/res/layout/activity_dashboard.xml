@@ -25,5 +25,7 @@
         android:background="@drawable/nav_bg"
         app:itemTextColor="@color/White"
         app:itemIconTint="@color/White"/>
+
   
 </android.support.v4.widget.DrawerLayout>
+
