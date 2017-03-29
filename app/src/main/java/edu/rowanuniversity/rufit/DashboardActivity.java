@@ -48,6 +48,8 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         navigationView.setNavigationItemSelectedListener(this);
 
 
+
+
         auth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
 
@@ -69,21 +71,10 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         //myRef.setValue(true);
         Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
 
-        username = (TextView) findViewById(R.id.user_name);
+        //username = (TextView) findViewById(R.id.user_name);
         drawerusername = (TextView) findViewById(R.id.drawer_user_name);
-        username.setText(user.getEmail());
+        //username.setText(user.getEmail());
         //drawerusername.setText(user.getEmail());
-
-
-
-        //*For testing -- delete
-        //TextView personalInfo = (TextView) findViewById(R.id.tempTextView);
-        //personalInfo.setOnClickListener(new View.OnClickListener() {
-          //  public void onClick(View v) {
-            //    Intent intent = new Intent(DashboardActivity.this, PersonalInfoActivity.class);
-              //  startActivity(intent);
-            //}
-        //});
     }
 
     public void onResume(){
