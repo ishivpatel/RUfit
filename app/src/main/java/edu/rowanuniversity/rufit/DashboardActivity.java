@@ -108,8 +108,6 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
 
         } else if (id == R.id.goals) {
-            Intent intent = new Intent(this, GoalsActivity.class);
-            startActivity(intent);
 
         }else if(id == R.id.personalInfo){
             Intent intent = new Intent(this, PersonalInfoActivity.class);
@@ -117,10 +115,12 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         } else if (id == R.id.about) {
             Intent intent = new Intent(DashboardActivity.this, AboutActivity.class);
             startActivity(intent);
-        } else if(id == R.id.settings){
+        }
+        else if(id == R.id.settings){
            /* Intent intent = new Intent(this, SettingsActivity.class);
             startActivity(intent);*/
-        } else if(id == R.id.signout){
+        }
+        else if(id == R.id.signout){
             auth.signOut();
             Intent intent = new Intent(DashboardActivity.this, LoginActivity.class);
             startActivity(intent);
