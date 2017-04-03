@@ -17,7 +17,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import edu.rowanuniversity.rufit.rufitObjects.User;
 
 /**
  * Created by shiv on 3/3/2017.
@@ -91,6 +95,17 @@ public class SignupActivity extends AppCompatActivity {
                                 Toast.makeText(SignupActivity.this, "createUserWithEmail:onComplete:" + task.isSuccessful(), Toast.LENGTH_SHORT).show();
                                 if (task.isSuccessful()) {
                                    //TODO - prompt user to input initial settings and personal info
+                                    //database instance
+                                    FirebaseDatabase database = FirebaseDatabase.getInstance();
+                                    DatabaseReference myRef = database.getReference();
+
+                                    //retrieve current user
+                                    auth = FirebaseAuth.getInstance();
+                                    FirebaseUser user = auth.getCurrentUser();
+                                    String userID = user.getUid();
+                                    startActivity(new Intent(SignupActivity.this, PersonalInfoActivity.class));
+
+                                    myRef.child("users").child(userID).setValue(new User());
                                     finish();
                                 }
                             }

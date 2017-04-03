@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/thirdGoal"
+    android:layout_width="fill_parent"
+    android:layout_height="150dp"
+    android:padding="6dp" >
+
+    <ImageView
+        android:id="@+id/icon3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_marginRight="6dp"
+        android:layout_marginEnd="6dp"
+        android:contentDescription="TODO"
+        android:src="@drawable/medal" />
+
+    <TextView
+        android:id="@+id/secondLine3"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:ellipsize="marquee"
+        android:text="Description"
+        android:textSize="12sp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="8dp"
+        android:layout_toRightOf="@+id/icon3"
+        android:layout_toEndOf="@+id/icon3" />
+
+    <TextView
+        android:id="@+id/firstLine3"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:textSize="16sp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="6dp"
+        android:layout_toRightOf="@+id/icon3"
+        android:layout_toEndOf="@+id/icon3" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/editGoal3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@android:drawable/ic_menu_edit"
+        android:clickable="true"
+        app:elevation="3dp"
+        app:fabSize="mini"
+        app:pressedTranslationZ="6dp"
+        app:backgroundTint="@color/DarkRed"
+        android:layout_marginRight="6dp"
+        android:layout_marginEnd="6dp"
+        android:layout_alignBottom="@+id/icon3"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+</RelativeLayout>

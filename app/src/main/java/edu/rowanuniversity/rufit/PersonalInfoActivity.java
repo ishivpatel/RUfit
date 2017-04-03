@@ -21,7 +21,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import edu.rowanuniversity.rufit.rufitObjects.UserInfo;
+import edu.rowanuniversity.rufit.rufitObjects.User;
 
 /**
  * Created by Catherine Dougherty on 3/19/2017.
@@ -42,7 +42,7 @@ public class PersonalInfoActivity extends AppCompatActivity {
     DatabaseReference myRef;
     private String userID;
     final Context context = this;
-    private UserInfo uInfo; //Object holding user's current personal information
+    private User uInfo; //Object holding user's current personal information
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -310,17 +310,17 @@ public class PersonalInfoActivity extends AppCompatActivity {
         }
 
         if(d.child(userID).hasChildren()) {
-            uInfo = new UserInfo();
+            uInfo = new User();
             //set username
-            uInfo.setUsername(d.child(userID).getValue(UserInfo.class).getUsername().toString());
+            uInfo.setUsername(d.child(userID).getValue(User.class).getUsername().toString());
             //set age
-            uInfo.setAge(d.child(userID).getValue(UserInfo.class).getAge());
+            uInfo.setAge(d.child(userID).getValue(User.class).getAge());
             //set gender
-            uInfo.setGender(d.child(userID).getValue(UserInfo.class).getGender());
+            uInfo.setGender(d.child(userID).getValue(User.class).getGender());
             //set height
-            uInfo.setHeight(d.child(userID).getValue(UserInfo.class).getHeight());
+            uInfo.setHeight(d.child(userID).getValue(User.class).getHeight());
             //set weight
-            uInfo.setWeight(d.child(userID).getValue(UserInfo.class).getWeight());
+            uInfo.setWeight(d.child(userID).getValue(User.class).getWeight());
 
             //update text displays
             usernameView.setText(uInfo.getUsername());
