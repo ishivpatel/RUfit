@@ -26,6 +26,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     FirebaseDatabase database;
     DatabaseReference myRef;
     TextView drawerusername;
+    CardView goalsCard,recentRunCard, startRunCard;
     FirebaseUser user;
     final String ROOT = "users";
     String text = "Welcome!";
@@ -52,7 +53,8 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         View header = navigationView.getHeaderView(0);
         drawerusername = (TextView) header.findViewById(R.id.drawer_user_name);
 
-
+        //Allow actions when cards on dashboard are clicked
+        setCardActions();
 
         auth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
@@ -108,7 +110,8 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
 
         } else if (id == R.id.goals) {
-
+            Intent intent = new Intent(this, GoalsActivity.class);
+            startActivity(intent);
         }else if(id == R.id.personalInfo){
             Intent intent = new Intent(this, PersonalInfoActivity.class);
             startActivity(intent);
@@ -133,6 +136,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
     /**
      * Populates user's dashboard with their personal information to cards
+     * //TODO : populate dashboard with user data
      */
     public void populateDash() {
         //User can click card to quickstart new run
@@ -143,7 +147,23 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         TextView userGoal = (TextView) findViewById(R.id.goal1);
         TextView userGoalPercent = (TextView) findViewById(R.id.goalPercent1);
 
+    }
 
+    public void setCardActions () {
+        startRunCard = (CardView) findViewById(R.id.cardStartRun);
+        recentRunCard = (CardView) findViewById(R.id.cardRecentRun);
+        goalsCard = (CardView) findViewById(R.id.cardGoals);
+
+        goalsCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(DashboardActivity.this, GoalsActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        //TODO: StartRun card action
+        //TODO: RecentRun card action
     }
 
     @Override

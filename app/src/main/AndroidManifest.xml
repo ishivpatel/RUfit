@@ -27,6 +27,9 @@
         <activity android:name=".PersonalInfoActivity">
 
         </activity>
+        <activity android:name=".GoalsActivity">
+
+        </activity>
         <activity android:name=".AboutActivity">
 
         </activity>
