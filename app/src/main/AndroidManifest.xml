@@ -24,6 +24,9 @@
         <activity android:name=".SignupActivity">
 
         </activity>
+        <activity android:name=".WorkoutHistory">
+
+        </activity>
         <activity android:name=".PersonalInfoActivity">
 
         </activity>
@@ -31,6 +34,9 @@
 
         </activity>
         <activity android:name=".AboutActivity">
+
+        </activity>
+        <activity android:name=".DetailWorkouts">
 
         </activity>
 

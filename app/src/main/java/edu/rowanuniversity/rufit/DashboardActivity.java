@@ -13,7 +13,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -72,8 +71,6 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         //text = user.getEmail();
         //Unique UUID For each user for Database
         myRef  = database.getReference(ROOT).child(user.getUid());
-        Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
-
         drawerusername.setText(user.getEmail());
 
         //Save for later
@@ -94,9 +91,8 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         int id = item.getItemId();
 
         if (id == R.id.workout_history) {
-            // Handle the login
-           /* Intent intent = new Intent(this, WorkoutHistory.class);
-            startActivity(intent);*/
+           Intent intent = new Intent(this, WorkoutHistory.class);
+            startActivity(intent);
 
         } else if (id == R.id.add_workout) {
 

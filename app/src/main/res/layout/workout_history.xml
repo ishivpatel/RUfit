@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
+    <android.support.v7.widget.Toolbar
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/Red"
+        android:id="@+id/workout_history_topToolBar"
+        >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_gravity="center_horizontal|top"
+            android:src="@drawable/rufit_logo_nbg"
+            />
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="35dp"
+            android:layout_gravity="start"
+            android:id="@+id/backbutton_workout_history"
+            android:src="@drawable/back_button"
+            />
+
+    </android.support.v7.widget.Toolbar>
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="250dp"
+    android:layout_below="@id/workout_history_topToolBar"
+    android:background="@color/Red"
+    android:id="@+id/graph_layout">
+
+    <belka.us.androidtoggleswitch.widgets.ToggleSwitch
+        android:id="@+id/toggle_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:orientation="horizontal"
+        android:padding="5dp"
+        custom:textToggleCenter="Weekly View"
+        custom:textToggleLeft="Daily View"
+        custom:textToggleRight="Monthly View"
+        custom:toggleWidth="120dp"
+        custom:activeBgColor="@color/black"
+        custom:activeTextColor="@color/GhostWhite"
+        custom:inactiveBgColor="@color/GhostWhite"
+        tools:overrideLibrary="belka.us.androidtoggleswitch">
+
+    </belka.us.androidtoggleswitch.widgets.ToggleSwitch>
+
+    <com.github.mikephil.charting.charts.LineChart
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_below="@id/toggle_switch"
+        android:id="@+id/workout_history_chart"/>
+</RelativeLayout>
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/graph_layout"
+        android:id="@+id/details_recyclerView"
+        android:padding="3dp">
+
+    </android.support.v7.widget.RecyclerView>
+
+
+
+</RelativeLayout>
