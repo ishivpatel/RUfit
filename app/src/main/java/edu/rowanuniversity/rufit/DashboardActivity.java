@@ -12,12 +12,18 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import edu.rowanuniversity.rufit.rufitObjects.Goal;
 
 public class DashboardActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -64,17 +70,25 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         }else{
             updateUser();
         }
+
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                updateDashboardData(dataSnapshot);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     public void updateUser(){
         user = auth.getCurrentUser();
-        //text = user.getEmail();
         //Unique UUID For each user for Database
         myRef  = database.getReference(ROOT).child(user.getUid());
         drawerusername.setText(user.getEmail());
-
-        //Save for later
-        //populateDash();
     }
 
     public void onResume(){
@@ -134,14 +148,40 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
      * Populates user's dashboard with their personal information to cards
      * //TODO : populate dashboard with user data
      */
-    public void populateDash() {
+    public void updateDashboardData(DataSnapshot d) {
+        String goals = "goals";
         //User can click card to quickstart new run
         CardView startRunCard = (CardView) findViewById(R.id.cardStartRun);
 
         //Components for 1st goal progress
-        ProgressBar goalBar = (ProgressBar) findViewById(R.id.goalBar1);
-        TextView userGoal = (TextView) findViewById(R.id.goal1);
-        TextView userGoalPercent = (TextView) findViewById(R.id.goalPercent1);
+        ProgressBar goalBar1 = (ProgressBar) findViewById(R.id.goalBar1);
+        TextView userGoal1 = (TextView) findViewById(R.id.goal1);
+        TextView userGoalPercent1 = (TextView) findViewById(R.id.goalPercent1);
+        //Components for 2st goal progress
+        ProgressBar goalBar2 = (ProgressBar) findViewById(R.id.goalBar2);
+        TextView userGoal2 = (TextView) findViewById(R.id.goal2);
+        TextView userGoalPercent2 = (TextView) findViewById(R.id.goalPercent2);
+
+        Goal userGoals = d.child(goals).getValue(Goal.class);
+        if (userGoals.getRunsPerWeekTarget() > 0) {
+            userGoal1.setText("Runs Per Week Progress:");
+            int percent1 = (userGoals.getRunsPerWeekActual() * 100) / userGoals.getRunsPerWeekTarget();
+            userGoalPercent1.setText("" + percent1 + "%");
+            goalBar1.setProgress(percent1);
+        } else {
+            RelativeLayout r1 = (RelativeLayout) findViewById(R.id.r1);
+            r1.setVisibility(View.GONE);
+        }
+
+        if(userGoals.getMilesPerWeekTarget()>0) {
+            userGoal2.setText("Weekly Mileage Progress:");
+            int percent2 = (userGoals.getMilesPerWeekActual() * 100) / userGoals.getMilesPerWeekTarget();
+            userGoalPercent2.setText("" + percent2 + "%");
+            goalBar2.setProgress(percent2);
+        } else {
+            RelativeLayout r2 = (RelativeLayout) findViewById(R.id.r2);
+            r2.setVisibility(View.GONE);
+        }
 
     }
 

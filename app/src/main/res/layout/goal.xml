@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginRight="6dp"
         android:layout_marginEnd="6dp"
+        android:layout_marginTop="10dp"
         android:contentDescription="TODO"
         android:src="@drawable/medal" />
 
@@ -59,18 +60,34 @@
         android:layout_alignRight="@+id/goalBar1"
         android:layout_alignEnd="@+id/goalBar1" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/editGoal1"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@android:drawable/ic_menu_edit"
-        android:clickable="true"
-        app:elevation="3dp"
-        app:fabSize="mini"
-        app:pressedTranslationZ="6dp"
-        app:backgroundTint="@color/DarkRed"
-        android:layout_above="@+id/secondLine"
-        android:layout_alignLeft="@+id/percent1"
-        android:layout_alignStart="@+id/percent1" />
+        android:orientation="horizontal"
+        android:padding="5dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true">
+
+
+        <ImageButton
+            android:id="@+id/delete_goal_button1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingRight="8dp"
+            android:src="@drawable/ic_delete_white_24dp"
+            android:background="@color/Transparent"
+            android:tint="@color/DarkRed" />
+
+        <ImageButton
+            android:id="@+id/editGoal1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_edit_white_24dp"
+            android:clickable="true"
+            android:tint="@color/DarkRed"
+            android:background="@color/Transparent" />
+
+    </LinearLayout>
 
 </RelativeLayout>

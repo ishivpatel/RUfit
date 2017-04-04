@@ -4,16 +4,20 @@ package edu.rowanuniversity.rufit;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.view.View;
+import android.widget.CalendarView;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -23,7 +27,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import edu.rowanuniversity.rufit.rufitObjects.Goal;
 
@@ -34,12 +43,12 @@ import edu.rowanuniversity.rufit.rufitObjects.Goal;
  * Last Update : 03.26.2017
  *
  * TODO : improve error handling.
- * TODO : allow for addition of multiple days until race goals
+ * TODO : allow for addition of multiple days until race goals -- prolly not tho
  */
 
 public class GoalsActivity extends AppCompatActivity {
     RelativeLayout goalBlock1, goalBlock2, goalBlock3;
-    FloatingActionButton fab;
+    ImageButton newGoal;
     TextView goalGreeting;
     private FirebaseDatabase database;
     private FirebaseAuth auth;
@@ -60,23 +69,25 @@ public class GoalsActivity extends AppCompatActivity {
         goalBlock3 = (RelativeLayout) findViewById(R.id.thirdGoal);
         goalGreeting = (TextView) findViewById(R.id.goalGreeting);
 
+        //edit buttons for each goal card
+        ImageButton editGoal1 = (ImageButton) findViewById(R.id.editGoal1);
+        ImageButton editGoal2 = (ImageButton) findViewById(R.id.editGoal2);
+        ImageButton editGoal3 = (ImageButton) findViewById(R.id.editGoal3);
+
+        //delete buttons for each goal card
+        ImageButton deleteGoal1 = (ImageButton) findViewById(R.id.delete_goal_button1);
+        ImageButton deleteGoal2 = (ImageButton) findViewById(R.id.delete_goal_button2);
+        ImageButton deleteGoal3 = (ImageButton) findViewById(R.id.delete_goal_button3);
+
+        //Set toolbar and back button
         Toolbar t = (Toolbar) findViewById(R.id.topToolBar);
         setSupportActionBar(t);
         getSupportActionBar().setTitle("");
         backbutton = (ImageView) findViewById(R.id.backbutton_goalactivity);
-
         backbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
-            }
-        });
-
-        fab = (FloatingActionButton) findViewById(R.id.addGoal);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addGoalDialog();
             }
         });
 
@@ -91,41 +102,97 @@ public class GoalsActivity extends AppCompatActivity {
         myRef = db.child("users").child(userID);
 
         //Updates display components when database reference is changed
-        db.addValueEventListener(new ValueEventListener() {
+        myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) { update(dataSnapshot);           }
             @Override
             public void onCancelled(DatabaseError databaseError) { }
         });
 
+        //Floating action button adds new goals
+        newGoal = (ImageButton) findViewById(R.id.addGoal);
+        newGoal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addGoalDialog();
+            }
+        });
 
+        //EDIT RUNS PER WEEK
+        editGoal1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                weeklyRunsDialog();
+            }
+        });
 
-        FloatingActionButton editGoal1 = (FloatingActionButton) findViewById(R.id.editGoal1);
-        FloatingActionButton editGoal2 = (FloatingActionButton) findViewById(R.id.editGoal2);
-        FloatingActionButton editGoal3 = (FloatingActionButton) findViewById(R.id.editGoal3);
+        //EDIT WEEKLY MILEAGE
+        editGoal2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                weeklyMileageDialog();
+            }
+        });
+
+        //EDIT UPCOMING RACE
         editGoal3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final Calendar c = Calendar.getInstance();
-                mYear = c.get(Calendar.YEAR);
-                mMonth = c.get(Calendar.MONTH);
-                mDay = c.get(Calendar.DAY_OF_MONTH);
+                upcomingRaceDialog();
+            }
+        });
 
-                DatePickerDialog datePickerDialog = new DatePickerDialog(GoalsActivity.this,
-                        new DatePickerDialog.OnDateSetListener() {
-                            @Override
-                            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                                String pickedDate = "" + year + "-" + monthOfYear + "-" + dayOfMonth;
-                                myRef.child("goals").child("dateOfRace").setValue(pickedDate);
+        //DELETE RUNS PER WEEK
+        deleteGoal1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deleteUserGoal(v);
+            }
+        });
 
-                            }
-                        }, mYear, mMonth, mDay);
-                datePickerDialog.show();
+        //DELETE WEEKLY MILEAGE
+        deleteGoal2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deleteUserGoal(v);
+            }
+        });
+
+        //DELETE UPCOMING RACE
+        deleteGoal3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deleteUserGoal(v);
             }
         });
     }
 
+    /**
+     * Updates view to reflect current goals data for user in database
+     * @param dataSnapshot
+     */
+    private void update( DataSnapshot dataSnapshot) {
+        DataSnapshot d = dataSnapshot.child("goals");
+        userGoals = new Goal();
+        if(d.getValue() == null) { //User has set no goals
+            goalGreeting.setText("Try setting a few goals !");
+        } else {                        //Initialize local Goal object to represent Goal data stored in db
+            goalGreeting.setVisibility(View.GONE);
+            userGoals.setDaysUntilRace(d.getValue(Goal.class).getDateOfRace());
+            userGoals.setMilesPerWeekTarget(d.getValue(Goal.class).getMilesPerWeekTarget());
+            userGoals.setRunsPerWeekTarget(d.getValue(Goal.class).getRunsPerWeekTarget());
+            userGoals.setMilesPerWeekActual(d.getValue(Goal.class).getMilesPerWeekActual());
+            userGoals.setRunsPerWeekActual(d.getValue(Goal.class).getRunsPerWeekActual());
+        }
+        displayGoal(); //Displays update information for each goal
+
+    }
+
+    /**
+     * Set up display for any goals he user has set
+     */
     private void displayGoal() {
+        //RUNS PER WEEK GOAL
         if (userGoals.getRunsPerWeekTarget()  > 0) {
             TextView tv1 = (TextView) findViewById(R.id.firstLine);
             TextView tv2 = (TextView) findViewById(R.id.secondLine);
@@ -142,9 +209,10 @@ public class GoalsActivity extends AppCompatActivity {
             pBar1.setProgress(percent);
 
         }else {
-            goalBlock1.setVisibility(View.GONE);
+            goalBlock1.setVisibility(View.GONE); //Hide goal if user has not set it
         }
 
+        //WEEKLY MILEAGE GOAL
         if (userGoals.getMilesPerWeekTarget()  > 0) {
             TextView tv1 = (TextView) findViewById(R.id.firstLine2);
             TextView tv2 = (TextView) findViewById(R.id.secondLine2);
@@ -153,87 +221,243 @@ public class GoalsActivity extends AppCompatActivity {
 
             int percent = (userGoals.getMilesPerWeekActual()*100)/userGoals.getMilesPerWeekTarget();
 
-            tv1.setText("Miles per Week :");
+            tv1.setText("Miles Per Week :");
             tv2.setText("You have ran " + userGoals.getMilesPerWeekActual() + " miles this week. \n" +
                     "Your goal is " + userGoals.getMilesPerWeekTarget() +" miles.");
             percent2.setText(percent +"%");
             pBar2.setProgress(percent);
 
         }else {
-            goalBlock2.setVisibility(View.GONE);
+            goalBlock2.setVisibility(View.GONE); //Hide goal is user has not set it
         }
 
-        if (userGoals.getDaysUntilRace()  >=  0) {
-
+        //DAYS UNTIL UPCOMING RACE
+        if (userGoals.getDateOfRace() != null) {
             TextView tv1 = (TextView) findViewById(R.id.firstLine3);
             TextView tv2 = (TextView) findViewById(R.id.secondLine3);
             tv1.setText("Days Until Race :");
             tv2.setText("" + userGoals.getDaysUntilRace() + " days until your race !");
         } else {
-            goalBlock3.setVisibility(View.GONE);
+            goalBlock3.setVisibility(View.GONE); //Hide goal is user has not set it
         }
-
     }
 
+    /**
+     * Dialog pop-up for when user clicks floating action button.
+     * Prompts user to select which type of goal they wish to add.
+     */
     private void addGoalDialog() {
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-        alertDialogBuilder.setTitle("Add New Goal");
+        final List<String> choices = new ArrayList<String>();
 
-        final String choices[] = new String[3];
-        int i = 0;
+        //Checks for goal categories user does not have yet.
+        //If unused, adds to list of choices.
         if(userGoals.getMilesPerWeekTarget() <= 0) {
-            choices[i++] = "New Weekly Mileage Goal";
+            choices.add( "New Weekly Mileage Goal");
         }
-        if(userGoals.getRunsPerWeekTarget() <=0) {
-            choices[i++] = "Goal Number of Runs Per Week";
+        if(userGoals.getRunsPerWeekTarget() <= 0) {
+            choices.add("Goal Number of Runs Per Week");
         }
         if(userGoals.getDateOfRace() == null) {
-            choices[i] = "Countdown To Upcoming Race";
+            choices.add("Countdown To Upcoming Race");
         }
 
-        if(choices.length ==0) {
-            alertDialogBuilder.setMessage("You already have enough goals!");
+        //Create sequence of items
+        final CharSequence[] c = choices.toArray(new String[choices.size()]);
+
+        //Create dialog
+        final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+        dialogBuilder.setTitle("Add New Goal");
+
+        //If all goal categories are used already.
+        if(choices.size() ==0) {
+            dialogBuilder.setMessage("You already have enough goals!");
         } else {
-
-        }
-        alertDialogBuilder.setItems(choices, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-            }
-        });
-        //alertDialogBuilder.setMessage("Would you like to add a new goal?");
-        alertDialogBuilder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if(choices.length == 0) {
-                    dialog.dismiss();
+            dialogBuilder.setItems(c, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int item) {
+                    String selectedText = c[item].toString();
+                    if(selectedText.equals("New Weekly Mileage Goal")) {
+                        weeklyMileageDialog();
+                        dialog.dismiss();
+                    }else if(selectedText.equals("Goal Number of Runs Per Week")) {
+                        weeklyRunsDialog();
+                        dialog.dismiss();
+                    }else if(selectedText.equals("Countdown To Upcoming Race")) {
+                        upcomingRaceDialog();
+                        dialog.dismiss();
+                    }else {
+                        //something went wrong :')
+                    }
                 }
-            }
-        });
-        alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            });
+        }
+        dialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
             }
         });
-        alertDialogBuilder.show();
+
+        //Create alert dialog object via builder
+        AlertDialog alertDialogObject = dialogBuilder.create();
+        //Show the dialog
+        alertDialogObject.show();
     }
 
-    private void update( DataSnapshot dataSnapshot) {
-        DataSnapshot d = dataSnapshot.child("users").child(userID).child("goals");
-        userGoals = new Goal();
-        if(d.getValue() == null) {
-            goalGreeting.setText("Try setting a few goals !");
-        } else {
-            userGoals.setDaysUntilRace(d.getValue(Goal.class).getDateOfRace());
-            userGoals.setMilesPerWeekTarget(d.getValue(Goal.class).getMilesPerWeekTarget());
-            userGoals.setRunsPerWeekTarget(d.getValue(Goal.class).getRunsPerWeekTarget());
-            userGoals.setMilesPerWeekActual(d.getValue(Goal.class).getMilesPerWeekActual());
-            userGoals.setRunsPerWeekActual(d.getValue(Goal.class).getRunsPerWeekActual());
-        }
-        displayGoal();
+    /**
+     * Use date picker calendar for when user wants to add new upcoming race goal or edit
+     * upcoming race goal.
+     */
+    private void upcomingRaceDialog() {
+        final Calendar c = Calendar.getInstance();
+        mYear = c.get(Calendar.YEAR);
+        mMonth = c.get(Calendar.MONTH);
+        mDay = c.get(Calendar.DAY_OF_MONTH);
 
+        if(userGoals.getDateOfRace() != null) {
+            DateTime date = DateTime.parse(userGoals.getDateOfRace());
+            mYear = date.getYear();
+            mMonth = date.getMonthOfYear()-1; //wtf does month indexing start at zero.
+            mDay = date.getDayOfMonth();
+        }
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(GoalsActivity.this,
+                new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                        String pickedDate = "" + year + "-" + ++monthOfYear + "-" + dayOfMonth;
+                        Toast.makeText(GoalsActivity.this, pickedDate, Toast.LENGTH_LONG).show();
+                        myRef.child("goals").child("dateOfRace").setValue(pickedDate);
+
+                    }
+                }, mYear, mMonth, mDay);
+        datePickerDialog.show();
+    }
+
+    /**
+     * Dialog when user would like to add new weekly mileage goal or edit weekly mileage goal.
+     */
+    private void weeklyMileageDialog() {
+        AlertDialog.Builder a = new AlertDialog.Builder(GoalsActivity.this);
+        a.setTitle("Set Weekly Mileage");
+        final EditText input = new EditText(this);
+        input.setInputType(InputType.TYPE_CLASS_NUMBER);
+        a.setView(input);
+
+        a.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                boolean valid = false;
+                while(!valid) { //loop until good input
+                    int i;
+                    try {
+                        if(input.getText().toString().equals(null) || input.getText().toString().equals("")) {
+                            Toast.makeText(GoalsActivity.this, "You Entered Invalid Input", Toast.LENGTH_LONG).show();
+                        } else if(Integer.parseInt(input.getText().toString()) < 1) {
+                            Toast.makeText(GoalsActivity.this, "You Entered A Negative Number", Toast.LENGTH_LONG).show();
+                        } else {
+                            i = Integer.parseInt(input.getText().toString());
+                            myRef.child("goals").child("milesPerWeekTarget").setValue(i);
+                            valid = true;
+                            Toast.makeText(GoalsActivity.this, "Goal Added", Toast.LENGTH_LONG).show();
+                        }
+                    } catch (NumberFormatException e) {
+                        Toast.makeText(GoalsActivity.this, "You Entered Invalid Input", Toast.LENGTH_LONG).show();
+                    }
+                }
+            }
+        });
+
+        a.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        a.create();
+        a.show();
+    }
+
+    /**
+     * Dialog for when user would like to add new goal or update existing goal of runs
+     * per week.
+     */
+    private void weeklyRunsDialog() {
+        AlertDialog.Builder a = new AlertDialog.Builder(GoalsActivity.this);
+        a.setTitle("Set Runs Per Week");
+        final EditText input = new EditText(this);
+        input.setInputType(InputType.TYPE_CLASS_NUMBER);
+        a.setView(input);
+
+        a.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                boolean valid = false;
+                while(!valid) { //loop until good input
+                    int i;
+                    try {
+                        if(input.getText().toString().equals(null) || input.getText().toString().equals("")) {
+                            Toast.makeText(GoalsActivity.this, "You Entered Invalid Input", Toast.LENGTH_LONG).show();
+                        } else if(Integer.parseInt(input.getText().toString()) < 1) {
+                            Toast.makeText(GoalsActivity.this, "You Entered A Negative Number", Toast.LENGTH_LONG).show();
+                        } else {
+                            i = Integer.parseInt(input.getText().toString());
+                            myRef.child("goals").child("runsPerWeekTarget").setValue(i);
+                            valid = true;
+                            Toast.makeText(GoalsActivity.this, "Goal Added", Toast.LENGTH_LONG).show();
+                        }
+                    } catch (NumberFormatException e) {
+                        Toast.makeText(GoalsActivity.this, "You Entered Invalid Input", Toast.LENGTH_LONG).show();
+                    }
+                }
+            }
+        });
+
+        a.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        a.create();
+        a.show();
+    }
+
+    /**
+     * Deletes a user's selected goal
+     * @param v passes the View object of the selected goal
+     */
+    private void deleteUserGoal(View v) {
+        final int id = v.getId();
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(GoalsActivity.this);
+        alertDialog.setTitle("Delete Goal");
+        alertDialog.setMessage("Are you sure you want to delete this goal ?");
+        alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (id) {
+                    case R.id.delete_goal_button1 :
+                        myRef.child("goals").child("runsPerWeekTarget").removeValue();
+                        Toast.makeText(GoalsActivity.this, "Goal Deleted", Toast.LENGTH_LONG).show();
+                        break;
+                    case R.id.delete_goal_button2 :
+                        myRef.child("goals").child("milesPerWeekTarget").removeValue();
+                        Toast.makeText(GoalsActivity.this, "Goal Deleted", Toast.LENGTH_LONG).show();
+                        break;
+                    case R.id.delete_goal_button3 :
+                        myRef.child("goals").child("dateOfRace").removeValue();
+                        Toast.makeText(GoalsActivity.this, "Goal Deleted", Toast.LENGTH_LONG).show();
+                        break;
+                }
+            }
+        });
+        alertDialog.setNegativeButton("Cancel",new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        alertDialog.create();
+        alertDialog.show();
     }
 }
 

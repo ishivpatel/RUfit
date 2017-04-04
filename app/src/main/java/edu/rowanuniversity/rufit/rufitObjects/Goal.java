@@ -43,7 +43,10 @@ public class Goal {
         return daysUntilRace;
     }
 
-    public void setDaysUntilRace(String date) { dateOfRace = date;   }
+    public void setDaysUntilRace(String date) {
+        dateOfRace = date;
+        calculateDays();
+    }
 
     public String getDateOfRace() { return dateOfRace;}
 
@@ -60,7 +63,7 @@ public class Goal {
     }
 
     /**
-     * Given today'ss date and date of event, calculates days remaining.
+     * Given today's date and date of event, calculates days remaining.
      */
     private void calculateDays () {
         if(!(dateOfRace == null) && daysUntilRace >= 0 ) {

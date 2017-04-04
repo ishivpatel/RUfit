@@ -21,7 +21,7 @@
             android:layout_gravity="center_vertical|center_horizontal"
             android:layout_marginTop="10dp"
             android:text="Goals"
-            android:textSize="25dp"
+            android:textSize="25sp"
             android:textColor="@color/WhiteSmoke"
             />
 
@@ -34,33 +34,6 @@
             />
 
     </android.support.v7.widget.Toolbar>
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="56dp">
-        <LinearLayout
-            android:id="@+id/addgoal"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical" >
-
-            <TextView
-                android:id="@+id/goalGreeting"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="18dp"
-                android:layout_gravity="center"
-                android:textSize="16dp"/>
-
-
-        <include layout="@layout/goal"></include>
-        <include layout="@layout/goal2"></include>
-        <include layout="@layout/goal3"></include>
-
-        </LinearLayout>
-
-    </ScrollView>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/addGoal"
@@ -75,5 +48,35 @@
         app:pressedTranslationZ="6dp"
         app:rippleColor="@color/DarkRed"
         app:backgroundTint="@color/DarkRed" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="56dp">
+
+        <LinearLayout
+            android:id="@+id/addgoal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/goalGreeting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="18dp"
+                android:textSize="16sp" />
+
+
+            <include layout="@layout/goal"></include>
+
+            <include layout="@layout/goal2"></include>
+
+            <include layout="@layout/goal3"></include>
+
+        </LinearLayout>
+
+    </ScrollView>
 
 </FrameLayout>

@@ -79,4 +79,8 @@ public class User {
     public void setUsername(String username) {
         this.username = username;
     }
+
+    public Goal getGoals() {
+        return goals;
+    }
 }
