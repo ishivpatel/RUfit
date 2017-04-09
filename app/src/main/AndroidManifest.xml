@@ -39,6 +39,9 @@
         <activity android:name=".DetailWorkouts">
 
         </activity>
+        <activity android:name=".ShoeActivity">
+
+        </activity>
 
     </application>
 

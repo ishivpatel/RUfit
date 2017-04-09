@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/goallayout"
-    android:layout_gravity="center"
-    android:orientation="vertical">
+    android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/shoelayout"
+        android:layout_gravity="center"
+        android:orientation="vertical">
 
     <android.support.v7.widget.Toolbar
         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -14,13 +14,12 @@
         android:background="@color/Red"
         android:id="@+id/topToolBar"
         >
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:layout_gravity="center"
             android:paddingTop="5dp"
-            android:text="Goals"
+            android:text="Shoes"
             android:textSize="25sp"
             android:textColor="@color/WhiteSmoke"
             />
@@ -29,14 +28,44 @@
             android:layout_width="20dp"
             android:layout_height="35dp"
             android:layout_gravity="start"
-            android:id="@+id/backbutton_goalactivity"
+            android:id="@+id/backbutton_shoeactivity"
             android:src="@drawable/back_button"
             />
-
     </android.support.v7.widget.Toolbar>
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="63dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/card_recycler_view"
+            android:scrollbars="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="20dp"/>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <TextView
+        android:id="@+id/shoeGreeting"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:visibility="gone"
+        android:text=""
+        android:textSize="24dp"
+        android:textColor="@color/gray_light"/>
+
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/addGoal"
+        android:id="@+id/addShoe"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_add_white_24dp"
@@ -48,35 +77,5 @@
         app:pressedTranslationZ="6dp"
         app:rippleColor="@color/DarkRed"
         app:backgroundTint="@color/DarkRed" />
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="56dp">
-
-        <LinearLayout
-            android:id="@+id/addgoal"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/goalGreeting"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="18dp"
-                android:textSize="16sp" />
-
-
-            <include layout="@layout/goal"></include>
-
-            <include layout="@layout/goal2"></include>
-
-            <include layout="@layout/goal3"></include>
-
-        </LinearLayout>
-
-    </ScrollView>
 
 </FrameLayout>

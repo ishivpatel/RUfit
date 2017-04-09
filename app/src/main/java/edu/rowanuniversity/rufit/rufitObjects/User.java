@@ -1,13 +1,19 @@
 package edu.rowanuniversity.rufit.rufitObjects;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by catherine on 3/25/2017.
+ * Last Updated: 04.08.2017
+ *
+ * Represents user within database.
+ * TODO: May be able to remove records, runs, and shoes, variables from this class.
+ *      They may prove unnecessary for our implementation of app.
  */
 
 public class User {
-    private int age;
+    private String dob;
     private String gender;
     private int height;
     private int weight;
@@ -15,25 +21,25 @@ public class User {
     private Goal goals;
     private Record records;
     private ArrayList<Run> runs;
-    private ArrayList<Shoe> shoes;
+    private HashMap<String,Shoe> shoes;
 
 
     public User() {
         username = "";
-        age = 0;
+        dob = "";
         gender = "";
         height = 0;
         weight = 0;
         goals = new Goal();
         records = new Record();
         runs = new ArrayList<Run>();
-        shoes = new ArrayList<Shoe>();
+        shoes = new HashMap<String,Shoe>();
 
     }
 
-    public User(int age, String gender, int height, int weight, String username,
-                Goal goals, Record records, ArrayList<Run> runs, ArrayList<Shoe> shoes) {
-        this.age = age;
+    public User(String dob, String gender, int height, int weight, String username,
+                Goal goals, Record records, ArrayList<Run> runs, HashMap<String,Shoe> shoes) {
+        this.dob = dob;
         this.gender = gender;
         this.height = height;
         this.weight = weight;
@@ -66,10 +72,10 @@ public class User {
         this.height = height;
     }
 
-    public int getAge() { return age;}
+    public String getdob() { return dob;}
 
-    public void setAge(int age) {
-        this.age = age;
+    public void setdob(String dob) {
+        this.dob = dob;
     }
 
     public String getUsername() {

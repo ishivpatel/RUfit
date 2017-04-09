@@ -9,7 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.view.View;
-import android.widget.CalendarView;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -28,7 +27,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -40,9 +38,8 @@ import edu.rowanuniversity.rufit.rufitObjects.Goal;
  * Created by Catherine Dougherty on 3/19/2017.
  *
  * Purpose : Main activity for displaying and editting user's personal information
- * Last Update : 03.26.2017
+ * Last Update : 04.08.2017
  *
- * TODO : improve error handling.
  * TODO : allow for addition of multiple days until race goals -- prolly not tho
  */
 
@@ -54,7 +51,7 @@ public class GoalsActivity extends AppCompatActivity {
     private FirebaseAuth auth;
     private FirebaseUser user;
     private ImageView backbutton;
-    DatabaseReference myRef,db;
+    DatabaseReference myRef,goalRef;
     Goal userGoals;
     private String userID;
     private int mYear, mMonth, mDay;
@@ -98,8 +95,8 @@ public class GoalsActivity extends AppCompatActivity {
 
         //database instance
         database = FirebaseDatabase.getInstance();
-        db = database.getReference();
-        myRef = db.child("users").child(userID);
+        myRef = database.getReference().child("users").child(userID);
+        goalRef = myRef.child("goals");
 
         //Updates display components when database reference is changed
         myRef.addValueEventListener(new ValueEventListener() {
@@ -346,24 +343,15 @@ public class GoalsActivity extends AppCompatActivity {
         a.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                boolean valid = false;
-                while(!valid) { //loop until good input
-                    int i;
-                    try {
-                        if(input.getText().toString().equals(null) || input.getText().toString().equals("")) {
-                            Toast.makeText(GoalsActivity.this, "You Entered Invalid Input", Toast.LENGTH_LONG).show();
-                        } else if(Integer.parseInt(input.getText().toString()) < 1) {
-                            Toast.makeText(GoalsActivity.this, "You Entered A Negative Number", Toast.LENGTH_LONG).show();
-                        } else {
-                            i = Integer.parseInt(input.getText().toString());
-                            myRef.child("goals").child("milesPerWeekTarget").setValue(i);
-                            valid = true;
-                            Toast.makeText(GoalsActivity.this, "Goal Added", Toast.LENGTH_LONG).show();
-                        }
-                    } catch (NumberFormatException e) {
-                        Toast.makeText(GoalsActivity.this, "You Entered Invalid Input", Toast.LENGTH_LONG).show();
-                    }
+                int i;
+                if(input.getText().toString().equals("")) {
+                    Toast.makeText(GoalsActivity.this, "You Entered Invalid Input", Toast.LENGTH_LONG).show();
+                } else {
+                    i = Integer.parseInt(input.getText().toString());
+                    goalRef.child("milesPerWeekTarget").setValue(i);
+                    Toast.makeText(GoalsActivity.this, "Goal Added", Toast.LENGTH_LONG).show();
                 }
+                dialog.dismiss();
             }
         });
 
@@ -391,23 +379,13 @@ public class GoalsActivity extends AppCompatActivity {
         a.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                boolean valid = false;
-                while(!valid) { //loop until good input
-                    int i;
-                    try {
-                        if(input.getText().toString().equals(null) || input.getText().toString().equals("")) {
-                            Toast.makeText(GoalsActivity.this, "You Entered Invalid Input", Toast.LENGTH_LONG).show();
-                        } else if(Integer.parseInt(input.getText().toString()) < 1) {
-                            Toast.makeText(GoalsActivity.this, "You Entered A Negative Number", Toast.LENGTH_LONG).show();
-                        } else {
-                            i = Integer.parseInt(input.getText().toString());
-                            myRef.child("goals").child("runsPerWeekTarget").setValue(i);
-                            valid = true;
-                            Toast.makeText(GoalsActivity.this, "Goal Added", Toast.LENGTH_LONG).show();
-                        }
-                    } catch (NumberFormatException e) {
-                        Toast.makeText(GoalsActivity.this, "You Entered Invalid Input", Toast.LENGTH_LONG).show();
-                    }
+                int i;
+                if(input.getText().toString().equals("")) {
+                    Toast.makeText(GoalsActivity.this, "You Entered Invalid Input", Toast.LENGTH_LONG).show();
+                } else {
+                    i = Integer.parseInt(input.getText().toString());
+                    goalRef.child("runsPerWeekTarget").setValue(i);
+                    Toast.makeText(GoalsActivity.this, "Goal Added", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -436,15 +414,15 @@ public class GoalsActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 switch (id) {
                     case R.id.delete_goal_button1 :
-                        myRef.child("goals").child("runsPerWeekTarget").removeValue();
+                        goalRef.child("runsPerWeekTarget").removeValue();
                         Toast.makeText(GoalsActivity.this, "Goal Deleted", Toast.LENGTH_LONG).show();
                         break;
                     case R.id.delete_goal_button2 :
-                        myRef.child("goals").child("milesPerWeekTarget").removeValue();
+                        goalRef.child("milesPerWeekTarget").removeValue();
                         Toast.makeText(GoalsActivity.this, "Goal Deleted", Toast.LENGTH_LONG).show();
                         break;
                     case R.id.delete_goal_button3 :
-                        myRef.child("goals").child("dateOfRace").removeValue();
+                        goalRef.child("dateOfRace").removeValue();
                         Toast.makeText(GoalsActivity.this, "Goal Deleted", Toast.LENGTH_LONG).show();
                         break;
                 }

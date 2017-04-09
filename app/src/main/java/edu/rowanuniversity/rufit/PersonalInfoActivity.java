@@ -1,17 +1,21 @@
 package edu.rowanuniversity.rufit;
 
+import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -21,15 +25,19 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.joda.time.DateTime;
+
+import java.text.DateFormatSymbols;
+import java.util.Calendar;
+
 import edu.rowanuniversity.rufit.rufitObjects.User;
 
 /**
  * Created by Catherine Dougherty on 3/19/2017.
  *
  * Purpose : Main activity for displaying and editting user's personal information
- * Last Update : 03.26.2017
+ * Last Update : 04.08.2017
  *
- * TODO : improve error handling. im sure this thing can break easily if wrong input is input
  */
 
 public class PersonalInfoActivity extends AppCompatActivity {
@@ -39,7 +47,7 @@ public class PersonalInfoActivity extends AppCompatActivity {
     private FirebaseAuth auth;
     private FirebaseUser user;
     private ImageView backbutton;
-    DatabaseReference myRef;
+    DatabaseReference myRef, userRef;
     private String userID;
     final Context context = this;
     private User uInfo; //Object holding user's current personal information
@@ -52,7 +60,6 @@ public class PersonalInfoActivity extends AppCompatActivity {
         Toolbar t = (Toolbar) findViewById(R.id.topToolBar);
         setSupportActionBar(t);
         getSupportActionBar().setTitle("");
-        //getSupportActionBar().setDisplayHomeAsUpEnabled(true); //doesn't do anything yet
         backbutton = (ImageView) findViewById(R.id.backbutton_personalinfoactivity);
 
         backbutton.setOnClickListener(new View.OnClickListener() {
@@ -78,14 +85,16 @@ public class PersonalInfoActivity extends AppCompatActivity {
         weightRow = (LinearLayout) findViewById(R.id.weightRow);
         emailRow = (LinearLayout) findViewById(R.id.emailRow);
 
-        //database instance
-        database = FirebaseDatabase.getInstance();
-        myRef = database.getReference();
-
         //retrieve current user
         auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
         userID = user.getUid();
+
+        //database instance
+        database = FirebaseDatabase.getInstance();
+        myRef = database.getReference();
+        userRef = myRef.child("users").child(userID);
+
 
         //Updates display components when database reference is changed
         myRef.addValueEventListener(new ValueEventListener() {
@@ -120,7 +129,8 @@ public class PersonalInfoActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         String input = editText.getText().toString();
-                        myRef.child("users").child(userID).child("username").setValue(input);
+                        userRef.child("username").setValue(input);
+                        Toast.makeText(PersonalInfoActivity.this, "Username Updated", Toast.LENGTH_LONG).show();
                         dialog.dismiss();
                     }
                 });
@@ -132,37 +142,28 @@ public class PersonalInfoActivity extends AppCompatActivity {
         ageRow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final Dialog dialog = new Dialog(context);
-                dialog.setContentView(R.layout.age_dialog);
+                final Calendar c = Calendar.getInstance();
+                int mYear = c.get(Calendar.YEAR);
+                int mMonth = c.get(Calendar.MONTH);
+                int mDay = c.get(Calendar.DAY_OF_MONTH);
 
-                //Retrieve components
-                Button dialogCancelButton = (Button) dialog.findViewById(R.id.customDialogCancel);
-                Button dialogSubmitButton = (Button) dialog.findViewById(R.id.customDialogSubmit);
-                final NumberPicker agePicker = (NumberPicker) dialog.findViewById(R.id.np);
+                if(uInfo.getdob() != null && !uInfo.getdob().equals("")) {
+                    DateTime date = DateTime.parse(uInfo.getdob());
+                    mYear = date.getYear();
+                    mMonth = date.getMonthOfYear()-1; //wtf does month indexing start at zero.
+                    mDay = date.getDayOfMonth();
+                }
 
-                //initalize the number pickers min, max, and default value
-                agePicker.setMinValue(10);
-                agePicker.setMaxValue(100);
-                agePicker.setValue(uInfo.getAge()); //default is current user's age
-
-                //Close dialog when cancel button clicked
-                dialogCancelButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        dialog.dismiss();
-                    }
-                });
-
-                //Save updated age to db
-                dialogSubmitButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        int age = agePicker.getValue();
-                        myRef.child("users").child(userID).child("age").setValue(age);
-                        dialog.dismiss();
-                    }
-                });
-                dialog.show(); //display dialog
+                DatePickerDialog datePickerDialog = new DatePickerDialog(PersonalInfoActivity.this,
+                        new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                                String pickedDate = "" + year + "-" + ++monthOfYear + "-" + dayOfMonth;
+                                Toast.makeText(PersonalInfoActivity.this, "Date of Birth Updated", Toast.LENGTH_LONG).show();
+                                userRef.child("dob").setValue(pickedDate);
+                            }
+                        }, mYear, mMonth, mDay);
+                datePickerDialog.show();
             }
         });
 
@@ -198,7 +199,8 @@ public class PersonalInfoActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         String gender = gPicker.getValue() == 0 ? "Male" : "Female";
-                        myRef.child("users").child(userID).child("gender").setValue(gender);
+                        userRef.child("gender").setValue(gender);
+                        Toast.makeText(PersonalInfoActivity.this, "Gender Updated", Toast.LENGTH_LONG).show();
                         dialog.dismiss();
                     }
                 });
@@ -219,6 +221,8 @@ public class PersonalInfoActivity extends AppCompatActivity {
                 Button dialogSubmitButton = (Button) dialog.findViewById(R.id.customDialogSubmit);
                 final EditText feetInput = (EditText) dialog.findViewById(R.id.feetInput);
                 final EditText inchesInput = (EditText) dialog.findViewById(R.id.inchesInput);
+                feetInput.setInputType(InputType.TYPE_CLASS_NUMBER);
+                inchesInput.setInputType(InputType.TYPE_CLASS_NUMBER);
 
                 //initialize input fields with current user's height information
                 feetInput.setText("" +uInfo.getHeight()/12);
@@ -236,11 +240,16 @@ public class PersonalInfoActivity extends AppCompatActivity {
                 dialogSubmitButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        int feet = Integer.parseInt(feetInput.getText().toString());
-                        int inches = Integer.parseInt(inchesInput.getText().toString());
-                        int height = (feet*12) + inches; //height is saved as total number of inches
-                        myRef.child("users").child(userID).child("height").setValue(height);
-                        dialog.dismiss();
+                        if(feetInput.getText().toString().equals("") || inchesInput.getText().toString().equals("")){
+                            Toast.makeText(PersonalInfoActivity.this, "You Entered Invalid Input", Toast.LENGTH_LONG).show();
+                        } else {
+                            int feet = Integer.parseInt(feetInput.getText().toString());
+                            int inches = Integer.parseInt(inchesInput.getText().toString());
+                            int height = (feet * 12) + inches; //height is saved as total number of inches
+                            userRef.child("height").setValue(height);
+                            Toast.makeText(PersonalInfoActivity.this, "Height Updated", Toast.LENGTH_LONG).show();
+                            dialog.dismiss();
+                        }
                     }
                 });
                 dialog.show(); // show dialog
@@ -259,7 +268,8 @@ public class PersonalInfoActivity extends AppCompatActivity {
                 Button dialogSubmitButton = (Button) dialog.findViewById(R.id.customDialogSubmit);
                 final EditText weightInput = (EditText) dialog.findViewById(R.id.weightInput);
 
-                weightInput.setText("" + uInfo.getWeight()); //initalize default value as user's current weight
+                weightInput.setInputType(InputType.TYPE_CLASS_NUMBER);
+                weightInput.setText(""); //initalize default value as user's current weight
                 //close
                 dialogCancelButton.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -272,9 +282,14 @@ public class PersonalInfoActivity extends AppCompatActivity {
                 dialogSubmitButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        int weight = Integer.parseInt(weightInput.getText().toString());
-                        myRef.child("users").child(userID).child("weight").setValue(weight);
-                        dialog.dismiss();
+                                if(weightInput.getText().toString().equals("")) {
+                                    Toast.makeText(PersonalInfoActivity.this, "You Entered Invalid Input", Toast.LENGTH_LONG).show();
+                                } else {
+                                    int weight = Integer.parseInt(weightInput.getText().toString());
+                                    userRef.child("weight").setValue(weight);
+                                    Toast.makeText(PersonalInfoActivity.this, "Weight Updated", Toast.LENGTH_LONG).show();
+                                    dialog.dismiss();
+                                }
                     }
                 });
                 dialog.show(); //show dialog
@@ -289,45 +304,52 @@ public class PersonalInfoActivity extends AppCompatActivity {
      * @param dataSnapshot 'snapshot' of entire database
      */
     private void showData(DataSnapshot dataSnapshot) {
-        DataSnapshot d = dataSnapshot.child("users");
+        DataSnapshot d = dataSnapshot.child("users").child(userID);
         emailView.setText(user.getEmail());
 
         //handling for when users are created with no personal info.
-        if(!(d.child(userID).hasChild("username"))) {
+        if(!(d.hasChild("username"))) {
             usernameView.setText("Add Username!");
         }
-        if(!(d.child(userID).hasChild("age"))) {
+        if(!(d.hasChild("age"))) {
             ageView.setText("Add your age!");
         }
-        if(!(d.child(userID).hasChild("gender"))) {
+        if(!(d.hasChild("gender"))) {
             genderView.setText("Add gender!");
         }
-        if(!(d.child(userID).hasChild("weight"))) {
+        if(!(d.hasChild("weight"))) {
             weightView.setText("Add weight!");
         }
-        if(!(d.child(userID).hasChild("height"))) {
+        if(!(d.hasChild("height"))) {
             heightView.setText("Add height!");
         }
 
-        if(d.child(userID).hasChildren()) {
+        if(d.hasChildren()) {
             uInfo = new User();
             //set username
-            uInfo.setUsername(d.child(userID).getValue(User.class).getUsername().toString());
+            uInfo.setUsername(d.getValue(User.class).getUsername());
             //set age
-            uInfo.setAge(d.child(userID).getValue(User.class).getAge());
+            uInfo.setdob(d.getValue(User.class).getdob());
             //set gender
-            uInfo.setGender(d.child(userID).getValue(User.class).getGender());
+            uInfo.setGender(d.getValue(User.class).getGender());
             //set height
-            uInfo.setHeight(d.child(userID).getValue(User.class).getHeight());
+            uInfo.setHeight(d.getValue(User.class).getHeight());
             //set weight
-            uInfo.setWeight(d.child(userID).getValue(User.class).getWeight());
+            uInfo.setWeight(d.getValue(User.class).getWeight());
 
             //update text displays
             usernameView.setText(uInfo.getUsername());
-            ageView.setText("" + uInfo.getAge());
+            ageView.setText(uInfo.getdob());
             genderView.setText(uInfo.getGender());
             heightView.setText(((uInfo.getHeight() / 12) + "' " + uInfo.getHeight() % 12 + "\""));
             weightView.setText(uInfo.getWeight() + " lbs.");
+
+            DateTime date = DateTime.parse(uInfo.getdob());
+            int mYear = date.getYear();
+            String month = new DateFormatSymbols().getMonths()[date.getMonthOfYear()-1];
+            int mDay = date.getDayOfMonth();
+
+            ageView.setText(month + " " + mDay + ", " + mYear);
         }
     }
 }

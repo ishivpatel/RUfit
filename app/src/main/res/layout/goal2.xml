@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/secondGoal"
     android:layout_width="fill_parent"
-    android:layout_height="150dp"
+    android:layout_height="125dp"
     android:padding="6dp">
 
     <ImageView
@@ -30,7 +30,7 @@
     <TextView
         android:id="@+id/firstLine2"
         android:layout_width="fill_parent"
-        android:layout_height="50dp"
+        android:layout_height="30dp"
         android:gravity="center_vertical"
         android:textSize="16sp"
         android:layout_toEndOf="@+id/icon2"

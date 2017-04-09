@@ -15,11 +15,12 @@
         <item
             android:id="@+id/add_shoe"
             android:icon="@drawable/shoe"
-            android:title="Add Shoes" />
-        <item
+            android:title="Shoes" />
+<!--        <item
             android:id="@+id/leaderboard"
             android:icon="@drawable/leaderboard"
             android:title="Leaderboard" />
+-->
         <item
             android:id="@+id/goals"
             android:icon="@drawable/goals"

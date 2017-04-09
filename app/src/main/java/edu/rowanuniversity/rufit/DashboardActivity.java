@@ -24,6 +24,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import edu.rowanuniversity.rufit.rufitObjects.Goal;
+import edu.rowanuniversity.rufit.rufitObjects.User;
 
 public class DashboardActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -33,6 +34,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     TextView drawerusername;
     CardView goalsCard,recentRunCard, startRunCard;
     FirebaseUser user;
+    User currentUser;
     final String ROOT = "users";
     String text = "Welcome!";
     Toolbar toolbar;
@@ -88,7 +90,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         user = auth.getCurrentUser();
         //Unique UUID For each user for Database
         myRef  = database.getReference(ROOT).child(user.getUid());
-        drawerusername.setText(user.getEmail());
+        drawerusername.setText(currentUser == null ? "Welcome" : currentUser.getUsername());
     }
 
     public void onResume(){
@@ -113,13 +115,15 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             /*Intent intent = new Intent(this, AddWorkoutManually.class);
             startActivity(intent);*/
         } else if (id == R.id.add_shoe) {
+            Intent intent = new Intent(this, ShoeActivity.class);
+            startActivity(intent);
 
 
+        } //else if (id == R.id.leaderboard) {
 
-        } else if (id == R.id.leaderboard) {
 
-
-        } else if (id == R.id.goals) {
+        //}
+        else if (id == R.id.goals) {
             Intent intent = new Intent(this, GoalsActivity.class);
             startActivity(intent);
         }else if(id == R.id.personalInfo){
@@ -149,7 +153,12 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
      * //TODO : populate dashboard with user data
      */
     public void updateDashboardData(DataSnapshot d) {
+        currentUser = new User();
+        currentUser.setUsername(d.getValue(User.class).getUsername());
+        //...to be continued if more data necessary
+
         String goals = "goals";
+
         //User can click card to quickstart new run
         CardView startRunCard = (CardView) findViewById(R.id.cardStartRun);
 

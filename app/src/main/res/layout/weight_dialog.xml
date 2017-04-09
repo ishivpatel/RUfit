@@ -20,7 +20,7 @@
 
         <EditText
             android:id="@+id/weightInput"
-            android:layout_width="60sp"
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:layout_marginRight="20sp"
             android:text="" />
