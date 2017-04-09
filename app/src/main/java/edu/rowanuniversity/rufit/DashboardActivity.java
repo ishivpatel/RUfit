@@ -154,47 +154,60 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
      * Populates user's dashboard with their personal information to cards
      * //TODO : populate dashboard with user data
      */
-    public void updateDashboardData(DataSnapshot d) {
-        currentUser = new User();
-        currentUser.setUsername(d.getValue(User.class).getUsername());
-        //...to be continued if more data necessary
-
-        String goals = "goals";
+    private void updateDashboardData(DataSnapshot d) {
+        currentUser = d.getValue(User.class);
+        updateGoalsCard(d);
 
         //User can click card to quickstart new run
         CardView startRunCard = (CardView) findViewById(R.id.cardStartRun);
-
-        //Components for 1st goal progress
-        ProgressBar goalBar1 = (ProgressBar) findViewById(R.id.goalBar1);
-        TextView userGoal1 = (TextView) findViewById(R.id.goal1);
-        TextView userGoalPercent1 = (TextView) findViewById(R.id.goalPercent1);
-        //Components for 2st goal progress
-        ProgressBar goalBar2 = (ProgressBar) findViewById(R.id.goalBar2);
-        TextView userGoal2 = (TextView) findViewById(R.id.goal2);
-        TextView userGoalPercent2 = (TextView) findViewById(R.id.goalPercent2);
-
-        Goal userGoals = d.child(goals).getValue(Goal.class);
-        if (userGoals.getRunsPerWeekTarget() > 0) {
-            userGoal1.setText("Runs Per Week Progress:");
-            int percent1 = (userGoals.getRunsPerWeekActual() * 100) / userGoals.getRunsPerWeekTarget();
-            userGoalPercent1.setText("" + percent1 + "%");
-            goalBar1.setProgress(percent1);
-        } else {
-            RelativeLayout r1 = (RelativeLayout) findViewById(R.id.r1);
-            r1.setVisibility(View.GONE);
-        }
-
-        if(userGoals.getMilesPerWeekTarget()>0) {
-            userGoal2.setText("Weekly Mileage Progress:");
-            int percent2 = (userGoals.getMilesPerWeekActual() * 100) / userGoals.getMilesPerWeekTarget();
-            userGoalPercent2.setText("" + percent2 + "%");
-            goalBar2.setProgress(percent2);
-        } else {
-            RelativeLayout r2 = (RelativeLayout) findViewById(R.id.r2);
-            r2.setVisibility(View.GONE);
-        }
-
     }
+
+    private void updateGoalsCard(DataSnapshot d) {
+        RelativeLayout r1 = (RelativeLayout) findViewById(R.id.r1);
+        RelativeLayout r2 = (RelativeLayout) findViewById(R.id.r2);
+        TextView noGoal = (TextView) findViewById(R.id.noGoalGreeting);
+
+        if(!(d.child("goals").exists())){
+            noGoal.setVisibility(View.VISIBLE);
+            r1.setVisibility(View.GONE);
+            r2.setVisibility(View.GONE);
+        } else {
+            currentUser.setGoals(d.getValue(User.class).getGoals());
+            Goal userGoals = currentUser.getGoals();
+            if (!(userGoals.getMilesPerWeekTarget() > 0) || !(userGoals.getRunsPerWeekTarget() > 0)) {
+                noGoal.setVisibility(View.VISIBLE);
+            }
+
+            //Components for 1st goal progress
+            ProgressBar goalBar1 = (ProgressBar) findViewById(R.id.goalBar1);
+            TextView userGoal1 = (TextView) findViewById(R.id.goal1);
+            TextView userGoalPercent1 = (TextView) findViewById(R.id.goalPercent1);
+            //Components for 2st goal progress
+            ProgressBar goalBar2 = (ProgressBar) findViewById(R.id.goalBar2);
+            TextView userGoal2 = (TextView) findViewById(R.id.goal2);
+            TextView userGoalPercent2 = (TextView) findViewById(R.id.goalPercent2);
+
+            //Goal userGoals = d.child("goals").getValue(Goal.class);
+            if (userGoals.getRunsPerWeekTarget() > 0) {
+                userGoal1.setText("Runs Per Week Progress:");
+                int percent1 = (userGoals.getRunsPerWeekActual() * 100) / userGoals.getRunsPerWeekTarget();
+                userGoalPercent1.setText("" + percent1 + "%");
+                goalBar1.setProgress(percent1);
+            } else {
+                r1.setVisibility(View.GONE);
+            }
+
+            if (userGoals.getMilesPerWeekTarget() > 0) {
+                userGoal2.setText("Weekly Mileage Progress:");
+                int percent2 = (userGoals.getMilesPerWeekActual() * 100) / userGoals.getMilesPerWeekTarget();
+                userGoalPercent2.setText("" + percent2 + "%");
+                goalBar2.setProgress(percent2);
+            } else {
+                r2.setVisibility(View.GONE);
+            }
+        }
+    }
+
 
     public void setCardActions () {
         startRunCard = (CardView) findViewById(R.id.cardStartRun);

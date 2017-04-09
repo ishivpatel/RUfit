@@ -60,8 +60,8 @@
         android:layout_gravity="center"
         android:gravity="center"
         android:visibility="gone"
-        android:text=""
-        android:textSize="24dp"
+        android:text="You haven't added any shoes yet!"
+        android:textSize="18dp"
         android:textColor="@color/gray_light"/>
 
     <android.support.design.widget.FloatingActionButton

@@ -172,7 +172,7 @@ public class GoalsActivity extends AppCompatActivity {
         DataSnapshot d = dataSnapshot.child("goals");
         userGoals = new Goal();
         if(d.getValue() == null) { //User has set no goals
-            goalGreeting.setText("Try setting a few goals !");
+            goalGreeting.setText("You don't have any goals set yet!");
         } else {                        //Initialize local Goal object to represent Goal data stored in db
             goalGreeting.setVisibility(View.GONE);
             userGoals.setDaysUntilRace(d.getValue(Goal.class).getDateOfRace());

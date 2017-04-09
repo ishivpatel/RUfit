@@ -25,15 +25,6 @@ public class User {
 
 
     public User() {
-        username = "";
-        dob = "";
-        gender = "";
-        height = 0;
-        weight = 0;
-        goals = new Goal();
-        records = new Record();
-        runs = new ArrayList<Run>();
-        shoes = new HashMap<String,Shoe>();
 
     }
 
@@ -72,9 +63,9 @@ public class User {
         this.height = height;
     }
 
-    public String getdob() { return dob;}
+    public String getDob() { return dob;}
 
-    public void setdob(String dob) {
+    public void setDob(String dob) {
         this.dob = dob;
     }
 
@@ -88,5 +79,8 @@ public class User {
 
     public Goal getGoals() {
         return goals;
+    }
+
+    public void setGoals(Goal goals) { this.goals = goals;
     }
 }

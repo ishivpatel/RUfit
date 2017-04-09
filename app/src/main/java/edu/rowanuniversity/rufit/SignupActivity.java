@@ -63,7 +63,7 @@ public class SignupActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                String name = inputName.getText().toString();
+                final String name = inputName.getText().toString();
                 String email = inputEmail.getText().toString().trim();
                 String password = inputPassword.getText().toString().trim();
 
@@ -94,7 +94,6 @@ public class SignupActivity extends AppCompatActivity {
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 Toast.makeText(SignupActivity.this, "createUserWithEmail:onComplete:" + task.isSuccessful(), Toast.LENGTH_SHORT).show();
                                 if (task.isSuccessful()) {
-                                   //TODO - prompt user to input initial settings and personal info
                                     //database instance
                                     FirebaseDatabase database = FirebaseDatabase.getInstance();
                                     DatabaseReference myRef = database.getReference();
@@ -103,9 +102,15 @@ public class SignupActivity extends AppCompatActivity {
                                     auth = FirebaseAuth.getInstance();
                                     FirebaseUser user = auth.getCurrentUser();
                                     String userID = user.getUid();
+                                    myRef.child("users")
+                                            .child(userID)
+                                            .setValue(new User());
+                                    myRef.child("users")
+                                            .child(userID)
+                                            .child("username")
+                                            .setValue(name);
                                     startActivity(new Intent(SignupActivity.this, PersonalInfoActivity.class));
 
-                                    myRef.child("users").child(userID).setValue(new User());
                                     finish();
                                 }
                             }

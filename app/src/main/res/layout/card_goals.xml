@@ -2,7 +2,7 @@
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
 android:id="@+id/cardGoals"
 android:layout_width="match_parent"
-android:layout_height="175dp"
+android:layout_height="wrap_content"
 android:layout_margin="8dp"
     android:elevation="2dp">
 
@@ -21,6 +21,19 @@ android:layout_margin="8dp"
             android:textColor="#222"
             android:textSize="22sp"
             android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/noGoalGreeting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_below="@id/goalsCardTitle"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="10dp"
+            android:gravity="center"
+            android:text="You don't have any goals set yet !"
+            android:visibility="gone"/>
 
         <RelativeLayout
             android:id="@+id/r1"
@@ -71,7 +84,8 @@ android:layout_margin="8dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/r1"
-            android:layout_marginTop="10dp">
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp">
 
             <ProgressBar
                 android:id="@+id/goalBar2"

@@ -47,7 +47,7 @@ public class PersonalInfoActivity extends AppCompatActivity {
     private FirebaseAuth auth;
     private FirebaseUser user;
     private ImageView backbutton;
-    DatabaseReference myRef, userRef;
+    DatabaseReference myRef;
     private String userID;
     final Context context = this;
     private User uInfo; //Object holding user's current personal information
@@ -92,8 +92,7 @@ public class PersonalInfoActivity extends AppCompatActivity {
 
         //database instance
         database = FirebaseDatabase.getInstance();
-        myRef = database.getReference();
-        userRef = myRef.child("users").child(userID);
+        myRef = database.getReference().child("users").child(userID);
 
 
         //Updates display components when database reference is changed
@@ -128,8 +127,8 @@ public class PersonalInfoActivity extends AppCompatActivity {
                 dialogSubmitButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        String input = editText.getText().toString();
-                        userRef.child("username").setValue(input);
+                        uInfo.setUsername(editText.getText().toString());
+                        myRef.setValue(uInfo);
                         Toast.makeText(PersonalInfoActivity.this, "Username Updated", Toast.LENGTH_LONG).show();
                         dialog.dismiss();
                     }
@@ -147,8 +146,8 @@ public class PersonalInfoActivity extends AppCompatActivity {
                 int mMonth = c.get(Calendar.MONTH);
                 int mDay = c.get(Calendar.DAY_OF_MONTH);
 
-                if(uInfo.getdob() != null && !uInfo.getdob().equals("")) {
-                    DateTime date = DateTime.parse(uInfo.getdob());
+                if(uInfo.getDob() != null && !uInfo.getDob().equals("")) {
+                    DateTime date = DateTime.parse(uInfo.getDob());
                     mYear = date.getYear();
                     mMonth = date.getMonthOfYear()-1; //wtf does month indexing start at zero.
                     mDay = date.getDayOfMonth();
@@ -160,7 +159,8 @@ public class PersonalInfoActivity extends AppCompatActivity {
                             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                                 String pickedDate = "" + year + "-" + ++monthOfYear + "-" + dayOfMonth;
                                 Toast.makeText(PersonalInfoActivity.this, "Date of Birth Updated", Toast.LENGTH_LONG).show();
-                                userRef.child("dob").setValue(pickedDate);
+                                uInfo.setDob(pickedDate);
+                                myRef.setValue(uInfo);
                             }
                         }, mYear, mMonth, mDay);
                 datePickerDialog.show();
@@ -198,8 +198,8 @@ public class PersonalInfoActivity extends AppCompatActivity {
                 dialogSubmitButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        String gender = gPicker.getValue() == 0 ? "Male" : "Female";
-                        userRef.child("gender").setValue(gender);
+                        uInfo.setGender(gPicker.getValue() == 0 ? "Male" : "Female");
+                        myRef.setValue(uInfo);
                         Toast.makeText(PersonalInfoActivity.this, "Gender Updated", Toast.LENGTH_LONG).show();
                         dialog.dismiss();
                     }
@@ -246,7 +246,8 @@ public class PersonalInfoActivity extends AppCompatActivity {
                             int feet = Integer.parseInt(feetInput.getText().toString());
                             int inches = Integer.parseInt(inchesInput.getText().toString());
                             int height = (feet * 12) + inches; //height is saved as total number of inches
-                            userRef.child("height").setValue(height);
+                            uInfo.setHeight(height);
+                            myRef.setValue(uInfo);
                             Toast.makeText(PersonalInfoActivity.this, "Height Updated", Toast.LENGTH_LONG).show();
                             dialog.dismiss();
                         }
@@ -286,7 +287,7 @@ public class PersonalInfoActivity extends AppCompatActivity {
                                     Toast.makeText(PersonalInfoActivity.this, "You Entered Invalid Input", Toast.LENGTH_LONG).show();
                                 } else {
                                     int weight = Integer.parseInt(weightInput.getText().toString());
-                                    userRef.child("weight").setValue(weight);
+                                    myRef.child("weight").setValue(weight);
                                     Toast.makeText(PersonalInfoActivity.this, "Weight Updated", Toast.LENGTH_LONG).show();
                                     dialog.dismiss();
                                 }
@@ -304,52 +305,38 @@ public class PersonalInfoActivity extends AppCompatActivity {
      * @param dataSnapshot 'snapshot' of entire database
      */
     private void showData(DataSnapshot dataSnapshot) {
-        DataSnapshot d = dataSnapshot.child("users").child(userID);
         emailView.setText(user.getEmail());
 
-        //handling for when users are created with no personal info.
-        if(!(d.hasChild("username"))) {
-            usernameView.setText("Add Username!");
-        }
-        if(!(d.hasChild("age"))) {
-            ageView.setText("Add your age!");
-        }
-        if(!(d.hasChild("gender"))) {
-            genderView.setText("Add gender!");
-        }
-        if(!(d.hasChild("weight"))) {
-            weightView.setText("Add weight!");
-        }
-        if(!(d.hasChild("height"))) {
-            heightView.setText("Add height!");
-        }
 
-        if(d.hasChildren()) {
+
+        if(dataSnapshot.hasChildren()) {
             uInfo = new User();
+            uInfo = dataSnapshot.getValue(User.class);
             //set username
-            uInfo.setUsername(d.getValue(User.class).getUsername());
+           // uInfo.setUsername(dataSnapshot.getValue(User.class).getUsername());
             //set age
-            uInfo.setdob(d.getValue(User.class).getdob());
+           // uInfo.setDob(dataSnapshot.getValue(User.class).getDob());
             //set gender
-            uInfo.setGender(d.getValue(User.class).getGender());
+            //uInfo.setGender(dataSnapshot.getValue(User.class).getGender());
             //set height
-            uInfo.setHeight(d.getValue(User.class).getHeight());
+            //uInfo.setHeight(dataSnapshot.getValue(User.class).getHeight());
             //set weight
-            uInfo.setWeight(d.getValue(User.class).getWeight());
+            //uInfo.setWeight(dataSnapshot.getValue(User.class).getWeight());
 
             //update text displays
             usernameView.setText(uInfo.getUsername());
-            ageView.setText(uInfo.getdob());
+            ageView.setText(uInfo.getDob());
             genderView.setText(uInfo.getGender());
             heightView.setText(((uInfo.getHeight() / 12) + "' " + uInfo.getHeight() % 12 + "\""));
             weightView.setText(uInfo.getWeight() + " lbs.");
 
-            DateTime date = DateTime.parse(uInfo.getdob());
-            int mYear = date.getYear();
-            String month = new DateFormatSymbols().getMonths()[date.getMonthOfYear()-1];
-            int mDay = date.getDayOfMonth();
-
-            ageView.setText(month + " " + mDay + ", " + mYear);
+            if(uInfo.getDob() != null) {
+                DateTime date = DateTime.parse(uInfo.getDob());
+                int mYear = date.getYear();
+                String month = new DateFormatSymbols().getMonths()[date.getMonthOfYear() - 1];
+                int mDay = date.getDayOfMonth();
+                ageView.setText(month + " " + mDay + ", " + mYear);
+            }
         }
     }
 }
