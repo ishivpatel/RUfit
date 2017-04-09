@@ -14,5 +14,6 @@
     <string name="about_us_details">RUfit is a run tracking app.
                                     \n Track and log your Runs</string>
     <string name="about_label">About RUfit</string>
+    <string name="facebook_app_id">1406276819423761</string>
 
 </resources>

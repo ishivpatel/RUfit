@@ -11,10 +11,19 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
@@ -30,19 +39,33 @@ public class LoginActivity extends AppCompatActivity {
     private EditText inputEmail, inputPassword;
     private TextView signUpText;
     private FirebaseAuth auth;
+    public FirebaseAuth.AuthStateListener authListener;
     private Button btnLogin;
+    private LoginButton fbLogin;
+    private CallbackManager callbackManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.sign_in_activity);
         //Get Firebase auth instance
         auth = FirebaseAuth.getInstance();
 
+
+        authListener = new FirebaseAuth.AuthStateListener(){
+
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+
+            }
+        };
+        callbackManager = CallbackManager.Factory.create();
+        auth.addAuthStateListener(authListener);
+
+        //logout a user, before login
+        LoginManager.getInstance().logOut();
         if (auth.getCurrentUser() != null) {
-
-
-            //startActivity(new Intent(LoginActivity.this, DashboardActivity.class));
             finish();
         }
 
@@ -51,6 +74,26 @@ public class LoginActivity extends AppCompatActivity {
         inputPassword = (EditText) findViewById(R.id.user_password);
         btnLogin = (Button) findViewById(R.id.signin_button);
         signUpText = (TextView)  findViewById(R.id.sign_up_text);
+        fbLogin = (LoginButton) findViewById(R.id.fb_loginbutton);
+        fbLogin.setReadPermissions("email");
+        fbLogin.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                handelFacebookAccessToken(loginResult.getAccessToken());
+            }
+
+            @Override
+            public void onCancel() {
+
+            }
+
+            @Override
+            public void onError(FacebookException error) {
+
+            }
+        });
+
+
 
         signUpText.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,7 +129,8 @@ public class LoginActivity extends AppCompatActivity {
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (task.isSuccessful()) {
                                     //GOTO Dashboard
-                                    finish();
+                                    Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
+                                    startActivity(intent);
                                 }
                             }
                         }).addOnFailureListener(new OnFailureListener() {
@@ -102,8 +146,31 @@ public class LoginActivity extends AppCompatActivity {
                         }
                     }
                 });
+
             }
 
         });
+    }
+
+    private void handelFacebookAccessToken(AccessToken accessToken) {
+        AuthCredential credential = FacebookAuthProvider.getCredential(accessToken.getToken());
+        auth.signInWithCredential(credential)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if(! task.isSuccessful()){
+                            Toast.makeText(LoginActivity.this, "Facebook Authentication Failed", Toast.LENGTH_SHORT).show();
+                        }else{
+                            Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
+                            startActivity(intent);
+                        }
+                    }
+                });
+
+    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data){
+        super.onActivityResult(requestCode, resultCode, data);
+        callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 }

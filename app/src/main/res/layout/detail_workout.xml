@@ -20,14 +20,6 @@
             android:src="@drawable/rufit_logo_nbg"
             />
 
-        <ImageView
-            android:layout_width="20dp"
-            android:layout_height="35dp"
-            android:layout_gravity="start"
-            android:id="@+id/backbutton_detail_workout"
-            android:src="@drawable/back_button"
-            />
-
     </android.support.v7.widget.Toolbar>
 
     <RelativeLayout
@@ -36,7 +28,8 @@
         android:background="@color/Red"
         android:layout_below="@+id/workout_details_topToolBar"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
+        android:layout_alignParentStart="true"
+        android:id="@+id/toplayout_workoutdetails">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -51,6 +44,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/duration_workout"
             android:text="01:20:15"
+            android:background="@android:color/transparent"
             android:textColor="@color/AntiqueWhite"
             android:textSize="35sp"
             android:textAlignment="center"
@@ -92,6 +86,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/calories_workout"
             android:text="145"
+            android:background="@android:color/transparent"
             android:textColor="@color/AntiqueWhite"
             android:textSize="35sp"
             android:textAlignment="center"
@@ -117,6 +112,7 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/speed_workout"
                     android:text="25"
+                    android:background="@android:color/transparent"
                     android:textColor="@color/AntiqueWhite"
                     android:textSize="35sp"
                     android:textAlignment="center"
@@ -142,6 +138,7 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/distance_workout"
                     android:text="4.5"
+                    android:background="@android:color/transparent"
                     android:textColor="@color/AntiqueWhite"
                     android:textSize="35sp"
                     android:textAlignment="center"
@@ -150,9 +147,104 @@
             </LinearLayout>
         </LinearLayout>
 
-
-
     </RelativeLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Notes"
+        android:textSize="22sp"
+        android:layout_below="@id/toplayout_workoutdetails"
+        android:textColor="@color/AntiqueWhite"
+        android:id="@+id/note_label"
+        android:textStyle="bold"
+        android:textAlignment="center"
+        android:layout_marginLeft="5dp"
+        android:layout_marginStart="5dp"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:text="First Run using the app"
+        android:background="@android:color/transparent"
+        android:textSize="20sp"
+        android:textColor="@color/AntiqueWhite"
+        android:layout_below="@+id/note_label"
+        android:id="@+id/note_value"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="5dp"
+        android:textStyle="italic"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:text="Shoe"
+        android:textSize="22sp"
+        android:textColor="@color/AntiqueWhite"
+        android:id="@+id/shoe_label"
+        android:textStyle="bold"
+        android:layout_marginLeft="5dp"
+        android:layout_marginStart="5dp"
+        android:layout_below="@+id/note_value"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:text="Adidas Yeezy 350 v2"
+        android:background="@android:color/transparent"
+        android:textSize="20sp"
+        android:textColor="@color/AntiqueWhite"
+        android:layout_below="@+id/shoe_label"
+        android:id="@+id/shoe_value"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="5dp"
+        android:textStyle="italic"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:text="Feel"
+        android:textSize="22sp"
+        android:textColor="@color/AntiqueWhite"
+        android:id="@+id/feel_label"
+        android:textStyle="bold"
+        android:layout_marginLeft="5dp"
+        android:layout_marginStart="5dp"
+        android:layout_below="@+id/shoe_value"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:text="Happy"
+        android:background="@android:color/transparent"
+        android:textSize="20sp"
+        android:textColor="@color/AntiqueWhite"
+        android:layout_below="@+id/feel_label"
+        android:id="@+id/feel_value"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="5dp"
+        android:textStyle="italic"/>
+    <Button
+        android:layout_width="120dp"
+        android:layout_height="45dp"
+        android:layout_gravity="start"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/backbutton_detail_workout"
+        android:background="@drawable/rounded_button"
+        android:text="Done"
+        android:src="@drawable/back_button"
+        android:layout_margin="5dp"
+        />
 
 
 </RelativeLayout>

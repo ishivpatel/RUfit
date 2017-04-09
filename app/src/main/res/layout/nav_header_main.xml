@@ -28,7 +28,7 @@
         android:id="@+id/drawer_user_name"
         android:text="user@rufit.com"
         android:textAlignment="center"
-        android:textSize="30sp"
+        android:textSize="20sp"
         android:textStyle="bold|italic"
         android:textColor="@color/rowanYellow"
         />

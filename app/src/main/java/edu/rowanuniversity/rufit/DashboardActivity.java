@@ -119,11 +119,13 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             startActivity(intent);
 
 
-        } //else if (id == R.id.leaderboard) {
+        } else if (id == R.id.leaderboard) {
 
 
-        //}
+        }
+
         else if (id == R.id.goals) {
+
             Intent intent = new Intent(this, GoalsActivity.class);
             startActivity(intent);
         }else if(id == R.id.personalInfo){

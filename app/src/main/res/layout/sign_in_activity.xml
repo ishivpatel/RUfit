@@ -66,6 +66,15 @@
             android:gravity="center"
             android:textColor="@color/GhostWhite"
             android:textSize="16sp"/>
+        <com.facebook.login.widget.LoginButton
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/fb_loginbutton"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:layout_gravity="center"/>
 
     </LinearLayout>
 </ScrollView>
