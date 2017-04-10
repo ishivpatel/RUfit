@@ -21,9 +21,13 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Objects;
 
 import edu.rowanuniversity.rufit.rufitObjects.Shoe;
 
@@ -36,17 +40,20 @@ import edu.rowanuniversity.rufit.rufitObjects.Shoe;
  *
  * TODO : Slight upgrade would to keep track of number of runs user has linked with
  *      a certain shoe and also total duration of time spent running with that shoe.
+ * TODO: Bug when your deleting the last shoe on your list, it doesnt disappear from display
+ *      but is removed from db
  */
 
 public class ShoeActivity extends AppCompatActivity implements RecyclerItemClickListener.OnItemClickListener{
 
+    private GenericTypeIndicator<HashMap<String,Shoe>> generic = new GenericTypeIndicator<HashMap<String,Shoe>>() {};
     private HashMap<String,Shoe> userShoes;
     private ImageView backbutton;
     private ImageButton newShoe;
     private FirebaseDatabase database;
     private FirebaseAuth auth;
     private FirebaseUser user;
-    DatabaseReference myRef,db;
+    DatabaseReference myRef,db,shoeRef;
     private String userID;
 
     @Override
@@ -63,6 +70,7 @@ public class ShoeActivity extends AppCompatActivity implements RecyclerItemClick
         database = FirebaseDatabase.getInstance();
         db = database.getReference();
         myRef = db.child("users").child(userID);
+        shoeRef = myRef.child("shoes");
 
         //Set toolbar and back button
         Toolbar t = (Toolbar) findViewById(R.id.topToolBar);
@@ -86,7 +94,7 @@ public class ShoeActivity extends AppCompatActivity implements RecyclerItemClick
         });
 
         //Updates display components when database reference is changed
-        myRef.addValueEventListener(new ValueEventListener() {
+        shoeRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) { update(dataSnapshot);           }
             @Override
@@ -100,20 +108,17 @@ public class ShoeActivity extends AppCompatActivity implements RecyclerItemClick
      * @param dataSnapshot Snapshot of database
      */
     private void update(DataSnapshot dataSnapshot) {
-        DataSnapshot shoeRef = dataSnapshot.child("shoes");
-        userShoes = new HashMap<>();
+
+        userShoes = dataSnapshot.getValue(generic);
+
         //If user hasn't added any shoes display greeting
-        if (shoeRef.getValue() == null) {
-            findViewById(R.id.shoeGreeting).setVisibility(View.VISIBLE);
+        if (dataSnapshot.exists() && !(userShoes == null)) {
+            findViewById(R.id.shoeGreeting).setVisibility(View.GONE);
+             //initialize views
         } else {
-            for(DataSnapshot d : shoeRef.getChildren()) { //iterates through shoes
-                Shoe s = new Shoe();
-                s.setName(d.getValue(Shoe.class).getName());
-                s.setMileage(d.getValue(Shoe.class).getMileage());
-                userShoes.put(d.getKey(),s); // updates local reference to match db
-            }
-            initViews(); //initialize views
+            userShoes = new HashMap<>();
         }
+        initViews();
     }
 
     /**
@@ -145,7 +150,7 @@ public class ShoeActivity extends AppCompatActivity implements RecyclerItemClick
 
         final TextView name = new TextView(this);
         final EditText input = new EditText(this);
-        input.setLines(1);
+        input.setMaxLines(1);
 
         //Layout within dialog box
         LinearLayout l = new LinearLayout(this);
@@ -161,8 +166,10 @@ public class ShoeActivity extends AppCompatActivity implements RecyclerItemClick
                 if(input.getText().toString().equals("")) { //User submits empty input
                     Toast.makeText(ShoeActivity.this,"Please Enter Valid Name", Toast.LENGTH_LONG).show();
                 } else {
+                    //String newRef = shoeRef.push().getKey();
                     Shoe newShoe = new Shoe(input.getText().toString()); //create new shoe
-                    myRef.child("shoes").push().setValue(newShoe); // add shoe to database
+                    //userShoes.put(newRef, newShoe);
+                    shoeRef.push().setValue(newShoe); // add shoe to database
                     Toast.makeText(ShoeActivity.this,"Shoe Added", Toast.LENGTH_LONG).show();
                 }
             }
@@ -188,7 +195,7 @@ public class ShoeActivity extends AppCompatActivity implements RecyclerItemClick
         final TextView shoeText = (TextView)childView.findViewById(R.id.shoe_name);
         final EditText input = new EditText(this) ;
         final String shoe = shoeText.getText().toString();
-        input.setLines(1);
+        input.setMaxLines(1);
         input.setText(shoe);
 
         AlertDialog.Builder a  = new AlertDialog.Builder(ShoeActivity.this);
@@ -203,7 +210,8 @@ public class ShoeActivity extends AppCompatActivity implements RecyclerItemClick
                     if(currShoe.getName().equals(shoe)) {
                         Shoe s = new Shoe(input.getText().toString());
                         s.setMileage(currShoe.getMileage());
-                        myRef.child("shoes").child(key).setValue(s);
+                        userShoes.put(key,s);
+                        shoeRef.setValue(userShoes);
                         Toast.makeText(ShoeActivity.this,shoe + " Updated", Toast.LENGTH_LONG).show();
                     }
                 }
@@ -238,12 +246,14 @@ public class ShoeActivity extends AppCompatActivity implements RecyclerItemClick
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 //Iterates over shoes and checks for matching user selected item
-                for(String key : userShoes.keySet()) {
-                    Shoe currShoe = userShoes.get(key);
-                    if(currShoe.getName().equals(shoe)) {
-                        myRef.child("shoes").child(key).removeValue();
-                        Toast.makeText(ShoeActivity.this,shoe + " Removed", Toast.LENGTH_LONG).show();
-                    }
+                Iterator it = userShoes.entrySet().iterator();
+                while (it.hasNext()) {
+                    Map.Entry<String,Object> pair = (Map.Entry)it.next();
+                        if(userShoes.get(pair.getKey()).getName().equals(shoe)) {
+                            it.remove();
+                            shoeRef.setValue(userShoes);
+                            Toast.makeText(ShoeActivity.this,shoe + " Removed", Toast.LENGTH_LONG).show();
+                        } // avoids a ConcurrentModificationException
                 }
             }
         });

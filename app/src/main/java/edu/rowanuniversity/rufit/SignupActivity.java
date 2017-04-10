@@ -21,6 +21,13 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.HashMap;
+
+import edu.rowanuniversity.rufit.rufitObjects.Goal;
+import edu.rowanuniversity.rufit.rufitObjects.Info;
+import edu.rowanuniversity.rufit.rufitObjects.Record;
+import edu.rowanuniversity.rufit.rufitObjects.Run;
+import edu.rowanuniversity.rufit.rufitObjects.Shoe;
 import edu.rowanuniversity.rufit.rufitObjects.User;
 
 /**
@@ -102,13 +109,19 @@ public class SignupActivity extends AppCompatActivity {
                                     auth = FirebaseAuth.getInstance();
                                     FirebaseUser user = auth.getCurrentUser();
                                     String userID = user.getUid();
+
+                                    User<String,Object> h = new User<>();
+                                    Info i =new Info();
+                                    i.setUsername(name);
+                                    h.put("info", i);
+                                    h.put("goals", new Goal());
+                                    h.put("shoes", new HashMap<String,Shoe>());
+                                    h.put("runs", new HashMap<String,Run>());
+                                    h.put("records", new Record());
+
                                     myRef.child("users")
                                             .child(userID)
-                                            .setValue(new User());
-                                    myRef.child("users")
-                                            .child(userID)
-                                            .child("username")
-                                            .setValue(name);
+                                            .setValue(h);
                                     startActivity(new Intent(SignupActivity.this, PersonalInfoActivity.class));
 
                                     finish();

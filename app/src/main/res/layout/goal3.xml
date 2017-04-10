@@ -3,7 +3,8 @@
     android:id="@+id/thirdGoal"
     android:layout_width="fill_parent"
     android:layout_height="125dp"
-    android:padding="6dp" >
+    android:padding="6dp"
+    android:visibility="gone">
 
     <ImageView
         android:id="@+id/icon3"

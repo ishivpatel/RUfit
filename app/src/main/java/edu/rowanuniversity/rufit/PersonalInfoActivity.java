@@ -30,6 +30,7 @@ import org.joda.time.DateTime;
 import java.text.DateFormatSymbols;
 import java.util.Calendar;
 
+import edu.rowanuniversity.rufit.rufitObjects.Info;
 import edu.rowanuniversity.rufit.rufitObjects.User;
 
 /**
@@ -50,7 +51,7 @@ public class PersonalInfoActivity extends AppCompatActivity {
     DatabaseReference myRef;
     private String userID;
     final Context context = this;
-    private User uInfo; //Object holding user's current personal information
+    private Info uInfo; //Object holding user's current personal information
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,7 +93,7 @@ public class PersonalInfoActivity extends AppCompatActivity {
 
         //database instance
         database = FirebaseDatabase.getInstance();
-        myRef = database.getReference().child("users").child(userID);
+        myRef = database.getReference().child("users").child(userID).child("info");
 
 
         //Updates display components when database reference is changed
@@ -286,8 +287,8 @@ public class PersonalInfoActivity extends AppCompatActivity {
                                 if(weightInput.getText().toString().equals("")) {
                                     Toast.makeText(PersonalInfoActivity.this, "You Entered Invalid Input", Toast.LENGTH_LONG).show();
                                 } else {
-                                    int weight = Integer.parseInt(weightInput.getText().toString());
-                                    myRef.child("weight").setValue(weight);
+                                    uInfo.setWeight(Integer.parseInt(weightInput.getText().toString()));
+                                    myRef.setValue(uInfo);
                                     Toast.makeText(PersonalInfoActivity.this, "Weight Updated", Toast.LENGTH_LONG).show();
                                     dialog.dismiss();
                                 }
@@ -310,8 +311,8 @@ public class PersonalInfoActivity extends AppCompatActivity {
 
 
         if(dataSnapshot.hasChildren()) {
-            uInfo = new User();
-            uInfo = dataSnapshot.getValue(User.class);
+            uInfo = new Info();
+            uInfo = dataSnapshot.getValue(Info.class);
             //set username
            // uInfo.setUsername(dataSnapshot.getValue(User.class).getUsername());
             //set age

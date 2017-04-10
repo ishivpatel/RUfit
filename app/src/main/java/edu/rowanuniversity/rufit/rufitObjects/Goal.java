@@ -22,7 +22,6 @@ public class Goal {
         runsPerWeekTarget = dpwValue;
         milesPerWeekTarget = mpwValue;
         dateOfRace = durValue;
-        calculateDays();
         milesPerWeekActual = 0;
         runsPerWeekActual = 0;
     }
@@ -66,13 +65,13 @@ public class Goal {
      * Given today's date and date of event, calculates days remaining.
      */
     private void calculateDays () {
-        if(!(dateOfRace == null) && daysUntilRace >= 0 ) {
+        if(!(dateOfRace.isEmpty())) {
             LocalDate date1 = LocalDate.parse(dateOfRace);
             LocalDate date2 = LocalDate.now();
             Days d = Days.daysBetween(date2, date1);
-            daysUntilRace = d.getDays() ;
+            daysUntilRace = d.getDays();
         } else {
-            daysUntilRace= -1;
+            daysUntilRace = -1;
         }
     }
 }

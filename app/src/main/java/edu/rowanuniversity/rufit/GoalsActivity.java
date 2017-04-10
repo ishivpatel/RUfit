@@ -40,7 +40,7 @@ import edu.rowanuniversity.rufit.rufitObjects.Goal;
  * Purpose : Main activity for displaying and editting user's personal information
  * Last Update : 04.08.2017
  *
- * TODO : allow for addition of multiple days until race goals -- prolly not tho
+ * TODO : Calculate progress on each goal, especially the ones that depends on the RUN DATAAAAA
  */
 
 public class GoalsActivity extends AppCompatActivity {
@@ -51,10 +51,11 @@ public class GoalsActivity extends AppCompatActivity {
     private FirebaseAuth auth;
     private FirebaseUser user;
     private ImageView backbutton;
-    DatabaseReference myRef,goalRef;
+    DatabaseReference goalRef, myRef;
     Goal userGoals;
     private String userID;
     private int mYear, mMonth, mDay;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,9 +100,10 @@ public class GoalsActivity extends AppCompatActivity {
         goalRef = myRef.child("goals");
 
         //Updates display components when database reference is changed
-        myRef.addValueEventListener(new ValueEventListener() {
+        goalRef.addValueEventListener(new ValueEventListener() {
+        //goalRef.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) { update(dataSnapshot);           }
+            public void onDataChange(DataSnapshot dataSnapshot) {    update(dataSnapshot);}
             @Override
             public void onCancelled(DatabaseError databaseError) { }
         });
@@ -169,20 +171,18 @@ public class GoalsActivity extends AppCompatActivity {
      * @param dataSnapshot
      */
     private void update( DataSnapshot dataSnapshot) {
-        DataSnapshot d = dataSnapshot.child("goals");
         userGoals = new Goal();
-        if(d.getValue() == null) { //User has set no goals
-            goalGreeting.setText("You don't have any goals set yet!");
-        } else {                        //Initialize local Goal object to represent Goal data stored in db
+        userGoals.setMilesPerWeekTarget(Integer.parseInt(dataSnapshot.child("milesPerWeekTarget").getValue().toString()));
+        userGoals.setRunsPerWeekTarget(Integer.parseInt(dataSnapshot.child("runsPerWeekTarget").getValue().toString()));
+        userGoals.setDaysUntilRace(dataSnapshot.child("dateOfRace").getValue().toString());
+
+        //If user hasn't added any shoes display greeting
+        if (!(userGoals.getMilesPerWeekTarget() > 0 ||
+                userGoals.getRunsPerWeekTarget() > 0 ||
+                userGoals.getDaysUntilRace() >= 0)) {
             goalGreeting.setVisibility(View.GONE);
-            userGoals.setDaysUntilRace(d.getValue(Goal.class).getDateOfRace());
-            userGoals.setMilesPerWeekTarget(d.getValue(Goal.class).getMilesPerWeekTarget());
-            userGoals.setRunsPerWeekTarget(d.getValue(Goal.class).getRunsPerWeekTarget());
-            userGoals.setMilesPerWeekActual(d.getValue(Goal.class).getMilesPerWeekActual());
-            userGoals.setRunsPerWeekActual(d.getValue(Goal.class).getRunsPerWeekActual());
         }
         displayGoal(); //Displays update information for each goal
-
     }
 
     /**
@@ -193,19 +193,19 @@ public class GoalsActivity extends AppCompatActivity {
         if (userGoals.getRunsPerWeekTarget()  > 0) {
             TextView tv1 = (TextView) findViewById(R.id.firstLine);
             TextView tv2 = (TextView) findViewById(R.id.secondLine);
-            TextView percent1 = (TextView) findViewById(R.id.percent1) ;
+            TextView percent1 = (TextView) findViewById(R.id.percent1);
             ProgressBar pBar1 = (ProgressBar) findViewById(R.id.goalBar1);
 
-            int percent = (userGoals.getRunsPerWeekActual()*100)/userGoals.getRunsPerWeekTarget();
+            int percent = (userGoals.getRunsPerWeekActual() * 100) / userGoals.getRunsPerWeekTarget();
 
             tv1.setText("Runs Per Week :");
             tv2.setText("You have done " + userGoals.getRunsPerWeekActual() + " days of activity. \n" +
                     "Your goal is " + userGoals.getRunsPerWeekTarget() + ".");
-            percent1.setText(percent +"%");
+            percent1.setText(percent + "%");
 
             pBar1.setProgress(percent);
-
-        }else {
+            goalBlock1.setVisibility(View.VISIBLE); //Hide goal if user has not set it
+        } else {
             goalBlock1.setVisibility(View.GONE); //Hide goal if user has not set it
         }
 
@@ -213,7 +213,7 @@ public class GoalsActivity extends AppCompatActivity {
         if (userGoals.getMilesPerWeekTarget()  > 0) {
             TextView tv1 = (TextView) findViewById(R.id.firstLine2);
             TextView tv2 = (TextView) findViewById(R.id.secondLine2);
-            TextView percent2 = (TextView) findViewById(R.id.percent2) ;
+            TextView percent2 = (TextView) findViewById(R.id.percent2);
             ProgressBar pBar2 = (ProgressBar) findViewById(R.id.goalBar2);
 
             int percent = (userGoals.getMilesPerWeekActual()*100)/userGoals.getMilesPerWeekTarget();
@@ -224,18 +224,20 @@ public class GoalsActivity extends AppCompatActivity {
             percent2.setText(percent +"%");
             pBar2.setProgress(percent);
 
-        }else {
-            goalBlock2.setVisibility(View.GONE); //Hide goal is user has not set it
+            goalBlock2.setVisibility(View.VISIBLE); //Hide goal if user has not set it
+        } else {
+            goalBlock2.setVisibility(View.GONE);
         }
 
         //DAYS UNTIL UPCOMING RACE
-        if (userGoals.getDateOfRace() != null) {
+        if (userGoals.getDaysUntilRace() >= 0) {
             TextView tv1 = (TextView) findViewById(R.id.firstLine3);
             TextView tv2 = (TextView) findViewById(R.id.secondLine3);
             tv1.setText("Days Until Race :");
             tv2.setText("" + userGoals.getDaysUntilRace() + " days until your race !");
+            goalBlock3.setVisibility(View.VISIBLE); //Hide goal if user has not set it
         } else {
-            goalBlock3.setVisibility(View.GONE); //Hide goal is user has not set it
+            goalBlock3.setVisibility(View.GONE); //Hide goal if user has not set it
         }
     }
 
@@ -254,7 +256,7 @@ public class GoalsActivity extends AppCompatActivity {
         if(userGoals.getRunsPerWeekTarget() <= 0) {
             choices.add("Goal Number of Runs Per Week");
         }
-        if(userGoals.getDateOfRace() == null) {
+        if(userGoals.getDaysUntilRace() < 0) {
             choices.add("Countdown To Upcoming Race");
         }
 
@@ -310,7 +312,7 @@ public class GoalsActivity extends AppCompatActivity {
         mMonth = c.get(Calendar.MONTH);
         mDay = c.get(Calendar.DAY_OF_MONTH);
 
-        if(userGoals.getDateOfRace() != null) {
+        if(userGoals.getDaysUntilRace() >= 0) {
             DateTime date = DateTime.parse(userGoals.getDateOfRace());
             mYear = date.getYear();
             mMonth = date.getMonthOfYear()-1; //wtf does month indexing start at zero.
@@ -323,7 +325,8 @@ public class GoalsActivity extends AppCompatActivity {
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                         String pickedDate = "" + year + "-" + ++monthOfYear + "-" + dayOfMonth;
                         Toast.makeText(GoalsActivity.this, pickedDate, Toast.LENGTH_LONG).show();
-                        myRef.child("goals").child("dateOfRace").setValue(pickedDate);
+                        userGoals.setDaysUntilRace(pickedDate);
+                        goalRef.setValue(userGoals);
 
                     }
                 }, mYear, mMonth, mDay);
@@ -347,8 +350,8 @@ public class GoalsActivity extends AppCompatActivity {
                 if(input.getText().toString().equals("")) {
                     Toast.makeText(GoalsActivity.this, "You Entered Invalid Input", Toast.LENGTH_LONG).show();
                 } else {
-                    i = Integer.parseInt(input.getText().toString());
-                    goalRef.child("milesPerWeekTarget").setValue(i);
+                    userGoals.setMilesPerWeekTarget(Integer.parseInt(input.getText().toString()));
+                    goalRef.setValue(userGoals);
                     Toast.makeText(GoalsActivity.this, "Goal Added", Toast.LENGTH_LONG).show();
                 }
                 dialog.dismiss();
@@ -383,8 +386,8 @@ public class GoalsActivity extends AppCompatActivity {
                 if(input.getText().toString().equals("")) {
                     Toast.makeText(GoalsActivity.this, "You Entered Invalid Input", Toast.LENGTH_LONG).show();
                 } else {
-                    i = Integer.parseInt(input.getText().toString());
-                    goalRef.child("runsPerWeekTarget").setValue(i);
+                    userGoals.setRunsPerWeekTarget(Integer.parseInt(input.getText().toString()));
+                    goalRef.setValue(userGoals);
                     Toast.makeText(GoalsActivity.this, "Goal Added", Toast.LENGTH_LONG).show();
                 }
             }
@@ -414,18 +417,17 @@ public class GoalsActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 switch (id) {
                     case R.id.delete_goal_button1 :
-                        goalRef.child("runsPerWeekTarget").removeValue();
-                        Toast.makeText(GoalsActivity.this, "Goal Deleted", Toast.LENGTH_LONG).show();
+                        userGoals.setRunsPerWeekTarget(-1);
                         break;
                     case R.id.delete_goal_button2 :
-                        goalRef.child("milesPerWeekTarget").removeValue();
-                        Toast.makeText(GoalsActivity.this, "Goal Deleted", Toast.LENGTH_LONG).show();
+                        userGoals.setMilesPerWeekTarget(-1);
                         break;
                     case R.id.delete_goal_button3 :
-                        goalRef.child("dateOfRace").removeValue();
-                        Toast.makeText(GoalsActivity.this, "Goal Deleted", Toast.LENGTH_LONG).show();
+                        userGoals.setDaysUntilRace("");
                         break;
                 }
+                goalRef.setValue(userGoals);
+                Toast.makeText(GoalsActivity.this, "Goal Deleted", Toast.LENGTH_LONG).show();
             }
         });
         alertDialog.setNegativeButton("Cancel",new DialogInterface.OnClickListener() {

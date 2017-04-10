@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -21,9 +22,15 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.HashMap;
+import java.util.Objects;
+
 import edu.rowanuniversity.rufit.rufitObjects.Goal;
+import edu.rowanuniversity.rufit.rufitObjects.Info;
+import edu.rowanuniversity.rufit.rufitObjects.Shoe;
 import edu.rowanuniversity.rufit.rufitObjects.User;
 
 public class DashboardActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -34,11 +41,12 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     TextView drawerusername;
     CardView goalsCard,recentRunCard, startRunCard;
     FirebaseUser user;
-    User currentUser;
+    HashMap<String,Object> currentUser;
     final String ROOT = "users";
     String text = "Welcome!";
     Toolbar toolbar;
     NavigationView navigationView;
+    private GenericTypeIndicator<User<String,Object>> generic = new GenericTypeIndicator<User<String,Object>>() {};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,24 +81,27 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             updateUser();
         }
 
-        myRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                updateDashboardData(dataSnapshot);
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+            myRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    updateDashboardData(dataSnapshot);
+                }
 
-            }
-        });
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
     }
 
     public void updateUser(){
         user = auth.getCurrentUser();
         //Unique UUID For each user for Database
         myRef  = database.getReference(ROOT).child(user.getUid());
-        drawerusername.setText(currentUser == null ? "Welcome" : currentUser.getUsername());
+
+        drawerusername.setText(currentUser == null ? "Welcome" : ((Info) currentUser.get("info")).getUsername());
     }
 
     public void onResume(){
@@ -119,10 +130,12 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             startActivity(intent);
 
 
-        } else if (id == R.id.leaderboard) {
-
-
         }
+        //keep commented out
+        //else if (id == R.id.leaderboard) {
+
+
+       // }
 
         else if (id == R.id.goals) {
 
@@ -155,8 +168,9 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
      * //TODO : populate dashboard with user data
      */
     private void updateDashboardData(DataSnapshot d) {
-        currentUser = d.getValue(User.class);
-        updateGoalsCard(d);
+        currentUser = d.getValue(generic);
+
+        //updateGoalsCard(d);
 
         //User can click card to quickstart new run
         CardView startRunCard = (CardView) findViewById(R.id.cardStartRun);
@@ -167,13 +181,13 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         RelativeLayout r2 = (RelativeLayout) findViewById(R.id.r2);
         TextView noGoal = (TextView) findViewById(R.id.noGoalGreeting);
 
-        if(!(d.child("goals").exists())){
+        if(!(d.child("goals").hasChildren())){
             noGoal.setVisibility(View.VISIBLE);
             r1.setVisibility(View.GONE);
             r2.setVisibility(View.GONE);
         } else {
-            currentUser.setGoals(d.getValue(User.class).getGoals());
-            Goal userGoals = currentUser.getGoals();
+            Goal userGoals = new Goal();
+            //userGoals = currentUser.get("goals");
             if (!(userGoals.getMilesPerWeekTarget() > 0) || !(userGoals.getRunsPerWeekTarget() > 0)) {
                 noGoal.setVisibility(View.VISIBLE);
             }

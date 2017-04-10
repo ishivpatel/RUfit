@@ -12,15 +12,12 @@ import java.util.HashMap;
  *      They may prove unnecessary for our implementation of app.
  */
 
-public class User {
-    private String dob;
-    private String gender;
-    private int height;
-    private int weight;
-    private String username;
+public class User<String,Object> extends HashMap<String,Object>{
+
+    private Info info;
     private Goal goals;
     private Record records;
-    private ArrayList<Run> runs;
+    private HashMap<String,Run> runs;
     private HashMap<String,Shoe> shoes;
 
 
@@ -28,59 +25,42 @@ public class User {
 
     }
 
-    public User(String dob, String gender, int height, int weight, String username,
-                Goal goals, Record records, ArrayList<Run> runs, HashMap<String,Shoe> shoes) {
-        this.dob = dob;
-        this.gender = gender;
-        this.height = height;
-        this.weight = weight;
-        this.username = username;
-        this.goals = goals;
+    public Info getInfo() {
+        return info;
+    }
+
+    public void setInfo(Info info) {
+        this.info = info;
+    }
+
+    public Record getRecords() {
+        return records;
+    }
+
+    public void setRecords(Record records) {
         this.records = records;
+    }
+
+    public HashMap<String, Run> getRuns() {
+        return runs;
+    }
+
+    public void setRuns(HashMap<String, Run> runs) {
         this.runs = runs;
+    }
+
+    public HashMap<String, Shoe> getShoes() {
+        return shoes;
+    }
+
+    public void setShoes(HashMap<String, Shoe> shoes) {
         this.shoes = shoes;
-    }
-
-    public int getWeight() {
-        return weight;
-    }
-
-    public void setWeight(int weight) {
-        this.weight = weight;
-    }
-
-    public String getGender() { return gender; }
-
-    public void setGender(String gender) {
-        this.gender = gender;
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
-    public void setHeight(int height) {
-        this.height = height;
-    }
-
-    public String getDob() { return dob;}
-
-    public void setDob(String dob) {
-        this.dob = dob;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     public Goal getGoals() {
         return goals;
     }
 
-    public void setGoals(Goal goals) { this.goals = goals;
+    public void setGoals(Goal goals) { this.goals = goals;    }
+
     }
-}
