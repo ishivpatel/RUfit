@@ -65,7 +65,7 @@ public class Goal {
      * Given today's date and date of event, calculates days remaining.
      */
     private void calculateDays () {
-        if(!(dateOfRace.isEmpty())) {
+        if((dateOfRace != null) && !(dateOfRace.isEmpty())) {
             LocalDate date1 = LocalDate.parse(dateOfRace);
             LocalDate date2 = LocalDate.now();
             Days d = Days.daysBetween(date2, date1);
