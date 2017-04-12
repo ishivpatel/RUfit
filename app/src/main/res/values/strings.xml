@@ -15,5 +15,24 @@
                                     \n Track and log your Runs</string>
     <string name="about_label">About RUfit</string>
     <string name="facebook_app_id">1406276819423761</string>
+    <string name="title_activity_add_run">AddRunActivity</string>
+
+    <string name="distanceLabel">Distance</string>
+    <string name="timeLabel">Time</string>
+    <string name="paceLabel">Pace</string>
+    <string name="dateLabel">Date</string>
+    <string name="typeLabel">Type</string>
+    <string name="feelLabel">Feel</string>
+    <string name="notesLabel">Notes</string>
+    <string name="submitLabel">SUBMIT</string>
+    <string name="pick_date">Pick Date</string>
+
+    <string-array name="type_array">
+        <item>type 1</item>
+        <item>type 2</item>
+        <item>type 3</item>
+        <item>type 4</item>
+    </string-array>
+    <string name="title_activity_start_run">StartRunActivity</string>
 
 </resources>

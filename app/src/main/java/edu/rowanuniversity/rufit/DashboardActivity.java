@@ -82,17 +82,17 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         }
 
 
-            myRef.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    updateDashboardData(dataSnapshot);
-                }
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                updateDashboardData(dataSnapshot);
+            }
 
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
 
-                }
-            });
+            }
+        });
 
     }
 
@@ -122,9 +122,9 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             startActivity(intent);
 
         } else if (id == R.id.add_workout) {
+            Intent intent = new Intent(this, AddRunActivity.class);
+            startActivity(intent);
 
-            /*Intent intent = new Intent(this, AddWorkoutManually.class);
-            startActivity(intent);*/
         } else if (id == R.id.add_shoe) {
             Intent intent = new Intent(this, ShoeActivity.class);
             startActivity(intent);
