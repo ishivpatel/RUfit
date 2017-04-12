@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layoutID"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_gravity="center"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/topToolBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/Red"
+        android:visibility="visible">
+
+        <ImageView
+            android:id="@+id/imageID"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_gravity="center_horizontal|top"
+            android:src="@drawable/rufit_logo_nbg" />
+
+    </android.support.v7.widget.Toolbar>
+
+
+    <TextView
+        android:id="@+id/distanceText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/editTime"
+        android:layout_alignEnd="@+id/submit"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignRight="@+id/submit"
+        android:layout_below="@+id/topToolBar"
+        android:text="@string/distanceLabel"
+        android:textAppearance="@style/TextLabel" />
+
+    <EditText
+        android:id="@+id/editDistance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="numberDecimal"
+        android:layout_below="@+id/topToolBar"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:id="@+id/timeText"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/editTime"
+        android:layout_alignEnd="@+id/distanceText"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignRight="@+id/distanceText"
+        android:layout_below="@+id/distanceText"
+        android:text="@string/timeLabel"
+        android:textAppearance="@style/TextLabel" />
+
+    <EditText
+        android:id="@+id/editTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="number"
+        android:layout_below="@+id/editDistance"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:id="@+id/paceText"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/timeText"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignRight="@+id/timeText"
+        android:layout_below="@+id/timeText"
+        android:text="@string/paceLabel"
+        android:textAppearance="@style/TextLabel" />
+
+    <TextView
+        android:id="@+id/paceDisplay"
+        android:layout_width="329dp"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/editTime"
+        android:layout_alignLeft="@+id/editTime"
+        android:layout_alignRight="@+id/editTime"
+        android:layout_alignStart="@+id/editTime"
+        android:layout_below="@+id/editTime"
+        android:text="distance/time"
+        android:textAppearance="@style/TextLabel" />
+
+    <TextView
+        android:id="@+id/dateText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/dateEdit"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:text="@string/dateLabel"
+        android:textAppearance="@style/TextLabel"
+        android:layout_below="@+id/paceText"
+        android:layout_alignRight="@+id/paceText"
+        android:layout_alignEnd="@+id/paceText" />
+
+    <EditText
+        android:id="@+id/dateEdit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/paceDisplay"
+        android:layout_alignStart="@+id/paceDisplay"
+        android:layout_below="@+id/paceDisplay"
+        android:ems="10"
+        android:inputType="date" />
+
+    <TextView
+        android:id="@+id/typeText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/typeLabel"
+        android:textAppearance="@style/TextLabel"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_toStartOf="@+id/seekBar"
+        android:layout_toLeftOf="@+id/typeSpinner"
+        android:layout_below="@+id/dateText"
+        android:layout_alignRight="@+id/dateText"
+        android:layout_alignEnd="@+id/dateText" />
+
+    <Spinner
+        android:id="@+id/typeSpinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:spinnerMode="dropdown"
+        android:layout_above="@+id/feelText"
+        android:layout_alignRight="@+id/dateEdit"
+        android:layout_alignEnd="@+id/dateEdit"
+        android:layout_below="@+id/dateEdit"
+        android:layout_alignLeft="@+id/dateEdit"
+        android:layout_alignStart="@+id/dateEdit" />
+
+    <TextView
+        android:id="@+id/feelText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_toStartOf="@+id/seekBar"
+        android:layout_toLeftOf="@+id/seekBar"
+        android:text="@string/feelLabel"
+        android:textAppearance="@style/TextLabel"
+        android:layout_below="@+id/typeText"
+        android:layout_alignRight="@+id/typeText"
+        android:layout_alignEnd="@+id/typeText" />
+
+    <SeekBar
+        android:id="@+id/seekBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:max="10"
+        android:progress="5"
+        android:layout_below="@+id/typeSpinner"
+        android:layout_alignLeft="@+id/typeSpinner"
+        android:layout_alignStart="@+id/typeSpinner"
+        android:layout_alignRight="@+id/typeSpinner"
+        android:layout_alignEnd="@+id/typeSpinner" />
+
+    <TextView
+        android:id="@+id/notesText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/notesLabel"
+        android:textAppearance="@style/TextLabel"
+        android:layout_below="@+id/feelText"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignRight="@+id/feelText"
+        android:layout_alignEnd="@+id/feelText" />
+
+    <EditText
+        android:id="@+id/notesEdit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Enter notes..."
+        android:layout_below="@+id/feelText"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <Button
+        android:id="@+id/submit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/submitLabel"
+        android:layout_below="@+id/notesEdit"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:id="@+id/startRun"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/submit"
+        android:text="START RUN" />
+
+    <Button
+        android:id="@+id/pickDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/submit"
+        android:layout_marginLeft="42dp"
+        android:layout_marginStart="42dp"
+        android:layout_marginTop="31dp"
+        android:layout_toEndOf="@+id/submit"
+        android:layout_toRightOf="@+id/submit"
+        android:text="@string/pick_date"
+        android:onClick="showDatePickerDialog"/>
+
+</RelativeLayout>
