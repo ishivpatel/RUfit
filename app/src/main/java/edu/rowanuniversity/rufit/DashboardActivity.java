@@ -82,6 +82,15 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         }
 
 
+    }
+
+    public void updateUser(){
+        user = auth.getCurrentUser();
+        //Unique UUID For each user for Database
+        myRef  = database.getReference(ROOT).child(user.getUid());
+
+
+
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -94,14 +103,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             }
         });
 
-    }
-
-    public void updateUser(){
-        user = auth.getCurrentUser();
-        //Unique UUID For each user for Database
-        myRef  = database.getReference(ROOT).child(user.getUid());
-
-        drawerusername.setText(currentUser == null ? "Welcome" : ((Info) currentUser.get("info")).getUsername());
+        drawerusername.setText(currentUser == null ? text : ((HashMap<String,Object>) currentUser.get("info")).get("username").toString());
     }
 
     public void onResume(){
@@ -170,13 +172,16 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     private void updateDashboardData(DataSnapshot d) {
         currentUser = d.getValue(generic);
 
-        //updateGoalsCard(d);
+        HashMap<String,Object> info =  (HashMap<String,Object>) currentUser.get("info");
+        //Toast.makeText(DashboardActivity.this,i, Toast.LENGTH_LONG).show();
+        //updateGoalsCard();
 
         //User can click card to quickstart new run
         CardView startRunCard = (CardView) findViewById(R.id.cardStartRun);
     }
 
     private void updateGoalsCard(DataSnapshot d) {
+        HashMap<String,Object> uGoals = (HashMap<String,Object>) currentUser.get("goals");
         RelativeLayout r1 = (RelativeLayout) findViewById(R.id.r1);
         RelativeLayout r2 = (RelativeLayout) findViewById(R.id.r2);
         TextView noGoal = (TextView) findViewById(R.id.noGoalGreeting);
