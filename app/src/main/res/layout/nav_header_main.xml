@@ -10,9 +10,9 @@
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/imageView"
-        android:layout_width="95dp"
-        android:layout_height="95dp"
-        android:src="@drawable/run_image"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/rufit_userimage"
         app:civ_border_width="1dp"
         app:civ_border_color="@color/colorPrimary"
         android:layout_marginTop="10dp"
