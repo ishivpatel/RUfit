@@ -81,12 +81,18 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
 
 
+
     }
 
     public void updateUser(){
         user = auth.getCurrentUser();
         //Unique UUID For each user for Database
         myRef  = database.getReference(ROOT).child(user.getUid());
+
+
+
+
+
 
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -99,6 +105,11 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
             }
         });
+
+
+
+        drawerusername.setText(currentUser == null ? text : ((HashMap<String,Object>) currentUser.get("info")).get("username").toString());
+
     }
 
     public void onResume(){
@@ -119,9 +130,9 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             startActivity(intent);
 
         } else if (id == R.id.add_workout) {
+            Intent intent = new Intent(this, AddRunActivity.class);
+            startActivity(intent);
 
-            /*Intent intent = new Intent(this, AddWorkoutManually.class);
-            startActivity(intent);*/
         } else if (id == R.id.add_shoe) {
             Intent intent = new Intent(this, ShoeActivity.class);
             startActivity(intent);
@@ -167,6 +178,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     private void updateDashboardData(DataSnapshot d) {
         currentUser = d.getValue(generic);
 
+
         if(currentUser == null){
             drawerusername.setText(text);
         }else {
@@ -177,11 +189,17 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
         //updateGoalsCard(d);
 
+        HashMap<String,Object> info =  (HashMap<String,Object>) currentUser.get("info");
+        //Toast.makeText(DashboardActivity.this,i, Toast.LENGTH_LONG).show();
+        //updateGoalsCard();
+
+
         //User can click card to quickstart new run
         CardView startRunCard = (CardView) findViewById(R.id.cardStartRun);
     }
 
     private void updateGoalsCard(DataSnapshot d) {
+        HashMap<String,Object> uGoals = (HashMap<String,Object>) currentUser.get("goals");
         RelativeLayout r1 = (RelativeLayout) findViewById(R.id.r1);
         RelativeLayout r2 = (RelativeLayout) findViewById(R.id.r2);
         TextView noGoal = (TextView) findViewById(R.id.noGoalGreeting);

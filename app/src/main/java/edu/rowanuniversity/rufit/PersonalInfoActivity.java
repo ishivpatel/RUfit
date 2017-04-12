@@ -308,21 +308,9 @@ public class PersonalInfoActivity extends AppCompatActivity {
     private void showData(DataSnapshot dataSnapshot) {
         emailView.setText(user.getEmail());
 
-
-
         if(dataSnapshot.hasChildren()) {
             uInfo = new Info();
             uInfo = dataSnapshot.getValue(Info.class);
-            //set username
-           // uInfo.setUsername(dataSnapshot.getValue(User.class).getUsername());
-            //set age
-           // uInfo.setDob(dataSnapshot.getValue(User.class).getDob());
-            //set gender
-            //uInfo.setGender(dataSnapshot.getValue(User.class).getGender());
-            //set height
-            //uInfo.setHeight(dataSnapshot.getValue(User.class).getHeight());
-            //set weight
-            //uInfo.setWeight(dataSnapshot.getValue(User.class).getWeight());
 
             //update text displays
             usernameView.setText(uInfo.getUsername());

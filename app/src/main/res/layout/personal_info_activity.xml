@@ -95,7 +95,7 @@
             android:layout_height="wrap_content"
             android:paddingLeft="7dp"
             android:paddingTop="4dp"
-            android:text="Age"
+            android:text="Birthday"
             android:textSize="15sp"/>
 
         <!-- age display-->
