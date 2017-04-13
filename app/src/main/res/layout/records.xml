@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        layout="@layout/toolbar"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        tools:layout_constraintTop_creator="1"
+        tools:layout_constraintRight_creator="1"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:layout_constraintLeft_creator="1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:id="@+id/include" />
+
+    <TextView
+        android:id="@+id/recordsTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Records"
+        android:textAppearance="@style/TextLabelSignIn"
+        android:textColor="@color/DarkRed"
+        tools:layout_constraintTop_creator="1"
+        tools:layout_constraintRight_creator="1"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/include"
+        tools:layout_constraintLeft_creator="1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp" />
+
+    <TextView
+        android:id="@+id/fststTimeTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Fastest (Time) Run"
+        android:textColor="@color/DimGray"
+        android:textSize="18sp"
+        app:layout_constraintLeft_toLeftOf="@+id/recordsTitle"
+        app:layout_constraintRight_toRightOf="@+id/recordsTitle"
+        app:layout_constraintTop_toBottomOf="@+id/recordsTitle"
+        tools:layout_constraintLeft_creator="1"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintTop_creator="1" />
+
+    <TextView
+        android:id="@+id/fststTime_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Time of Run"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="108dp" />
+
+    <TextView
+        android:id="@+id/fststTime_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Date of Run"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="130dp" />
+
+    <TextView
+        android:id="@+id/fststPaceTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:text="Fastest (Pace) Run"
+        android:textColor="@color/DimGray"
+        android:textSize="18sp"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="@+id/fststTimeTitle"
+        app:layout_constraintRight_toRightOf="@+id/fststTimeTitle"
+        app:layout_constraintTop_toBottomOf="@+id/fststTimeTitle"
+        tools:layout_constraintLeft_creator="1"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintTop_creator="1" />
+
+    <TextView
+        android:id="@+id/fststPace_pace"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Pace of Run"
+        android:textColor="@android:color/black"
+        android:textSize="18sp"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="230dp" />
+
+    <TextView
+        android:id="@+id/fststPace_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Date of Run"
+        android:textColor="@android:color/black"
+        android:textSize="18sp"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="252dp" />
+
+    <TextView
+        android:id="@+id/lngstRunTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:text="Longest Run"
+        android:textColor="@color/DimGray"
+        android:textSize="18sp"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="@+id/fststPaceTitle"
+        app:layout_constraintRight_toRightOf="@+id/fststPaceTitle"
+        app:layout_constraintTop_toBottomOf="@+id/fststPaceTitle"
+        tools:layout_constraintLeft_creator="1"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintTop_creator="1" />
+
+    <TextView
+        android:id="@+id/lngstRun_distance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Distance of Run"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="351dp" />
+
+    <TextView
+        android:id="@+id/lngstRun_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Date of Run"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="373dp" />
+
+</android.support.constraint.ConstraintLayout>
