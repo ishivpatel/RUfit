@@ -1,6 +1,8 @@
 package edu.rowanuniversity.rufit;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -14,7 +16,11 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -23,9 +29,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import edu.rowanuniversity.rufit.rufitObjects.Goal;
 import edu.rowanuniversity.rufit.rufitObjects.User;
 
@@ -35,8 +46,13 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     FirebaseDatabase database;
     DatabaseReference myRef;
     TextView drawerusername;
+    CircleImageView userImage;
     CardView goalsCard,recentRunCard, startRunCard;
     FirebaseUser user;
+    StorageReference mStorage;
+    StorageReference filePath;
+
+    ProgressDialog mProgressDialog;
     HashMap<String,Object> currentUser;
    // User currentUser;
     final String ROOT = "users";
@@ -44,6 +60,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     Toolbar toolbar;
     NavigationView navigationView;
     private GenericTypeIndicator<User<String,Object>> generic = new GenericTypeIndicator<User<String,Object>>() {};
+    private static final int GALLERY_REQUEST_CODE = 991;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +81,9 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         navigationView.setNavigationItemSelectedListener(this);
         View header = navigationView.getHeaderView(0);
         drawerusername = (TextView) header.findViewById(R.id.drawer_user_name);
+        userImage = (CircleImageView) header.findViewById(R.id.userImage);
+        mStorage = FirebaseStorage.getInstance().getReference().child("userImage");
+        mProgressDialog = new ProgressDialog(this);
 
         //Allow actions when cards on dashboard are clicked
         setCardActions();
@@ -77,23 +97,31 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         }else{
             updateUser();
         }
-
-
-
-
-
     }
 
     public void updateUser(){
         user = auth.getCurrentUser();
         //Unique UUID For each user for Database
         myRef  = database.getReference(ROOT).child(user.getUid());
+        try{
+            Glide.with(getApplicationContext()).using(new FirebaseImageLoader())
+                    .load(mStorage.child(user.getUid()))
+                    .error(R.drawable.rufit_userimage)
+                    .into(userImage);
 
 
+        }catch (Exception e){
 
-
-
-
+        }
+        userImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getApplicationContext(), "Clicked Image", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent();
+                intent.setType("image/*").setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(intent, GALLERY_REQUEST_CODE);
+            }
+        });
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -106,11 +134,11 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             }
         });
 
-
-
         drawerusername.setText(currentUser == null ? text : ((HashMap<String,Object>) currentUser.get("info")).get("username").toString());
 
     }
+
+
 
     public void onResume(){
         super.onResume();
@@ -259,8 +287,37 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             }
         });
 
+        startRunCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), StartRunActivity.class);
+                startActivity(intent);
+            }
+        });
         //TODO: StartRun card action
         //TODO: RecentRun card action
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == GALLERY_REQUEST_CODE && resultCode == RESULT_OK){
+            Uri uri = data.getData();
+            mProgressDialog.setMessage("Uploading, Please Wait");
+            mProgressDialog.show();
+
+            filePath = mStorage.child(user.getUid());
+            filePath.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    Toast.makeText(getApplicationContext(), "Uploaded", Toast.LENGTH_SHORT).show();
+                    mProgressDialog.dismiss();
+                    Uri downloadUri = taskSnapshot.getDownloadUrl();
+                    Picasso.with(getApplicationContext()).load(downloadUri).fit().centerCrop().into(userImage);
+                }
+            });
+
+        }
     }
 
     @Override
