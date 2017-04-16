@@ -11,27 +11,30 @@ import org.joda.time.LocalDate;
 public class Goal {
 
     private int runsPerWeekTarget;
-    private int milesPerWeekTarget;
+    private double milesPerWeekTarget;
     private int daysUntilRace;
     private int runsPerWeekActual;
-    private int milesPerWeekActual;
+    private double milesPerWeekActual;
     private String dateOfRace;
+    private int weekOfYear;
 
 
     public Goal(int dpwValue, int mpwValue, String durValue) {
         runsPerWeekTarget = dpwValue;
-        milesPerWeekTarget = mpwValue;
+        milesPerWeekTarget = Double.parseDouble("" +mpwValue);
         dateOfRace = durValue;
-        milesPerWeekActual = 0;
+        milesPerWeekActual = 0.0;
         runsPerWeekActual = 0;
     }
 
     public Goal() {
     }
 
-    public void setMilesPerWeekActual(int milesPerWeekActual) { this.milesPerWeekActual = milesPerWeekActual;}
+    public void setMilesPerWeekActual(double milesPerWeekActual) { this.milesPerWeekActual = milesPerWeekActual;}
 
-    public int getMilesPerWeekActual() {return milesPerWeekActual;}
+    public double getMilesPerWeekActual() {return milesPerWeekActual;}
+
+    public void addMiles(double miles) { milesPerWeekActual += miles;}
 
     public int getRunsPerWeekActual() {return runsPerWeekActual;}
 
@@ -49,10 +52,10 @@ public class Goal {
 
     public String getDateOfRace() { return dateOfRace;}
 
-    public int getMilesPerWeekTarget() { return milesPerWeekTarget; }
+    public double getMilesPerWeekTarget() { return  milesPerWeekTarget; }
 
     public void setMilesPerWeekTarget(int milesPerWeek) {
-        this.milesPerWeekTarget = milesPerWeek;
+        this.milesPerWeekTarget = Double.parseDouble("" + milesPerWeek);
     }
 
     public int getRunsPerWeekTarget() {return runsPerWeekTarget;    }
@@ -60,6 +63,10 @@ public class Goal {
     public void setRunsPerWeekTarget(int runsPerWeek) {
         this.runsPerWeekTarget = runsPerWeek;
     }
+
+    public int getWeekOfYear() {return weekOfYear;    }
+
+    public void setWeekOfYear(int week) {weekOfYear = week;    }
 
     /**
      * Given today's date and date of event, calculates days remaining.

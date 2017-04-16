@@ -26,6 +26,8 @@ public class Shoe {
 
     public void setMileage(double mileage) { this.mileage = mileage;    }
 
+    public void addMileage(double miles) { mileage += miles; }
+
     public String getName() {  return name;    }
 
     public void setName(String name) {  this.name = name;    }

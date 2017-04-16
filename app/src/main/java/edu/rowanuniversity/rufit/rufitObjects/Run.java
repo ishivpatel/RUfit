@@ -8,22 +8,21 @@ import java.util.Date;
 
 public class Run {
     private String name;
-    private Date date;
+    private String date;
     private double mileage;
     private int time;
     private int pace;
     private String shoe;
-    private String feel;
+    private int feel;
     private String type;
     private String notes;
 
-    public Run(String name, Date date, double mileage, int time, String shoe,
-               String feel, String type, String notes) {
+    public Run(String name, String date, double mileage, int time, String shoe,
+               int feel, String type, String notes) {
         this.name = name;
         this.date = date;
         this.mileage = mileage;
         this.time = time;
-        pace = calculatePace();
         this.shoe = shoe;
         this.feel = feel;
         this.type = type;
@@ -34,19 +33,21 @@ public class Run {
 
     }
 
-    private int calculatePace() {
-        double t = (double) time;
-        double p = ((t/mileage) + (t%mileage))/ 60;
-        double rounded =  Math.round(p * 100)/ 100;
-        double toSeconds = rounded * 60;
-        return (int) toSeconds;
+    private void calculatePace() {
+        if(time > -1 && mileage > -1.0) {
+            double t = (double) time;
+            double p = ((t / mileage) + (t % mileage)) / 60;
+            double rounded = Math.round(p * 100) / 100;
+            double toSeconds = rounded * 60;
+            setPace((int) toSeconds);
+        }
     }
 
     public String getName() {
         return name;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
@@ -66,7 +67,7 @@ public class Run {
         return shoe;
     }
 
-    public String getFeel() {
+    public int getFeel() {
         return feel;
     }
 
@@ -78,27 +79,31 @@ public class Run {
         return notes;
     }
 
+    public void setPace(int pace) { this.pace = pace; }
+
     public void setName(String name) {
         this.name = name;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
 
     public void setMileage(double mileage) {
         this.mileage = mileage;
+        calculatePace();
     }
 
     public void setTime(int time) {
         this.time = time;
+        calculatePace();
     }
 
     public void setShoe(String shoe) {
         this.shoe = shoe;
     }
 
-    public void setFeel(String feel) {
+    public void setFeel(int feel) {
         this.feel = feel;
     }
 
