@@ -53,7 +53,7 @@ public class ShoeActivity extends AppCompatActivity implements RecyclerItemClick
     private FirebaseDatabase database;
     private FirebaseAuth auth;
     private FirebaseUser user;
-    DatabaseReference myRef,db,shoeRef;
+    private DatabaseReference myRef,db,shoeRef;
     private String userID;
 
     @Override
@@ -150,7 +150,7 @@ public class ShoeActivity extends AppCompatActivity implements RecyclerItemClick
 
         final TextView name = new TextView(this);
         final EditText input = new EditText(this);
-        input.setMaxLines(1);
+        input.setSingleLine(true);
 
         //Layout within dialog box
         LinearLayout l = new LinearLayout(this);
@@ -195,7 +195,7 @@ public class ShoeActivity extends AppCompatActivity implements RecyclerItemClick
         final TextView shoeText = (TextView)childView.findViewById(R.id.shoe_name);
         final EditText input = new EditText(this) ;
         final String shoe = shoeText.getText().toString();
-        input.setMaxLines(1);
+        input.setSingleLine(true);
         input.setText(shoe);
 
         AlertDialog.Builder a  = new AlertDialog.Builder(ShoeActivity.this);
@@ -241,7 +241,7 @@ public class ShoeActivity extends AppCompatActivity implements RecyclerItemClick
 
         AlertDialog.Builder a  = new AlertDialog.Builder(ShoeActivity.this);
         a.setTitle("Delete");
-        a.setMessage("Do you want to remove " + shoe + " from your archive?");
+        a.setMessage("Are you sure you want to remove " + shoe + " from your archive?");
         a.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {

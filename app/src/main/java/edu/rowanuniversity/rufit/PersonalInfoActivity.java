@@ -258,7 +258,7 @@ public class PersonalInfoActivity extends AppCompatActivity {
             }
         });
 
-        //When user clicks weight row, dialog box appears allowing editting of weight
+        //When user clicks weight row, dialog box appears allowing editing of weight
         weightRow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -271,7 +271,7 @@ public class PersonalInfoActivity extends AppCompatActivity {
                 final EditText weightInput = (EditText) dialog.findViewById(R.id.weightInput);
 
                 weightInput.setInputType(InputType.TYPE_CLASS_NUMBER);
-                weightInput.setText(""); //initalize default value as user's current weight
+                weightInput.setText(""); //initialize default value as user's current weight
                 //close
                 dialogCancelButton.setOnClickListener(new View.OnClickListener() {
                     @Override

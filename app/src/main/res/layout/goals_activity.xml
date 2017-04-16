@@ -13,6 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="18dp"
+        android:text="You haven't set any goals yet!"
         android:textSize="18sp"
         android:textColor="@color/gray_light"/>
 
@@ -22,6 +23,7 @@
         android:layout_height="wrap_content"
         android:background="@color/Red"
         android:id="@+id/topToolBar"
+        android:layout_marginBottom="4dp"
         >
 
         <TextView

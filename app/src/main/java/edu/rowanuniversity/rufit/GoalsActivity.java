@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.view.View;
@@ -24,15 +25,18 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 
 import edu.rowanuniversity.rufit.rufitObjects.Goal;
+import edu.rowanuniversity.rufit.rufitObjects.Shoe;
 
 /**
  * Created by Catherine Dougherty on 3/19/2017.
@@ -44,15 +48,15 @@ import edu.rowanuniversity.rufit.rufitObjects.Goal;
  */
 
 public class GoalsActivity extends AppCompatActivity {
-    RelativeLayout goalBlock1, goalBlock2, goalBlock3;
+    CardView goalBlock1, goalBlock2, goalBlock3;
     ImageButton newGoal;
     TextView goalGreeting;
     private FirebaseDatabase database;
     private FirebaseAuth auth;
     private FirebaseUser user;
     private ImageView backbutton;
-    DatabaseReference goalRef, myRef;
-    Goal userGoals;
+    private DatabaseReference goalRef, myRef;
+    private Goal userGoals;
     private String userID;
     private int mYear, mMonth, mDay;
 
@@ -62,9 +66,9 @@ public class GoalsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.goals_activity);
 
-        goalBlock1 = (RelativeLayout) findViewById(R.id.firstGoal);
-        goalBlock2 = (RelativeLayout) findViewById(R.id.secondGoal);
-        goalBlock3 = (RelativeLayout) findViewById(R.id.thirdGoal);
+        goalBlock1 = (CardView) findViewById(R.id.firstGoal);
+        goalBlock2 = (CardView) findViewById(R.id.secondGoal);
+        goalBlock3 = (CardView) findViewById(R.id.thirdGoal);
         goalGreeting = (TextView) findViewById(R.id.goalGreeting);
 
         //edit buttons for each goal card
@@ -174,13 +178,17 @@ public class GoalsActivity extends AppCompatActivity {
         userGoals = new Goal();
         userGoals.setMilesPerWeekTarget(Integer.parseInt(dataSnapshot.child("milesPerWeekTarget").getValue().toString()));
         userGoals.setRunsPerWeekTarget(Integer.parseInt(dataSnapshot.child("runsPerWeekTarget").getValue().toString()));
-        userGoals.setDaysUntilRace(dataSnapshot.child("dateOfRace").getValue().toString());
+        if (dataSnapshot.child("dateOfRace").getValue() == null) {
+            userGoals.setDaysUntilRace("");
+        } else {
+            userGoals.setDaysUntilRace(dataSnapshot.child("dateOfRace").getValue().toString());
+        }
 
         //If user hasn't added any shoes display greeting
-        if (!(userGoals.getMilesPerWeekTarget() > 0 ||
+        if (userGoals.getMilesPerWeekTarget() > 0 ||
                 userGoals.getRunsPerWeekTarget() > 0 ||
-                userGoals.getDaysUntilRace() >= 0)) {
-            goalGreeting.setVisibility(View.GONE);
+                userGoals.getDaysUntilRace() >= 0) {
+                goalGreeting.setVisibility(View.GONE);
         }
         displayGoal(); //Displays update information for each goal
     }
@@ -216,7 +224,8 @@ public class GoalsActivity extends AppCompatActivity {
             TextView percent2 = (TextView) findViewById(R.id.percent2);
             ProgressBar pBar2 = (ProgressBar) findViewById(R.id.goalBar2);
 
-            int percent = (userGoals.getMilesPerWeekActual()*100)/userGoals.getMilesPerWeekTarget();
+            double dp = (userGoals.getMilesPerWeekActual()*100)/userGoals.getMilesPerWeekTarget();
+            int percent = (int) dp;
 
             tv1.setText("Miles Per Week :");
             tv2.setText("You have ran " + userGoals.getMilesPerWeekActual() + " miles this week. \n" +
@@ -324,9 +333,9 @@ public class GoalsActivity extends AppCompatActivity {
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                         String pickedDate = "" + year + "-" + ++monthOfYear + "-" + dayOfMonth;
-                        Toast.makeText(GoalsActivity.this, pickedDate, Toast.LENGTH_LONG).show();
                         userGoals.setDaysUntilRace(pickedDate);
                         goalRef.setValue(userGoals);
+                        Toast.makeText(GoalsActivity.this, "Goal Added", Toast.LENGTH_LONG).show();
 
                     }
                 }, mYear, mMonth, mDay);
@@ -346,7 +355,6 @@ public class GoalsActivity extends AppCompatActivity {
         a.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                int i;
                 if(input.getText().toString().equals("")) {
                     Toast.makeText(GoalsActivity.this, "You Entered Invalid Input", Toast.LENGTH_LONG).show();
                 } else {

@@ -2,6 +2,7 @@ package edu.rowanuniversity.rufit;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -34,10 +35,18 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeComparator;
+import org.joda.time.LocalDate;
+import org.joda.time.Seconds;
+import org.joda.time.format.DateTimeFormat;
+
+import java.util.Calendar;
 import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import edu.rowanuniversity.rufit.rufitObjects.Goal;
+import edu.rowanuniversity.rufit.rufitObjects.Run;
 import edu.rowanuniversity.rufit.rufitObjects.User;
 
 public class DashboardActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -53,12 +62,13 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     StorageReference filePath;
 
     ProgressDialog mProgressDialog;
-    HashMap<String,Object> currentUser;
-   // User currentUser;
+    private HashMap<String,Object> currentUser;
+    private Goal userGoals;
     final String ROOT = "users";
-    String text = "Welcome!";
+    private String text = "Welcome!";
     Toolbar toolbar;
     NavigationView navigationView;
+    private GenericTypeIndicator<HashMap<String,Run>> gRun = new GenericTypeIndicator<HashMap<String,Run>>() {};
     private GenericTypeIndicator<User<String,Object>> generic = new GenericTypeIndicator<User<String,Object>>() {};
     private static final int GALLERY_REQUEST_CODE = 991;
 
@@ -205,41 +215,31 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
      */
     private void updateDashboardData(DataSnapshot d) {
         currentUser = d.getValue(generic);
-
-
+        DataSnapshot goalSnapshot = d.child("goals");
+        DataSnapshot runsSnapshot = d.child("runs");
         if(currentUser == null){
             drawerusername.setText(text);
         }else {
-
             HashMap<String, Object> temp = (HashMap<String, Object>) currentUser.get("info");
-                drawerusername.setText(temp.get("username").toString());
+            drawerusername.setText(temp.get("username").toString());
         }
 
-        //updateGoalsCard(d);
-
-        HashMap<String,Object> info =  (HashMap<String,Object>) currentUser.get("info");
-        //Toast.makeText(DashboardActivity.this,i, Toast.LENGTH_LONG).show();
-        //updateGoalsCard();
-
-
-        //User can click card to quickstart new run
-        CardView startRunCard = (CardView) findViewById(R.id.cardStartRun);
+        //Background updates relating to user goals
+        refreshGoalData(goalSnapshot);
+        updateGoalsCard(goalSnapshot);
+        updateRecentRunCard(runsSnapshot);
     }
 
     private void updateGoalsCard(DataSnapshot d) {
-        HashMap<String,Object> uGoals = (HashMap<String,Object>) currentUser.get("goals");
+        Goal userGoals = new Goal();
+        userGoals.setMilesPerWeekTarget(Integer.parseInt(d.child("milesPerWeekTarget").getValue().toString()));
+        userGoals.setRunsPerWeekTarget(Integer.parseInt(d.child("runsPerWeekTarget").getValue().toString()));
+
         RelativeLayout r1 = (RelativeLayout) findViewById(R.id.r1);
         RelativeLayout r2 = (RelativeLayout) findViewById(R.id.r2);
         TextView noGoal = (TextView) findViewById(R.id.noGoalGreeting);
 
-        if(!(d.child("goals").hasChildren())){
-            noGoal.setVisibility(View.VISIBLE);
-            r1.setVisibility(View.GONE);
-            r2.setVisibility(View.GONE);
-        } else {
-            Goal userGoals = new Goal();
-            //userGoals = currentUser.get("goals");
-            if (!(userGoals.getMilesPerWeekTarget() > 0) || !(userGoals.getRunsPerWeekTarget() > 0)) {
+           if (!(userGoals.getMilesPerWeekTarget() > 0) || !(userGoals.getRunsPerWeekTarget() > 0)) {
                 noGoal.setVisibility(View.VISIBLE);
             }
 
@@ -264,15 +264,74 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
             if (userGoals.getMilesPerWeekTarget() > 0) {
                 userGoal2.setText("Weekly Mileage Progress:");
-                int percent2 = (userGoals.getMilesPerWeekActual() * 100) / userGoals.getMilesPerWeekTarget();
+                double p = (userGoals.getMilesPerWeekActual() * 100) / Double.parseDouble("" + userGoals.getMilesPerWeekTarget());
+                int percent2 = (int) p;
                 userGoalPercent2.setText("" + percent2 + "%");
                 goalBar2.setProgress(percent2);
             } else {
                 r2.setVisibility(View.GONE);
             }
-        }
+
     }
 
+    private void updateRecentRunCard(DataSnapshot d) {
+        if(d.exists() && d.getValue() != null) {
+            HashMap<String, Run> runMap = d.getValue(gRun);
+            Run mostRecentRun = null;
+            for (String id : runMap.keySet()) {
+                Run current = runMap.get(id);
+                if (mostRecentRun == null) {
+                    mostRecentRun = current;
+                } else {
+                    //Date stored as MM/dd/yyyy
+                    DateTime currRun = DateTime.parse(current.getDate(), DateTimeFormat.forPattern("MM/dd/yyyy"));
+                    DateTime recRun = DateTime.parse(mostRecentRun.getDate(), DateTimeFormat.forPattern("MM/dd/yyyy"));
+
+                    if (DateTimeComparator.getDateOnlyInstance().compare(currRun, recRun) > 0) {
+                        mostRecentRun = current;
+                    }
+                }
+            }
+
+            TextView dist = (TextView) findViewById(R.id.cardDist);
+            TextView date = (TextView) findViewById(R.id.cardDate);
+            TextView time = (TextView) findViewById(R.id.cardTime);
+            TextView pace = (TextView) findViewById(R.id.cardPace);
+            View feel = (View) findViewById(R.id.cardFeel);
+
+
+            dist.setText(mostRecentRun.getMileage() + " miles");
+            date.setText(mostRecentRun.getDate());
+
+            int hours = mostRecentRun.getTime() / 3600;
+            int minutes = mostRecentRun.getTime() / 60;
+            int sec = mostRecentRun.getTime() % 60;
+            time.setText((hours > 0 ? String.format("%02d", hours) + ":" : "") + String.format("%02d", minutes) + ":" + String.format("%02d", sec));
+
+            hours = mostRecentRun.getPace() / 3600;
+            minutes = mostRecentRun.getPace() / 60;
+            sec = mostRecentRun.getPace() % 60;
+            pace.setText(String.format("%02d", minutes) + ":" + String.format("%02d", sec));
+
+            switch (mostRecentRun.getFeel()) {
+                case 0:
+                    feel.setBackgroundColor(Color.CYAN);
+                    break;
+                case 1:
+                    feel.setBackgroundColor(Color.GREEN);
+                    break;
+                case 2:
+                    feel.setBackgroundColor(Color.YELLOW);
+                    break;
+                case 3:
+                    feel.setBackgroundColor(Color.rgb(255, 140, 0));
+                    break;
+                case 4:
+                    feel.setBackgroundColor(Color.RED);
+                    break;
+            }
+        }
+    }
 
     public void setCardActions () {
         startRunCard = (CardView) findViewById(R.id.cardStartRun);
@@ -294,7 +353,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                 startActivity(intent);
             }
         });
-        //TODO: StartRun card action
+
         //TODO: RecentRun card action
     }
 
@@ -328,5 +387,29 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         } else {
             super.onBackPressed();
         }
+    }
+
+    private void refreshGoalData (DataSnapshot d) {
+        userGoals = new Goal();
+        userGoals.setWeekOfYear(Integer.parseInt(d.child("weekOfYear").getValue().toString()));
+        userGoals.setMilesPerWeekTarget(Integer.parseInt(d.child("milesPerWeekTarget").getValue().toString()));
+        userGoals.setRunsPerWeekTarget(Integer.parseInt(d.child("runsPerWeekTarget").getValue().toString()));
+        if (d.child("dateOfRace").getValue() == null) {
+            userGoals.setDaysUntilRace("");
+        } else {
+            userGoals.setDaysUntilRace(d.child("dateOfRace").getValue().toString());
+        }
+
+        //At the beginning of each week, refreshes user's weekly goal data.
+        DateTime now = DateTime.now();
+         if(now.getWeekOfWeekyear() > userGoals.getWeekOfYear()) {
+             userGoals.setWeekOfYear(now.getWeekOfWeekyear());
+             userGoals.setRunsPerWeekActual(0);
+             userGoals.setMilesPerWeekActual(0.0);
+         }
+
+         //TODO : calculate user's progress towards current goals.
+        Calendar c = Calendar.getInstance();
+
     }
 }
