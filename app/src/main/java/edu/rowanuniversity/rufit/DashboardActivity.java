@@ -256,6 +256,9 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             if (userGoals.getRunsPerWeekTarget() > 0) {
                 userGoal1.setText("Runs Per Week Progress:");
                 int percent1 = (userGoals.getRunsPerWeekActual() * 100) / userGoals.getRunsPerWeekTarget();
+                if(percent1 > 100) {
+                    percent1 = 100;
+                }
                 userGoalPercent1.setText("" + percent1 + "%");
                 goalBar1.setProgress(percent1);
             } else {
@@ -266,6 +269,9 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                 userGoal2.setText("Weekly Mileage Progress:");
                 double p = (userGoals.getMilesPerWeekActual() * 100) / Double.parseDouble("" + userGoals.getMilesPerWeekTarget());
                 int percent2 = (int) p;
+                if(percent2 > 100) {
+                    percent2 = 100;
+                }
                 userGoalPercent2.setText("" + percent2 + "%");
                 goalBar2.setProgress(percent2);
             } else {
@@ -428,23 +434,23 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                  }
 
              }
+
+             //While we're here, we're going to update the mileage for each shoe
+             for(String shoeKey : userShoes.keySet()) {
+                 Shoe currShoe = userShoes.get(shoeKey);
+                 currShoe.setMileage(0.0);
+                 for(String runKey : runMap.keySet()) {
+                     if(currShoe.getName().equals(runMap.get(runKey).getShoe())) {
+                         currShoe.addMileage(runMap.get(runKey).getMileage());
+                     }
+                 }
+
+
+             }
          }
          userGoals.setRunsPerWeekActual(numOfRuns);
          userGoals.setMilesPerWeekActual(mileage);
 
-
-        //While we're here, we're going to update the mileage for each shoe
-        for(String shoeKey : userShoes.keySet()) {
-            Shoe currShoe = userShoes.get(shoeKey);
-            currShoe.setMileage(0.0);
-            for(String runKey : runMap.keySet()) {
-                if(currShoe.getName().equals(runMap.get(runKey).getShoe())) {
-                    currShoe.addMileage(runMap.get(runKey).getMileage());
-                }
-            }
-
-
-        }
 
          goalRef.setValue(userGoals);
          shoeRef.setValue(userShoes);

@@ -207,6 +207,9 @@ public class GoalsActivity extends AppCompatActivity {
             ProgressBar pBar1 = (ProgressBar) findViewById(R.id.goalBar1);
 
             int percent = (userGoals.getRunsPerWeekActual() * 100) / userGoals.getRunsPerWeekTarget();
+            if(percent>100) {
+                percent = 100;
+            }
 
             tv1.setText("Runs Per Week :");
             tv2.setText("You have done " + userGoals.getRunsPerWeekActual() + " days of activity. \n" +
@@ -228,6 +231,9 @@ public class GoalsActivity extends AppCompatActivity {
 
             double dp = (userGoals.getMilesPerWeekActual()*100)/userGoals.getMilesPerWeekTarget();
             int percent = (int) dp;
+            if(percent > 100) {
+                percent = 100;
+            }
 
             tv1.setText("Miles Per Week :");
             tv2.setText("You ran " + userGoals.getMilesPerWeekActual() + " miles this week. \n" +
