@@ -38,8 +38,6 @@ import com.squareup.picasso.Picasso;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeComparator;
-import org.joda.time.LocalDate;
-import org.joda.time.Seconds;
 import org.joda.time.format.DateTimeFormat;
 
 import java.text.ParseException;
@@ -435,6 +433,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
              }
 
+
              //While we're here, we're going to update the mileage for each shoe
              for(String shoeKey : userShoes.keySet()) {
                  Shoe currShoe = userShoes.get(shoeKey);
@@ -444,6 +443,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                          currShoe.addMileage(runMap.get(runKey).getMileage());
                      }
                  }
+
 
 
              }
