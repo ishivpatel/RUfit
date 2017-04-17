@@ -459,28 +459,23 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         if (id == R.id.workout_history) {
             Intent intent = new Intent(this, WorkoutHistory.class);
             startActivity(intent);
-
         } else if (id == R.id.add_workout) {
             Intent intent = new Intent(this, AddRunActivity.class);
             startActivity(intent);
-
         } else if (id == R.id.add_shoe) {
             Intent intent = new Intent(this, ShoeActivity.class);
             startActivity(intent);
+        }/*keep commented out
+        else if (id == R.id.leaderboard) {
 
-
-        }
-        //keep commented out
-        //else if (id == R.id.leaderboard) {
-
-
-        // }
-
+        }*/
         else if (id == R.id.goals) {
-
             Intent intent = new Intent(this, GoalsActivity.class);
             startActivity(intent);
-        }else if(id == R.id.personalInfo){
+        } else if(id == R.id.statistics) {
+            Intent intent = new Intent(this, StatisticsActivity.class);
+            startActivity(intent);
+        } else if(id == R.id.personalInfo){
             Intent intent = new Intent(this, PersonalInfoActivity.class);
             startActivity(intent);
         } else if (id == R.id.about) {
