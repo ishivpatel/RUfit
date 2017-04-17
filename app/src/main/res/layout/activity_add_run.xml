@@ -14,14 +14,11 @@
             android:layout_marginBottom="4dp"
             >
 
-            <TextView
+            <ImageView
                 android:layout_width="wrap_content"
-                android:layout_height="50dp"
-                android:layout_gravity="center"
-                android:paddingTop="5dp"
-                android:text="Add Run"
-                android:textSize="25sp"
-                android:textColor="@color/WhiteSmoke"
+                android:layout_height="30dp"
+                android:layout_gravity="center_horizontal|top"
+                android:src="@drawable/rufit_logo_nbg"
                 />
 
             <ImageView
@@ -52,14 +49,14 @@
        android:layout_width="match_parent"
        android:layout_height="wrap_content"
        android:orientation="vertical"
-       android:layout_marginTop="56dp">
+       android:layout_marginTop="60dp">
        <LinearLayout
            android:layout_width="wrap_content"
            android:layout_height="wrap_content"
            android:orientation="horizontal"
            android:paddingLeft="8dp"
            android:paddingRight="8dp"
-           android:layout_margin="6dp">
+           android:layout_margin="2dp">
 
            <TextView
                android:id="@+id/dateText"
@@ -86,7 +83,7 @@
            android:orientation="horizontal"
            android:paddingLeft="8dp"
            android:paddingRight="8dp"
-           android:layout_margin="6dp">
+           android:layout_margin="2dp">
 
            <TextView
                android:id="@+id/nameText"
@@ -114,7 +111,7 @@
            android:orientation="horizontal"
            android:paddingLeft="8dp"
            android:paddingRight="8dp"
-           android:layout_margin="6dp">
+           android:layout_margin="2dp">
 
            <TextView
                android:id="@+id/distanceText"
@@ -142,7 +139,7 @@
            android:orientation="horizontal"
            android:paddingLeft="8dp"
            android:paddingRight="8dp"
-           android:layout_margin="6dp">
+           android:layout_margin="2dp">
 
            <TextView
                android:id="@+id/timeText"
@@ -168,14 +165,18 @@
            android:orientation="horizontal"
            android:paddingLeft="8dp"
            android:paddingRight="8dp"
-           android:layout_margin="6dp">
+           android:layout_marginLeft="2dp"
+           android:layout_marginRight="2dp"
+           android:layout_marginBottom="5dp"
+           android:layout_marginTop="7dp">
 
            <TextView
                android:id="@+id/paceText"
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
                android:layout_gravity="center_vertical"
-               android:text="@string/paceLabel" />
+               android:text="@string/paceLabel"
+               android:paddingBottom="7dp"/>
            <View
                android:layout_width="0dp"
                android:layout_height="0dp"
@@ -184,18 +185,48 @@
                android:id="@+id/paceDisplay"
                android:layout_width="70dp"
                android:layout_height="wrap_content"
-               android:layout_gravity="right"
                android:ems="10"
                android:text="00:00"
-               android:textSize="16dp"/>
+               android:textSize="16dp"
+               android:paddingBottom="7dp"/>
+           <View
+               android:layout_width="1dip"
+               android:layout_height="fill_parent"
+               android:background="@color/gray_light"
+               android:layout_marginRight="10dp"
+               android:paddingBottom="7dp"
+               />
+           <TextView
+               android:id="@+id/caloriesText"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_gravity="center_vertical"
+               android:text="Calories"
+               android:paddingBottom="7dp"/>
+           <View
+               android:layout_width="0dp"
+               android:layout_height="0dp"
+               android:layout_weight="1" />
+           <TextView
+               android:id="@+id/caloriesEdit"
+               android:layout_width="70dp"
+               android:layout_height="wrap_content"
+               android:layout_gravity="right"
+               android:ems="10"
+               android:text="---"
+               android:textSize="16dp"
+               android:paddingBottom="7dp"/>
        </LinearLayout>
        <LinearLayout
+           android:id="@+id/typeRow"
            android:layout_width="wrap_content"
            android:layout_height="wrap_content"
            android:orientation="horizontal"
            android:paddingLeft="8dp"
-           android:paddingRight="8dp"
-           android:layout_margin="6dp">
+           android:layout_marginTop="9dp"
+           android:layout_marginRight="2dp"
+           android:layout_marginLeft="2dp"
+           android:layout_marginBottom="9dp">
 
            <TextView
                android:id="@+id/typeText"
@@ -218,12 +249,15 @@
                />
        </LinearLayout>
        <LinearLayout
+           android:id="@+id/shoeRow"
            android:layout_width="wrap_content"
            android:layout_height="wrap_content"
            android:orientation="horizontal"
            android:paddingLeft="8dp"
-           android:paddingRight="8dp"
-           android:layout_margin="6dp">
+           android:layout_marginTop="9dp"
+           android:layout_marginRight="2dp"
+           android:layout_marginLeft="2dp"
+           android:layout_marginBottom="9dp">
 
            <TextView
                android:id="@+id/shoesText"
@@ -235,7 +269,6 @@
                android:layout_width="0dp"
                android:layout_height="0dp"
                android:layout_weight="1" />
-
            <Spinner
                android:id="@+id/shoeSpinner"
                android:layout_width="250dp"
@@ -249,7 +282,9 @@
            android:orientation="horizontal"
            android:paddingLeft="8dp"
            android:paddingRight="8dp"
-           android:layout_margin="6dp">
+           android:layout_marginLeft="2dp"
+           android:layout_marginBottom="8dp"
+           android:layout_marginTop="15dp">
 
            <TextView
                android:id="@+id/feelText"
@@ -268,6 +303,7 @@
                android:layout_height="wrap_content"
                android:layout_gravity="right"
                android:max="4"
+               android:background="@color/Cyan"
                android:progressTint="@color/gray_very_light" />
        </LinearLayout>
        <LinearLayout
@@ -276,7 +312,7 @@
            android:orientation="horizontal"
            android:paddingLeft="8dp"
            android:paddingRight="8dp"
-           android:layout_margin="6dp">
+           android:layout_margin="2dp">
 
            <TextView
                android:id="@+id/notesText"

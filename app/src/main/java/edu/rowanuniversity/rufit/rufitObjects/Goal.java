@@ -19,9 +19,9 @@ public class Goal {
     private int weekOfYear;
 
 
-    public Goal(int dpwValue, int mpwValue, String durValue) {
+    public Goal(int dpwValue, double mpwValue, String durValue) {
         runsPerWeekTarget = dpwValue;
-        milesPerWeekTarget = Double.parseDouble("" +mpwValue);
+        milesPerWeekTarget = mpwValue;
         dateOfRace = durValue;
         milesPerWeekActual = 0.0;
         runsPerWeekActual = 0;
@@ -54,9 +54,7 @@ public class Goal {
 
     public double getMilesPerWeekTarget() { return  milesPerWeekTarget; }
 
-    public void setMilesPerWeekTarget(int milesPerWeek) {
-        this.milesPerWeekTarget = Double.parseDouble("" + milesPerWeek);
-    }
+    public void setMilesPerWeekTarget(double milesPerWeek) { this.milesPerWeekTarget = milesPerWeek; };
 
     public int getRunsPerWeekTarget() {return runsPerWeekTarget;    }
 

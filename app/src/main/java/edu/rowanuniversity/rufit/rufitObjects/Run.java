@@ -16,9 +16,10 @@ public class Run {
     private int feel;
     private String type;
     private String notes;
+    private int calories;
 
     public Run(String name, String date, double mileage, int time, String shoe,
-               int feel, String type, String notes) {
+               int feel, String type, String notes, int calories) {
         this.name = name;
         this.date = date;
         this.mileage = mileage;
@@ -27,6 +28,7 @@ public class Run {
         this.feel = feel;
         this.type = type;
         this.notes = notes;
+        this.calories = calories;
     }
 
     public Run() {
@@ -35,12 +37,17 @@ public class Run {
 
     private void calculatePace() {
         if(time > -1 && mileage > -1.0) {
-            double t = (double) time;
-            double p = ((t / mileage) + (t % mileage)) / 60;
-            double rounded = Math.round(p * 100) / 100;
-            double toSeconds = rounded * 60;
-            setPace((int) toSeconds);
+            double p = ((time / mileage) + (time % mileage));
+            setPace((int) p);
         }
+    }
+
+    public int getCalories() {
+        return calories;
+    }
+
+    public void setCalories(int calories) {
+        this.calories = calories;
     }
 
     public String getName() {

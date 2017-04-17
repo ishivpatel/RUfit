@@ -29,10 +29,11 @@ android:layout_margin="8dp"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:layout_below="@id/goalsCardTitle"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="10dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="25dp"
             android:gravity="center"
             android:text="You don't have any goals set yet !"
+            android:textStyle="bold"
             android:visibility="gone"/>
 
         <RelativeLayout

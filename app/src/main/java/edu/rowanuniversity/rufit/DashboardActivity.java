@@ -14,6 +14,7 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -41,19 +42,23 @@ import org.joda.time.LocalDate;
 import org.joda.time.Seconds;
 import org.joda.time.format.DateTimeFormat;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import edu.rowanuniversity.rufit.rufitObjects.Goal;
 import edu.rowanuniversity.rufit.rufitObjects.Run;
+import edu.rowanuniversity.rufit.rufitObjects.Shoe;
 import edu.rowanuniversity.rufit.rufitObjects.User;
 
 public class DashboardActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     FirebaseAuth auth;
     FirebaseDatabase database;
-    DatabaseReference myRef;
+    DatabaseReference myRef, goalRef, shoeRef;
     TextView drawerusername;
     CircleImageView userImage;
     CardView goalsCard,recentRunCard, startRunCard;
@@ -63,19 +68,25 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
     ProgressDialog mProgressDialog;
     private HashMap<String,Object> currentUser;
+    private HashMap<String, Run> runMap;
+    private HashMap<String,Shoe> userShoes;
     private Goal userGoals;
     final String ROOT = "users";
     private String text = "Welcome!";
+    private  int check;
     Toolbar toolbar;
     NavigationView navigationView;
     private GenericTypeIndicator<HashMap<String,Run>> gRun = new GenericTypeIndicator<HashMap<String,Run>>() {};
     private GenericTypeIndicator<User<String,Object>> generic = new GenericTypeIndicator<User<String,Object>>() {};
+    private GenericTypeIndicator<HashMap<String,Shoe>> gShoe = new GenericTypeIndicator<HashMap<String,Shoe>>() {};
     private static final int GALLERY_REQUEST_CODE = 991;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
+
+        check = 0;
 
         toolbar = (Toolbar) findViewById(R.id.topToolBar);
         setSupportActionBar(toolbar);
@@ -113,6 +124,8 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         user = auth.getCurrentUser();
         //Unique UUID For each user for Database
         myRef  = database.getReference(ROOT).child(user.getUid());
+        goalRef  = myRef.child("goals");
+        shoeRef = myRef.child("shoes");
         try{
             Glide.with(getApplicationContext()).using(new FirebaseImageLoader())
                     .load(mStorage.child(user.getUid()))
@@ -132,6 +145,8 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                 startActivityForResult(intent, GALLERY_REQUEST_CODE);
             }
         });
+
+
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -159,55 +174,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             updateUser();
         }
     }
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
 
-        if (id == R.id.workout_history) {
-           Intent intent = new Intent(this, WorkoutHistory.class);
-            startActivity(intent);
-
-        } else if (id == R.id.add_workout) {
-            Intent intent = new Intent(this, AddRunActivity.class);
-            startActivity(intent);
-
-        } else if (id == R.id.add_shoe) {
-            Intent intent = new Intent(this, ShoeActivity.class);
-            startActivity(intent);
-
-
-        }
-        //keep commented out
-        //else if (id == R.id.leaderboard) {
-
-
-       // }
-
-        else if (id == R.id.goals) {
-
-            Intent intent = new Intent(this, GoalsActivity.class);
-            startActivity(intent);
-        }else if(id == R.id.personalInfo){
-            Intent intent = new Intent(this, PersonalInfoActivity.class);
-            startActivity(intent);
-        } else if (id == R.id.about) {
-            Intent intent = new Intent(DashboardActivity.this, AboutActivity.class);
-            startActivity(intent);
-        }
-        else if(id == R.id.settings){
-           /* Intent intent = new Intent(this, SettingsActivity.class);
-            startActivity(intent);*/
-        }
-        else if(id == R.id.signout){
-            auth.signOut();
-            Intent intent = new Intent(DashboardActivity.this, LoginActivity.class);
-            startActivity(intent);
-        }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }
 
     /**
      * Populates user's dashboard with their personal information to cards
@@ -217,6 +184,37 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         currentUser = d.getValue(generic);
         DataSnapshot goalSnapshot = d.child("goals");
         DataSnapshot runsSnapshot = d.child("runs");
+        DataSnapshot shoeSnapshot = d.child("shoes");
+
+        //init goals
+        userGoals = new Goal();
+        userGoals.setWeekOfYear(Integer.parseInt(goalSnapshot.child("weekOfYear").getValue().toString()));
+        userGoals.setMilesPerWeekTarget(Double.parseDouble(goalSnapshot.child("milesPerWeekTarget").getValue().toString()));
+        userGoals.setRunsPerWeekTarget(Integer.parseInt(goalSnapshot.child("runsPerWeekTarget").getValue().toString()));
+        userGoals.setMilesPerWeekActual(Double.parseDouble(goalSnapshot.child("milesPerWeekActual").getValue().toString()));
+        userGoals.setRunsPerWeekActual(Integer.parseInt(goalSnapshot.child("runsPerWeekActual").getValue().toString()));
+        if (goalSnapshot.child("dateOfRace").getValue() == null) {
+            userGoals.setDaysUntilRace("");
+        } else {
+            userGoals.setDaysUntilRace(goalSnapshot.child("dateOfRace").getValue().toString());
+        }
+
+        //init runs
+        if(runsSnapshot.exists() && runsSnapshot.getValue() != null) {
+            runMap = runsSnapshot.getValue(gRun);
+        }else {
+            LinearLayout l1 = (LinearLayout) findViewById(R.id.row1);
+            LinearLayout l2 = (LinearLayout) findViewById(R.id.row2);
+            TextView cardDate  =(TextView) findViewById(R.id.cardDate);
+            l1.setVisibility(View.GONE);
+            l2.setVisibility(View.GONE);
+            cardDate.setText("You don't have any runs yet !");
+        }
+
+        //init shoes
+        userShoes = shoeSnapshot.getValue(gShoe);
+
+
         if(currentUser == null){
             drawerusername.setText(text);
         }else {
@@ -224,16 +222,18 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             drawerusername.setText(temp.get("username").toString());
         }
 
+
+
         //Background updates relating to user goals
-        refreshGoalData(goalSnapshot);
-        updateGoalsCard(goalSnapshot);
+        if(check == 0) {
+            refreshGoalData();
+        }
+        updateGoalsCard();
         updateRecentRunCard(runsSnapshot);
+
     }
 
-    private void updateGoalsCard(DataSnapshot d) {
-        Goal userGoals = new Goal();
-        userGoals.setMilesPerWeekTarget(Integer.parseInt(d.child("milesPerWeekTarget").getValue().toString()));
-        userGoals.setRunsPerWeekTarget(Integer.parseInt(d.child("runsPerWeekTarget").getValue().toString()));
+    private void updateGoalsCard() {
 
         RelativeLayout r1 = (RelativeLayout) findViewById(R.id.r1);
         RelativeLayout r2 = (RelativeLayout) findViewById(R.id.r2);
@@ -275,8 +275,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     }
 
     private void updateRecentRunCard(DataSnapshot d) {
-        if(d.exists() && d.getValue() != null) {
-            HashMap<String, Run> runMap = d.getValue(gRun);
+        if (d.exists() && d.getValue() != null) {
             Run mostRecentRun = null;
             for (String id : runMap.keySet()) {
                 Run current = runMap.get(id);
@@ -332,6 +331,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             }
         }
     }
+
 
     public void setCardActions () {
         startRunCard = (CardView) findViewById(R.id.cardStartRun);
@@ -389,27 +389,116 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         }
     }
 
-    private void refreshGoalData (DataSnapshot d) {
-        userGoals = new Goal();
-        userGoals.setWeekOfYear(Integer.parseInt(d.child("weekOfYear").getValue().toString()));
-        userGoals.setMilesPerWeekTarget(Integer.parseInt(d.child("milesPerWeekTarget").getValue().toString()));
-        userGoals.setRunsPerWeekTarget(Integer.parseInt(d.child("runsPerWeekTarget").getValue().toString()));
-        if (d.child("dateOfRace").getValue() == null) {
-            userGoals.setDaysUntilRace("");
-        } else {
-            userGoals.setDaysUntilRace(d.child("dateOfRace").getValue().toString());
-        }
-
+    private void refreshGoalData () {
         //At the beginning of each week, refreshes user's weekly goal data.
         DateTime now = DateTime.now();
-         if(now.getWeekOfWeekyear() > userGoals.getWeekOfYear()) {
+         if((now.getWeekOfWeekyear() > userGoals.getWeekOfYear()) || now.getWeekOfWeekyear() == 0 ) {
              userGoals.setWeekOfYear(now.getWeekOfWeekyear());
              userGoals.setRunsPerWeekActual(0);
              userGoals.setMilesPerWeekActual(0.0);
          }
 
-         //TODO : calculate user's progress towards current goals.
-        Calendar c = Calendar.getInstance();
+         //Calculates weekly mileage and runs per week
+         double mileage = 0.0;
+         int numOfRuns = 0;
+         if(runMap != null && !(runMap.isEmpty())) {
+             //Get current year and current week of the year
+             int year = now.getYear();
+             int currWeek = now.getWeekOfWeekyear();
+             Calendar c = Calendar.getInstance();
+             c.clear();
+             //Set calendar to beginning of week
+             c.set(Calendar.YEAR, year);
+             c.set(Calendar.WEEK_OF_YEAR, currWeek);
+             Date beginningOfWeek = c.getTime();
 
+             SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+
+             for (String key : runMap.keySet()) {
+                 Run run = runMap.get(key);
+                 //Date stored as MM/dd/yyyy
+                 try {
+                     Date dateOfRun = formatter.parse(run.getDate());
+                     if (dateOfRun.compareTo(beginningOfWeek) >= 0) {
+                         mileage += run.getMileage();
+                         numOfRuns++;
+                     }
+                 }catch (ParseException p) {
+                    //idfk
+                 }
+
+             }
+         }
+         userGoals.setRunsPerWeekActual(numOfRuns);
+         userGoals.setMilesPerWeekActual(mileage);
+
+
+        //While we're here, we're going to update the mileage for each shoe
+        for(String shoeKey : userShoes.keySet()) {
+            Shoe currShoe = userShoes.get(shoeKey);
+            currShoe.setMileage(0.0);
+            for(String runKey : runMap.keySet()) {
+                if(currShoe.getName().equals(runMap.get(runKey).getShoe())) {
+                    currShoe.addMileage(runMap.get(runKey).getMileage());
+                }
+            }
+
+
+        }
+
+         goalRef.setValue(userGoals);
+         shoeRef.setValue(userShoes);
+
+        check = 1;
+    }
+
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+
+        if (id == R.id.workout_history) {
+            Intent intent = new Intent(this, WorkoutHistory.class);
+            startActivity(intent);
+
+        } else if (id == R.id.add_workout) {
+            Intent intent = new Intent(this, AddRunActivity.class);
+            startActivity(intent);
+
+        } else if (id == R.id.add_shoe) {
+            Intent intent = new Intent(this, ShoeActivity.class);
+            startActivity(intent);
+
+
+        }
+        //keep commented out
+        //else if (id == R.id.leaderboard) {
+
+
+        // }
+
+        else if (id == R.id.goals) {
+
+            Intent intent = new Intent(this, GoalsActivity.class);
+            startActivity(intent);
+        }else if(id == R.id.personalInfo){
+            Intent intent = new Intent(this, PersonalInfoActivity.class);
+            startActivity(intent);
+        } else if (id == R.id.about) {
+            Intent intent = new Intent(DashboardActivity.this, AboutActivity.class);
+            startActivity(intent);
+        }
+        else if(id == R.id.settings){
+           /* Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);*/
+        }
+        else if(id == R.id.signout){
+            auth.signOut();
+            Intent intent = new Intent(DashboardActivity.this, LoginActivity.class);
+            startActivity(intent);
+        }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
     }
 }

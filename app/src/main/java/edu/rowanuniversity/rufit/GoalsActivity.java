@@ -176,8 +176,10 @@ public class GoalsActivity extends AppCompatActivity {
      */
     private void update( DataSnapshot dataSnapshot) {
         userGoals = new Goal();
-        userGoals.setMilesPerWeekTarget(Integer.parseInt(dataSnapshot.child("milesPerWeekTarget").getValue().toString()));
+        userGoals.setMilesPerWeekTarget(Double.parseDouble(dataSnapshot.child("milesPerWeekTarget").getValue().toString()));
         userGoals.setRunsPerWeekTarget(Integer.parseInt(dataSnapshot.child("runsPerWeekTarget").getValue().toString()));
+        userGoals.setMilesPerWeekActual(Double.parseDouble(dataSnapshot.child("milesPerWeekActual").getValue().toString()));
+        userGoals.setRunsPerWeekActual(Integer.parseInt(dataSnapshot.child("runsPerWeekActual").getValue().toString()));
         if (dataSnapshot.child("dateOfRace").getValue() == null) {
             userGoals.setDaysUntilRace("");
         } else {
@@ -228,7 +230,7 @@ public class GoalsActivity extends AppCompatActivity {
             int percent = (int) dp;
 
             tv1.setText("Miles Per Week :");
-            tv2.setText("You have ran " + userGoals.getMilesPerWeekActual() + " miles this week. \n" +
+            tv2.setText("You ran " + userGoals.getMilesPerWeekActual() + " miles this week. \n" +
                     "Your goal is " + userGoals.getMilesPerWeekTarget() +" miles.");
             percent2.setText(percent +"%");
             pBar2.setProgress(percent);
@@ -349,7 +351,7 @@ public class GoalsActivity extends AppCompatActivity {
         AlertDialog.Builder a = new AlertDialog.Builder(GoalsActivity.this);
         a.setTitle("Set Weekly Mileage");
         final EditText input = new EditText(this);
-        input.setInputType(InputType.TYPE_CLASS_NUMBER);
+        input.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
         a.setView(input);
 
         a.setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -358,7 +360,7 @@ public class GoalsActivity extends AppCompatActivity {
                 if(input.getText().toString().equals("")) {
                     Toast.makeText(GoalsActivity.this, "You Entered Invalid Input", Toast.LENGTH_LONG).show();
                 } else {
-                    userGoals.setMilesPerWeekTarget(Integer.parseInt(input.getText().toString()));
+                    userGoals.setMilesPerWeekTarget(Double.parseDouble(input.getText().toString()));
                     goalRef.setValue(userGoals);
                     Toast.makeText(GoalsActivity.this, "Goal Added", Toast.LENGTH_LONG).show();
                 }
@@ -425,10 +427,10 @@ public class GoalsActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 switch (id) {
                     case R.id.delete_goal_button1 :
-                        userGoals.setRunsPerWeekTarget(-1);
+                        userGoals.setRunsPerWeekTarget(0);
                         break;
                     case R.id.delete_goal_button2 :
-                        userGoals.setMilesPerWeekTarget(-1);
+                        userGoals.setMilesPerWeekTarget(0.0);
                         break;
                     case R.id.delete_goal_button3 :
                         userGoals.setDaysUntilRace("");
