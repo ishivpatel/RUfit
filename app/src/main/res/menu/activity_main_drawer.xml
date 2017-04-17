@@ -26,6 +26,10 @@
             android:icon="@drawable/goals"
             android:title="Goals" />
         <item
+            android:id="@+id/statistics"
+            android:icon="@drawable/statistics"
+            android:title="Statistics" />
+        <item
             android:id="@+id/personalInfo"
             android:icon="@drawable/pinfo"
             android:title="Personal Info"
