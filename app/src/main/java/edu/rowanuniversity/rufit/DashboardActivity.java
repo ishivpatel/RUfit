@@ -157,7 +157,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             }
         });
 
-        //drawerusername.setText(currentUser == null ? text : ((HashMap<String,Object>) currentUser.get("info")).get("username").toString());
+        drawerusername.setText(currentUser == null ? text : ((HashMap<String,Object>) currentUser.get("info")).get("username").toString());
 
     }
 
@@ -200,7 +200,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         //init runs
         if(runsSnapshot.exists() && runsSnapshot.getValue() != null) {
             runMap = runsSnapshot.getValue(gRun);
-        }else {
+        } else {
             LinearLayout l1 = (LinearLayout) findViewById(R.id.row1);
             LinearLayout l2 = (LinearLayout) findViewById(R.id.row2);
             TextView cardDate  =(TextView) findViewById(R.id.cardDate);
@@ -212,14 +212,12 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         //init shoes
         userShoes = shoeSnapshot.getValue(gShoe);
 
-/*
         if(currentUser == null){
             drawerusername.setText(text);
         }else {
             HashMap<String, Object> temp = (HashMap<String, Object>) currentUser.get("info");
             drawerusername.setText(temp.get("username").toString());
         }
-*/
 
 
         //Background updates relating to user goals
