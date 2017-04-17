@@ -37,7 +37,8 @@
             android:text="2/06/2017"
             android:textColor="@color/AntiqueWhite"
             android:textStyle="bold"
-            android:textSize="30sp"/>
+            android:textSize="30sp"
+            android:id="@+id/date_value"/>
 
         <TextView
             android:layout_width="wrap_content"

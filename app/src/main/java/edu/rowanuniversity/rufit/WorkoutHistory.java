@@ -1,11 +1,11 @@
 package edu.rowanuniversity.rufit;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 
 import com.github.mikephil.charting.charts.LineChart;
@@ -13,14 +13,23 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.utils.EntryXComparator;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.GenericTypeIndicator;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Random;
 
 import belka.us.androidtoggleswitch.widgets.BaseToggleSwitch;
 import belka.us.androidtoggleswitch.widgets.ToggleSwitch;
+import edu.rowanuniversity.rufit.rufitObjects.Run;
 
 /**
  * Created by shiv on 3/31/2017.
@@ -34,13 +43,29 @@ public class WorkoutHistory  extends AppCompatActivity{
     LineData lineData;
     ImageView back_button;
     ToggleSwitch toggle_switch;
-    Button detailView;
     RecyclerView recyclerView;
     DetailViewAdapter adapter;
-    List<WorkoutsData> data;
+    List<Run> data;
+    FirebaseAuth auth;
+    FirebaseDatabase database;
+    DatabaseReference myRef;
+    final String ROOT = "users";
+    FirebaseUser user;
+    private GenericTypeIndicator<HashMap<String,Run>> gRun = new GenericTypeIndicator<HashMap<String,Run>>() {};
+    HashMap<String, Run> runMap;
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.workout_history);
+        auth = FirebaseAuth.getInstance();
+        database = FirebaseDatabase.getInstance();
+        data = new ArrayList<>();
+
+        if(auth.getCurrentUser() == null){
+            Intent intent = new Intent(WorkoutHistory.this, LoginActivity.class);
+            startActivity(intent);
+        }else{
+            getRuns();
+        }
 
         recyclerView = (RecyclerView) findViewById(R.id.details_recyclerView);
 
@@ -85,54 +110,65 @@ public class WorkoutHistory  extends AppCompatActivity{
         toggle_switch.setCheckedTogglePosition(0);
     }
 
-    private List<WorkoutsData> getdata(int position) {
+    private void getRuns() {
+        user = auth.getCurrentUser();
+        //Unique UUID For each user for Database
+        myRef  = database.getReference(ROOT).child(user.getUid());
 
-        Random rand = new Random(100);
-        if(position == 0){
-            data = new ArrayList<>();
-            for(int i=0; i<7;i++){
-            WorkoutsData temp = new WorkoutsData(" "+ rand.nextInt(7) + 1 +" ",
-                    " "+rand.nextInt(150), " "+rand.nextInt(150)," "+rand.nextInt(150)+ " ");
-                data.add(temp);
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                fetchData(dataSnapshot);
             }
-        }
-        if(position == 1){
-            data = new ArrayList<>();
-            for(int i=0; i<30;i++){
-                WorkoutsData temp = new WorkoutsData(" "+ rand.nextInt(30) + 1 +" ",
-                        " "+rand.nextInt(150), " "+rand.nextInt(150)," "+rand.nextInt(150)+ " ");
-                data.add(temp);
-            }
-        }
-        if(position == 2){
-            data = new ArrayList<>();
-            for(int i=0; i<365;i++){
-                WorkoutsData temp = new WorkoutsData(" "+ rand.nextInt(30) + 1 +" ",
-                        " "+rand.nextInt(150), " "+rand.nextInt(150)," "+rand.nextInt(150)+ " ");
-                data.add(temp);
-            }
-        }
 
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void fetchData(DataSnapshot d) {
+
+        DataSnapshot runsSnapshot = d.child("runs");
+        if (runsSnapshot.exists() && runsSnapshot.getValue() != null) {
+            runMap = runsSnapshot.getValue(gRun);
+            for(String id: runMap.keySet()){
+                data.add(runMap.get(id));
+            }
+        }
+    }
+
+    private List<Run> getdata ( int position){
+
+            /*if (position == 0) {
+
+                if(data.size() == 0){
+                    Toast.makeText(getApplicationContext(), "Empty", Toast.LENGTH_SHORT).show();
+                }
+            }
+            if (position == 1) {
+                data = new ArrayList<>();
+                data = getRunsData();
+            }
+            if (position == 2) {
+                data = new ArrayList<>();
+                data = getRunsData();
+            }
+*/
         return data;
     }
 
+
+
     private void generateMonthlyEntries() {
-        entries = new ArrayList<>();
         entries = new ArrayList<>();
         // turn your data into Entry objects
         //x- should be sorted
-        entries.add(new Entry(0, 85));
-        entries.add(new Entry(1, 55));
-        entries.add(new Entry(2, 83));
-        entries.add(new Entry(3, 89));
-        entries.add(new Entry(4, 71));
-        entries.add(new Entry(5, 24));
-        entries.add(new Entry(6, 32));
-        entries.add(new Entry(7, 29));
-        entries.add(new Entry(8, 19));
-        entries.add(new Entry(9, 67));
-        entries.add(new Entry(10, 77));
-        entries.add(new Entry(11, 37));
+        for(int i=0;i<data.size();i++){
+            entries.add(new Entry(i, (float) data.get(i).getMileage()));
+        }
+
         //Has to be sorted by x axis value
         Collections.sort(entries, new EntryXComparator());
         generateGraphData();
@@ -140,14 +176,12 @@ public class WorkoutHistory  extends AppCompatActivity{
 
     private void generateWeeklyEntries() {
         entries = new ArrayList<>();
-        entries = new ArrayList<>();
         // turn your data into Entry objects
         //x- should be sorted
-        entries.add(new Entry(0, 95));
-        entries.add(new Entry(1, 25));
-        entries.add(new Entry(2, 89));
-        entries.add(new Entry(3, 35));
-        entries.add(new Entry(4, 16));
+        for(int i=0;i<data.size();i++){
+            entries.add(new Entry(i, (float) data.get(i).getMileage()));
+        }
+
         //Has to be sorted by x axis value
         Collections.sort(entries, new EntryXComparator());
         generateGraphData();
@@ -157,13 +191,10 @@ public class WorkoutHistory  extends AppCompatActivity{
         entries = new ArrayList<>();
         // turn your data into Entry objects
         //x- should be sorted
-        entries.add(new Entry(0, 55));
-        entries.add(new Entry(1, 65));
-        entries.add(new Entry(2, 8));
-        entries.add(new Entry(3, 85));
-        entries.add(new Entry(4, 76));
-        entries.add(new Entry(5, 34));
-        entries.add(new Entry(6, 7));
+        for(int i=0;i<data.size();i++){
+            entries.add(new Entry(i, (float) data.get(i).getMileage()));
+        }
+
         //Has to be sorted by x axis value
         Collections.sort(entries, new EntryXComparator());
         generateGraphData();

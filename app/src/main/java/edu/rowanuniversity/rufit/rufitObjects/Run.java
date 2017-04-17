@@ -1,12 +1,12 @@
 package edu.rowanuniversity.rufit.rufitObjects;
 
-import java.util.Date;
+import java.io.Serializable;
 
 /**
  * Created by catherine on 4/2/2017.
  */
 
-public class Run {
+public class Run implements Serializable {
     private String name;
     private String date;
     private double mileage;

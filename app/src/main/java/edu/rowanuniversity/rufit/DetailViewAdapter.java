@@ -12,6 +12,8 @@ import android.widget.TextView;
 import java.util.Collections;
 import java.util.List;
 
+import edu.rowanuniversity.rufit.rufitObjects.Run;
+
 /**
  * Created by shiv on 3/31/2017.
  */
@@ -20,9 +22,9 @@ public class DetailViewAdapter extends RecyclerView.Adapter<DetailViewAdapter.Wo
 
     private LayoutInflater inflater;
     private Context context;
-    List<WorkoutsData> data = Collections.emptyList();
+    List<Run> data = Collections.emptyList();
 
-    public DetailViewAdapter(Context context, List<WorkoutsData> data){
+    public DetailViewAdapter(Context context, List<Run> data){
         this.context = context;
         inflater = LayoutInflater.from(context);
         this.data = data;
@@ -37,14 +39,22 @@ public class DetailViewAdapter extends RecyclerView.Adapter<DetailViewAdapter.Wo
     }
 
     @Override
-    public void onBindViewHolder(WorkoutsViewHolder holder, int position) {
-        WorkoutsData currentData = data.get(position);
+    public void onBindViewHolder(WorkoutsViewHolder holder, final int position) {
+        Run currentData = data.get(position);
 
-        holder.DateTitle.setText(currentData.Date);
-        holder.CaloriesBurned.setText(currentData.calorie);
-        holder.DistanceRan.setText(currentData.Distance);
-        holder.TimeWorkout.setText(currentData.Time);
-
+        holder.DateTitle.setText(" " +currentData.getDate());
+        holder.CaloriesBurned.setText(" " +currentData.getCalories());
+        holder.DistanceRan.setText(" " + currentData.getMileage());
+        holder.TimeWorkout.setText(" " +currentData.getTime());
+        holder.cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent detailWorkout = new Intent(context, DetailWorkouts.class);
+                detailWorkout.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                detailWorkout.putExtra("Key", data.get(position));
+                context.startActivity(detailWorkout);
+            }
+        });
     }
 
     @Override
@@ -65,21 +75,18 @@ public class DetailViewAdapter extends RecyclerView.Adapter<DetailViewAdapter.Wo
         public WorkoutsViewHolder(View itemView) {
             super(itemView);
 
-            itemView.setOnClickListener(this);
+           // itemView.setOnClickListener(this);
             DateTitle = (TextView) itemView.findViewById(R.id.dateofworkout_Title);
             CaloriesBurned = (TextView) itemView.findViewById(R.id.calories_burned);
             DistanceRan = (TextView) itemView.findViewById(R.id.distance);
             TimeWorkout = (TextView) itemView.findViewById(R.id.time_workout);
             cardView = (CardView) itemView.findViewById(R.id.detail_workout_cardView);
 
-
         }
 
         @Override
         public void onClick(View v) {
-            Intent detailWorkout = new Intent(context, DetailWorkouts.class);
-            detailWorkout.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            context.startActivity(detailWorkout);
+
         }
     }
 }
