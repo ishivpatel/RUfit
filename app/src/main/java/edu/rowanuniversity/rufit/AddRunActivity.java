@@ -198,7 +198,6 @@ public class AddRunActivity extends AppCompatActivity {
                     int sec = run.getPace() % 60;
                     paceDisplay.setText(String.format("%02d", mins) + ":" + String.format("%02d", sec));
                 }
-                Toast.makeText(AddRunActivity.this,""+ run.getPace(), Toast.LENGTH_LONG).show();
                 return false;
             }
         });
