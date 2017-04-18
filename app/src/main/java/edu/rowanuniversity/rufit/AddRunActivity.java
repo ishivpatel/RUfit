@@ -272,15 +272,6 @@ public class AddRunActivity extends AppCompatActivity {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {}
         });
-
-
-      //  startRun.setOnClickListener(new View.OnClickListener() {
-        //    @Override
-         //   public void onClick(View v) {
-          //      goToStartRun();
-           // }
-       // });
-
     }
 
     private void  pickDate() {
@@ -336,13 +327,7 @@ public class AddRunActivity extends AppCompatActivity {
 
     }
 
-    public void goToStartRun() {
-        Intent intent = new Intent(this, StartRunActivity.class);
-        startActivity(intent);
-    }
-
-
-    public void leaveActivity() {
+    private void leaveActivity() {
         Intent intent = new Intent(this, DashboardActivity.class);
         startActivity(intent);
     }

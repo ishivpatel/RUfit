@@ -30,7 +30,7 @@
         <activity android:name=".AboutActivity" />
         <activity android:name=".DetailWorkouts" />
         <activity android:name=".ShoeActivity" />
-        <activity android:name=".StatisticsActivity"/>
+        <activity android:name=".StatisticsActivity" />
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
@@ -62,6 +62,10 @@
         <activity
             android:name="layout.p.MActivity"
             android:label="@string/title_activity_m"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".FinishRunActivity"
+            android:label="@string/title_activity_finish_run"
             android:theme="@style/AppTheme"></activity>
     </application>
 
