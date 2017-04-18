@@ -45,9 +45,11 @@ public class DetailWorkouts extends AppCompatActivity {
         DateTitle.setText(currentRun.getDate());
         CaloriesBurned.setText("" + currentRun.getCalories());
         DistanceRan.setText("" + currentRun.getMileage());
-        TimeWorkout.setText(String.format("%02d", currentRun.getTime()/60) + ":" + String.format("%02d", currentRun.getTime()%60));
+
+        TimeWorkout.setText(String.format("%02d",currentRun.getTime()/3600) + ":" + String.format("%02d", currentRun.getTime()/60) + ":" + String.format("%02d", currentRun.getTime()%60));
         pace.setText(String.format("%02d", currentRun.getPace()/60) + ":" + String.format("%02d", currentRun.getPace()%60));
         notes.setText(currentRun.getNotes() == null ? "" : currentRun.getNotes());
+
         shoe.setText("" + currentRun.getShoe());
         switch(currentRun.getFeel()) {
             case 0 : feel1.setColorFilter(Color.CYAN);

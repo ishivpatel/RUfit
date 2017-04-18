@@ -33,13 +33,12 @@
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="23dp"
         android:padding="5dp"
         android:text="@string/about_label"
         android:textAlignment="center"
         android:textColor="@color/RowanBrown"
         android:textSize="30sp"
-        android:layout_below="@+id/topToolBar"
+        android:layout_below="@+id/about_topToolBar"
         android:layout_centerHorizontal="true" />
 
     <TextView
