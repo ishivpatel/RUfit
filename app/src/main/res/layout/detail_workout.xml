@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/workout_bg">
@@ -30,15 +31,16 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:id="@+id/toplayout_workoutdetails">
+
         <TextView
+            android:id="@+id/date_value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:text="2/06/2017"
             android:textColor="@color/AntiqueWhite"
-            android:textStyle="bold"
             android:textSize="30sp"
-            android:id="@+id/date_value"/>
+            android:textStyle="bold" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -100,7 +102,6 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:layout_weight="1">
-
                 <ImageView
                     android:layout_width="25dp"
                     android:layout_height="25dp"
@@ -108,6 +109,7 @@
                     android:layout_marginBottom="5dp"
                     android:layout_gravity="center"
                     />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -169,14 +171,11 @@
         android:background="@android:color/transparent"
         android:textSize="20sp"
         android:textColor="@color/AntiqueWhite"
-        android:layout_below="@+id/note_label"
         android:id="@+id/note_value"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginLeft="10dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="5dp"
-        android:textStyle="italic"/>
+        android:textStyle="italic"
+        android:layout_below="@+id/note_label"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
     <TextView
         android:layout_width="match_parent"
@@ -187,9 +186,10 @@
         android:textColor="@color/AntiqueWhite"
         android:id="@+id/shoe_label"
         android:textStyle="bold"
-        android:layout_marginLeft="5dp"
-        android:layout_marginStart="5dp"
-        android:layout_below="@+id/note_value"/>
+        android:layout_below="@+id/note_value"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="11dp" />
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -215,25 +215,54 @@
         android:textColor="@color/AntiqueWhite"
         android:id="@+id/feel_label"
         android:textStyle="bold"
-        android:layout_marginLeft="5dp"
-        android:layout_marginStart="5dp"
-        android:layout_below="@+id/shoe_value"/>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAlignment="center"
-        android:text="Happy"
-        android:background="@android:color/transparent"
-        android:textSize="20sp"
-        android:textColor="@color/AntiqueWhite"
-        android:layout_below="@+id/feel_label"
-        android:id="@+id/feel_value"
+        android:layout_below="@+id/shoe_value"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginLeft="10dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="5dp"
-        android:textStyle="italic"/>
+        android:layout_marginTop="11dp" />
+    <ImageView
+        android:id="@+id/feel_value4"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_gravity="center"
+        app:srcCompat="@android:drawable/btn_star"
+        android:layout_below="@+id/feel_label"
+        android:layout_toRightOf="@+id/feel_value3"
+        android:layout_toEndOf="@+id/feel_value3" />
+    <ImageView
+        android:id="@+id/feel_value3"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_gravity="center"
+        app:srcCompat="@android:drawable/btn_star"
+        android:layout_below="@+id/feel_label"
+        android:layout_centerHorizontal="true" />
+
+    <ImageView
+        android:id="@+id/feel_value1"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_below="@+id/feel_label"
+        android:layout_gravity="center"
+        android:layout_toLeftOf="@+id/feel_value2"
+        app:srcCompat="@android:drawable/btn_star" />
+
+    <ImageView
+        android:id="@+id/feel_value2"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_below="@+id/feel_label"
+        android:layout_gravity="center"
+        android:layout_toLeftOf="@+id/feel_value3"
+        android:layout_toStartOf="@+id/feel_value3"
+        app:srcCompat="@android:drawable/btn_star" />
+    <ImageView
+        android:id="@+id/feel_value5"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_gravity="center"
+        app:srcCompat="@android:drawable/btn_star"
+        android:layout_below="@+id/feel_label"
+        android:layout_toRightOf="@+id/feel_value4" />
     <Button
         android:layout_width="120dp"
         android:layout_height="40dp"
@@ -246,6 +275,8 @@
         android:src="@drawable/back_button"
         android:layout_margin="5dp"
         />
+
+
 
 
 </RelativeLayout>
