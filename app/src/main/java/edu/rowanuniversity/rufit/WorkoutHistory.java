@@ -58,7 +58,6 @@ public class WorkoutHistory  extends AppCompatActivity{
     LineDataSet dataSet;
     LineData lineData;
     ImageView back_button;
-    TextView workoutLabel;
     ToggleSwitch toggle_switch;
     RecyclerView recyclerView;
     DetailViewAdapter adapter;
@@ -81,8 +80,6 @@ public class WorkoutHistory  extends AppCompatActivity{
         setContentView(R.layout.workout_history);
         auth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
-
-        workoutLabel = (TextView) findViewById(R.id.workoutLabel);
 
 
         if(auth.getCurrentUser() == null){
@@ -139,7 +136,6 @@ public class WorkoutHistory  extends AppCompatActivity{
                         adapter = new DetailViewAdapter(getApplicationContext(), dailyData);
                         recyclerView.setAdapter(adapter);
                         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-                        workoutLabel.setText("This Week's Runs :");
                     } else if (position == 1) {
                         //WeeklyView
                         //gennerateEntries(weeklyData);
@@ -149,7 +145,6 @@ public class WorkoutHistory  extends AppCompatActivity{
                         adapter = new DetailViewAdapter(getApplicationContext(), weeklyData);
                         recyclerView.setAdapter(adapter);
                         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-                        workoutLabel.setText("This Month's Runs :");
                     } else {
                         //MonthlyView
                         //gennerateEntries(monthlyData);
