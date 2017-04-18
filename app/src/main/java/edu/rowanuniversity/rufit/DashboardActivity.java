@@ -157,7 +157,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             }
         });
 
-        //drawerusername.setText(currentUser == null ? text : ((HashMap<String,Object>) currentUser.get("info")).get("username").toString());
+        drawerusername.setText(currentUser == null ? text : ((HashMap<String,Object>) currentUser.get("info")).get("username").toString());
 
     }
 
@@ -212,14 +212,14 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         //init shoes
         userShoes = shoeSnapshot.getValue(gShoe);
 
-/*
+
         if(currentUser == null){
             drawerusername.setText(text);
         }else {
             HashMap<String, Object> temp = (HashMap<String, Object>) currentUser.get("info");
             drawerusername.setText(temp.get("username").toString());
         }
-*/
+
 
 
         //Background updates relating to user goals

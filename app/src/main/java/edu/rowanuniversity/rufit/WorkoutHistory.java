@@ -2,11 +2,15 @@ package edu.rowanuniversity.rufit;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SimpleItemAnimator;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
@@ -22,10 +26,22 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import belka.us.androidtoggleswitch.widgets.BaseToggleSwitch;
 import belka.us.androidtoggleswitch.widgets.ToggleSwitch;
@@ -42,10 +58,17 @@ public class WorkoutHistory  extends AppCompatActivity{
     LineDataSet dataSet;
     LineData lineData;
     ImageView back_button;
+    TextView workoutLabel;
     ToggleSwitch toggle_switch;
     RecyclerView recyclerView;
     DetailViewAdapter adapter;
-    List<Run> data;
+    ArrayList<Run> dailyData;
+    ArrayList<Run> weeklyData;
+    ArrayList<Run> monthlyData;
+    Map<Integer,Double> weeksMap;
+    Map<Integer,Double> monthsMap;
+    Map<Integer,Double> daysMap;
+    private int check = 0;
     FirebaseAuth auth;
     FirebaseDatabase database;
     DatabaseReference myRef;
@@ -58,13 +81,36 @@ public class WorkoutHistory  extends AppCompatActivity{
         setContentView(R.layout.workout_history);
         auth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
-        data = new ArrayList<>();
+
+        workoutLabel = (TextView) findViewById(R.id.workoutLabel);
+
 
         if(auth.getCurrentUser() == null){
             Intent intent = new Intent(WorkoutHistory.this, LoginActivity.class);
             startActivity(intent);
         }else{
-            getRuns();
+            user = auth.getCurrentUser();
+            //Unique UUID For each user for Database
+            myRef  = database.getReference(ROOT).child(user.getUid());
+
+            myRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    DataSnapshot runSnapshot= dataSnapshot.child("runs");
+
+                    if(check ==0) {
+                        if (runSnapshot.exists() && runSnapshot.getValue() != null) {
+                            getRuns(runSnapshot);
+                        }
+                        //TODO IF RUNSSNAPSHOT IS NULL
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
         }
 
         recyclerView = (RecyclerView) findViewById(R.id.details_recyclerView);
@@ -79,132 +125,137 @@ public class WorkoutHistory  extends AppCompatActivity{
             }
         });
 
+        toggle_switch.setCheckedTogglePosition(0);
         toggle_switch.setOnToggleSwitchChangeListener(new BaseToggleSwitch.OnToggleSwitchChangeListener() {
             @Override
             public void onToggleSwitchChangeListener(int position, boolean isChecked) {
-                if(position == 0){
-                    //DailyView
-                    generateDailyEntries();
-                    chart.invalidate();
-                    adapter = new DetailViewAdapter(getApplicationContext(), getdata(0));
-                    recyclerView.setAdapter(adapter);
-                    recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-                }else if(position ==1){
-                    //WeeklyView
-                    generateWeeklyEntries();
-                    chart.invalidate();
-                    adapter = new DetailViewAdapter(getApplicationContext(), getdata(1));
-                    recyclerView.setAdapter(adapter);
-                    recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-                }else{
-                    //MonthlyView
-                    generateMonthlyEntries();
-                    chart.invalidate();
-                    adapter = new DetailViewAdapter(getApplicationContext(), getdata(2));
-                    recyclerView.setAdapter(adapter);
-                    recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+                if(check == 1) {
+                    if (position == 0) {
+                        //DailyView
+                        //gennerateEntries(dailyData);
+                        gennerateEntries(daysMap);
+                        chart.invalidate();
+                        Collections.sort(dailyData,new CustomComparator());
+                        adapter = new DetailViewAdapter(getApplicationContext(), dailyData);
+                        recyclerView.setAdapter(adapter);
+                        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+                        workoutLabel.setText("This Week's Runs :");
+                    } else if (position == 1) {
+                        //WeeklyView
+                        //gennerateEntries(weeklyData);
+                        gennerateEntries(weeksMap);
+                        chart.invalidate();
+                        Collections.sort(weeklyData,new CustomComparator());
+                        adapter = new DetailViewAdapter(getApplicationContext(), weeklyData);
+                        recyclerView.setAdapter(adapter);
+                        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+                        workoutLabel.setText("This Month's Runs :");
+                    } else {
+                        //MonthlyView
+                        //gennerateEntries(monthlyData);
+                        gennerateEntries(monthsMap);
+                        chart.invalidate();
+                        Collections.sort(monthlyData,new CustomComparator());
+                        adapter = new DetailViewAdapter(getApplicationContext(), monthlyData);
+                        recyclerView.setAdapter(adapter);
+                        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+                    }
                 }
             }
         });
 
-        toggle_switch.setCheckedTogglePosition(0);
+
     }
 
-    private void getRuns() {
-        user = auth.getCurrentUser();
-        //Unique UUID For each user for Database
-        myRef  = database.getReference(ROOT).child(user.getUid());
+    private void getRuns(DataSnapshot runSnapshot) {
+        runMap = runSnapshot.getValue(gRun);
+        dailyData = new ArrayList<>();
+        weeklyData = new ArrayList<>();
+        monthlyData = new ArrayList<>();
+        weeksMap = new TreeMap<Integer, Double>();
+        monthsMap = new TreeMap<Integer, Double>();
+        daysMap = new TreeMap<Integer, Double>();
 
-        myRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                fetchData(dataSnapshot);
+        DateTime now =DateTime.now();
+        //Get current year and current week of the year
+
+        DateTime weekAgo = now.minusWeeks(1);
+        DateTime monthAgo = now.minusMonths(1);
+        DateTime yearAgo = now.minusYears(1);
+
+        DateTimeFormatter formatter = DateTimeFormat.forPattern("MM/dd/yyyy");
+
+
+        for (String key : runMap.keySet()) {
+            Run run = runMap.get(key);
+            //Date stored as MM/dd/yyyy
+            DateTime dateOfRun = formatter.parseDateTime(run.getDate());
+            if(dateOfRun.isAfter(weekAgo)) {
+                dailyData.add(run);
+            }
+            if (dateOfRun.isAfter(monthAgo)) {
+                weeklyData.add(run);
+            }
+            if (dateOfRun.isAfter(yearAgo)) {
+                monthlyData.add(run);
             }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
 
+            DateTime cDate = formatter.parseDateTime(run.getDate());
+
+            //Gets total mileage for a each month
+            //To be used in monthly
+            if(monthsMap.containsKey(cDate.getMonthOfYear()) && !monthsMap.isEmpty()) {
+                monthsMap.put(cDate.getMonthOfYear(),monthsMap.get(cDate.getMonthOfYear()) + run.getMileage());
+            } else {
+                monthsMap.put(cDate.getMonthOfYear(),run.getMileage());
             }
-        });
-    }
 
-    private void fetchData(DataSnapshot d) {
 
-        DataSnapshot runsSnapshot = d.child("runs");
-        if (runsSnapshot.exists() && runsSnapshot.getValue() != null) {
-            runMap = runsSnapshot.getValue(gRun);
-            for(String id: runMap.keySet()){
-                data.add(runMap.get(id));
+            //Gets a total of the mileage for a given week
+            // To be used in displaying weekly mileage totals
+            if(weeksMap.containsKey(cDate.getWeekOfWeekyear()) && !weeksMap.isEmpty()) {
+                weeksMap.put(cDate.getWeekOfWeekyear(),weeksMap.get(cDate.getWeekOfWeekyear()) + run.getMileage());
+            } else {
+                weeksMap.put(cDate.getWeekOfWeekyear(),run.getMileage());
+            }
+
+            //Gets a total of the mileage for a given day
+            //To be used in displaying daily mileage
+            if(daysMap.containsKey(cDate.getDayOfWeek()) && !daysMap.isEmpty()) {
+                daysMap.put(cDate.getDayOfWeek(),daysMap.get(cDate.getDayOfWeek()) + run.getMileage());
+            } else {
+                daysMap.put(cDate.getDayOfWeek(),run.getMileage());
             }
         }
+
+
+        check = 1;
     }
 
-    private List<Run> getdata ( int position){
-
-            /*if (position == 0) {
-
-                if(data.size() == 0){
-                    Toast.makeText(getApplicationContext(), "Empty", Toast.LENGTH_SHORT).show();
-                }
-            }
-            if (position == 1) {
-                data = new ArrayList<>();
-                data = getRunsData();
-            }
-            if (position == 2) {
-                data = new ArrayList<>();
-                data = getRunsData();
-            }
-*/
-        return data;
-    }
-
-
-
-    private void generateMonthlyEntries() {
+    private void gennerateEntries(Map<Integer,Double> data) {
         entries = new ArrayList<>();
         // turn your data into Entry objects
         //x- should be sorted
-        for(int i=0;i<data.size();i++){
-            entries.add(new Entry(i, (float) data.get(i).getMileage()));
+        int i = 0;
+        for(Integer index : data.keySet()){
+            entries.add(new Entry(i, Float.parseFloat(data.get(index).toString())));
+            i++;
         }
-
         //Has to be sorted by x axis value
-        Collections.sort(entries, new EntryXComparator());
-        generateGraphData();
-    }
-
-    private void generateWeeklyEntries() {
-        entries = new ArrayList<>();
-        // turn your data into Entry objects
-        //x- should be sorted
-        for(int i=0;i<data.size();i++){
-            entries.add(new Entry(i, (float) data.get(i).getMileage()));
-        }
-
-        //Has to be sorted by x axis value
-        Collections.sort(entries, new EntryXComparator());
-        generateGraphData();
-    }
-
-    private void generateDailyEntries() {
-        entries = new ArrayList<>();
-        // turn your data into Entry objects
-        //x- should be sorted
-        for(int i=0;i<data.size();i++){
-            entries.add(new Entry(i, (float) data.get(i).getMileage()));
-        }
-
-        //Has to be sorted by x axis value
-        Collections.sort(entries, new EntryXComparator());
+        //Collections.sort(entries, new EntryXComparator());
         generateGraphData();
     }
 
     private void generateGraphData() {
 
+        if(entries.size() > 30) {
+            entries = entries.subList(0,29);
+        }
         dataSet = new LineDataSet(entries, "Label"); // add entries to dataset
         dataSet.setColor(getResources().getColor(R.color.AntiqueWhite));
         dataSet.setValueTextColor(getResources().getColor(R.color.Wheat));
+        dataSet.setValueTextSize(10);
 
 
         lineData = new LineData(dataSet);
@@ -214,7 +265,6 @@ public class WorkoutHistory  extends AppCompatActivity{
         chart.getDescription().setText("Workouts");
         chart.getDescription().setTextColor(getResources().getColor(R.color.WhiteSmoke));
         chart.getDescription().setTextSize(10);
-
     }
 
     private void designGraph() {
@@ -231,5 +281,20 @@ public class WorkoutHistory  extends AppCompatActivity{
         chart.getLegend().setEnabled(false);
         chart.setPinchZoom(false);
         chart.setScaleEnabled(false);
+    }
+
+    public class CustomComparator implements Comparator<Run> {
+        @Override
+        public int compare(Run o1, Run o2) {
+            SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+            try {
+                Date first = formatter.parse(o1.getDate());
+                Date second = formatter.parse(o2.getDate());
+                return second.compareTo(first);
+            } catch (ParseException p) {
+                Toast.makeText(WorkoutHistory.this, "Error", Toast.LENGTH_LONG);
+            }
+            return 0;
+        }
     }
 }

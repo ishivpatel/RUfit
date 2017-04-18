@@ -45,7 +45,7 @@ public class DetailViewAdapter extends RecyclerView.Adapter<DetailViewAdapter.Wo
         holder.DateTitle.setText(" " +currentData.getDate());
         holder.CaloriesBurned.setText(" " +currentData.getCalories());
         holder.DistanceRan.setText(" " + currentData.getMileage());
-        holder.TimeWorkout.setText(" " +currentData.getTime());
+        holder.TimeWorkout.setText((currentData.getTime()/60) + ":" + currentData.getTime()%60);
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

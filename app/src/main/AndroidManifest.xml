@@ -30,6 +30,7 @@
         <activity android:name=".AboutActivity" />
         <activity android:name=".DetailWorkouts" />
         <activity android:name=".ShoeActivity" />
+        <activity android:name=".StatisticsActivity"/>
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
