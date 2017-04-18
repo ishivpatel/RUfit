@@ -1,9 +1,14 @@
 package edu.rowanuniversity.rufit;
 
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.icu.text.DateFormat;
+import android.icu.text.SimpleDateFormat;
+import android.icu.util.TimeZone;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Build;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -26,23 +31,52 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.location.LocationServices;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+import edu.rowanuniversity.rufit.rufitObjects.Run;
 
 public class StartRunActivity extends FragmentActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
-        com.google.android.gms.location.LocationListener{
+        com.google.android.gms.location.LocationListener {
 
     private GoogleMap mMap;
-    private Button start, pause, stop;
+    private Button start, stop;
     private Chronometer chronometer;
     GoogleApiClient mGoogleApiClient;
-    LocationRequest mLocationRequest;
-    Location mLastLocation;
-    Marker mCurrLocationMarker;
+    protected LocationRequest mLocationRequest;
+    Location mCurrLocation;
+    String mLastUpdateTime;
+    //Marker mCurrLocationMarker;
+    private FirebaseDatabase database;
+    private DatabaseReference myRef, db, runRef;
+    private String userID;
+    private FirebaseAuth auth;
+    private FirebaseUser user;
+    public static final int MAP_ZOOM_LEVEL = 11;
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
+    public static final long UPDATE_INTERVAL_IN_MS = 1200;
+    public static final long FASTEST_UPDATE_INTERVAL_IN_MS = UPDATE_INTERVAL_IN_MS / 4;
     public static final String TAG = StartRunActivity.class.getSimpleName();
+    private boolean mRequestingLocationUpdates = false;
+    private Location mLastLocation;
+    private double startLoggingTime;
+    private Run run;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,44 +84,86 @@ public class StartRunActivity extends FragmentActivity implements OnMapReadyCall
         setContentView(R.layout.activity_start_run);
 
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            Log.d(TAG,"checking permissions");
+            Log.d(TAG, "checking permissions");
             checkLocationPermission();
         }
-
-
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        buildGoogleApiClient();
+
+        auth = FirebaseAuth.getInstance();
+        user = auth.getCurrentUser();
+        userID = user.getUid();
+
+        run = new Run();
+
+        database = FirebaseDatabase.getInstance();
+        db = database.getReference();
+        myRef = db.child("users").child(userID);
+        runRef = myRef.child("runs");
+
+
+
         chronometer = (Chronometer) findViewById(R.id.chronometer);
 
         start = (Button) findViewById(R.id.start_button);
-        pause = (Button) findViewById(R.id.pause_button);
-        //stop  = (Button) findViewById(R.id.stop_button);
+        stop = (Button) findViewById(R.id.stop_button);
 
         start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                chronometer.setBase(SystemClock.elapsedRealtime());
                 chronometer.start();
+                startLoggingTime = chronometer.getDrawingTime();
+                startLogging();
             }
         });
-
-        pause.setOnClickListener(new View.OnClickListener() {
+        stop.setOnClickListener((new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                stopLocationTracking();
                 chronometer.stop();
+                leaveActivity();
             }
-        });
+        }));
+    }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (mGoogleApiClient != null) {
+            mGoogleApiClient.connect();
+        }
+    }
+
+    @Override
+    public void onStop() {
+        if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.disconnect();
+        }
+        super.onStop();
+    }
+
+    private void stopLocationTracking() {
+        if (mGoogleApiClient != null) {
+            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+            mGoogleApiClient.disconnect();
+        }
+    }
+
+    private void leaveActivity() {
+        Intent intent = new Intent(this, FinishRunActivity.class);
+        startActivity(intent);
     }
 
     /**
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
+     * This is where we can add markers or lines, add listeners or move the camera.
      * If Google Play services is not installed on the device, the user will be prompted to install
      * it inside the SupportMapFragment. This method will only be triggered once the user has
      * installed Google Play services and returned to the app.
@@ -104,8 +180,7 @@ public class StartRunActivity extends FragmentActivity implements OnMapReadyCall
                 buildGoogleApiClient();
                 mMap.setMyLocationEnabled(true);
             }
-        }
-        else {
+        } else {
             buildGoogleApiClient();
             mMap.setMyLocationEnabled(true);
         }
@@ -118,32 +193,84 @@ public class StartRunActivity extends FragmentActivity implements OnMapReadyCall
                 .addApi(LocationServices.API)
                 .build();
         mGoogleApiClient.connect();
+        Toast.makeText(this,"Google API Clinet connected",Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void onLocationChanged(Location location) {
-        mLastLocation = location;
-        if (mCurrLocationMarker != null) {
-            mCurrLocationMarker.remove();
-        }
+        Toast.makeText(this, "onLocationChanged called", Toast.LENGTH_LONG).show();
+        mCurrLocation = location;
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        Date date = new Date();
+        mLastUpdateTime = dateFormat.format(date).toString();
 
-        //Place current location marker
-        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        MarkerOptions markerOptions = new MarkerOptions();
-        markerOptions.position(latLng);
-        markerOptions.title("Current Position");
-        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
-        mCurrLocationMarker = mMap.addMarker(markerOptions);
+        run.addLocation(mCurrLocation);
 
-        //move map camera
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
+        mMap.clear();
+        //markerList.clear();
 
-        //stop location updates
-        if (mGoogleApiClient != null) {
-            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient,
-                    (com.google.android.gms.location.LocationListener) this);
-        }
+        saveToFirebase();
+
+        drawLocations();
+
+        LatLng mLatlng = new LatLng(mCurrLocation.getLatitude(),
+                mCurrLocation.getLongitude());
+        MarkerOptions mMarkerOptions = new MarkerOptions()
+                .position(mLatlng)
+                .title(mLastUpdateTime)
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+        Marker mMarker = mMap.addMarker(mMarkerOptions);
+    }
+
+    private void saveToFirebase() {
+        Map mLocations = new HashMap();
+        mLocations.put("timestamp", mLastUpdateTime);
+        Map mCoordinate = new HashMap();
+        mCoordinate.put("latitude", mCurrLocation.getLatitude());
+        mCoordinate.put("longitude", mCurrLocation.getLongitude());
+        mLocations.put("location", mCoordinate);
+        runRef.push().setValue(mLocations);
+    }
+
+    private void drawLocations() {
+        Query queryRef = myRef.orderByChild("timestamp").startAt(startLoggingTime);
+        queryRef.addChildEventListener(new ChildEventListener() {
+            LatLngBounds bounds;
+            LatLngBounds.Builder builder = new LatLngBounds.Builder();
+
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                Map data = (Map) dataSnapshot.getValue();
+                String timestamp = (String) data.get("timestamp");
+                Map mCoordinate = (HashMap) data.get("location");
+                double latitude = (double) mCoordinate.get("latitude");
+                double longitude = (double) mCoordinate.get("longitude");
+
+                LatLng mLatlng = new LatLng(latitude, longitude);
+
+                builder.include(mLatlng);
+                bounds = builder.build();
+
+                MarkerOptions mMarkerOption = new MarkerOptions()
+                        .position(mLatlng)
+                        .title(timestamp)
+                        .icon(BitmapDescriptorFactory
+                                .defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+                Marker mMarker = mMap.addMarker(mMarkerOption);
+                //markerList.add(mMarker);
+
+                mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, MAP_ZOOM_LEVEL));
+            }
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {}
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {}
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {}
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        });
     }
 
     /*
@@ -163,29 +290,36 @@ public class StartRunActivity extends FragmentActivity implements OnMapReadyCall
     }
     */
 
-    @Override
-    public void onConnected(@Nullable Bundle bundle) {
+    private void startLogging() {
+        Toast.makeText(this, "logging started", Toast.LENGTH_LONG).show();
         mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(1000);
-        mLocationRequest.setFastestInterval(1000);
+        mLocationRequest.setInterval(UPDATE_INTERVAL_IN_MS);
+        mLocationRequest.setFastestInterval(FASTEST_UPDATE_INTERVAL_IN_MS);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
-            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest,
-                    (com.google.android.gms.location.LocationListener) this);
+        if (mGoogleApiClient.isConnected()) {
+            startLocationUpdates();
         }
     }
 
+    protected void startLocationUpdates() {
+        checkLocationPermission();
+        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient,
+                mLocationRequest, this);
+    }
+    
     @Override
-    public void onConnectionSuspended(int i) {
-
+    public void onConnected(Bundle bundle) {
+        checkLocationPermission();
+        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mLastLocation.getLatitude(),
+          //      mLastLocation.getLongitude()),MAP_ZOOM_LEVEL));
+        Toast.makeText(this,Double.toString(mLastLocation.getLatitude()),Toast.LENGTH_LONG).show();
     }
 
     @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
-    }
+    public void onConnectionSuspended(int i) { }
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) { }
 
     public boolean checkLocationPermission(){
         if (ContextCompat.checkSelfPermission(this,

@@ -148,7 +148,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                updateDashboardData(dataSnapshot);
+                //updateDashboardData(dataSnapshot);
             }
 
             @Override
@@ -350,7 +350,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         startRunCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), StartRunActivity.class);
+                Intent intent = new Intent(DashboardActivity.this, StartRunActivity.class);
                 startActivity(intent);
             }
         });
