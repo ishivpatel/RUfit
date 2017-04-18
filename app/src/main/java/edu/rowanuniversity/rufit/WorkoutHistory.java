@@ -209,8 +209,8 @@ public class WorkoutHistory  extends AppCompatActivity{
 
             //Gets a total of the mileage for a given week
             // To be used in displaying weekly mileage totals
-            if(weeksMap.containsKey(cDate.getWeekOfWeekyear()) && !weeksMap.isEmpty()) {
-                weeksMap.put(cDate.getWeekOfWeekyear(),weeksMap.get(cDate.getWeekOfWeekyear()) + run.getMileage());
+            if(weeksMap.containsKey(cDate.getWeekyear()) && !weeksMap.isEmpty()) {
+                weeksMap.put(cDate.getWeekyear(),weeksMap.get(cDate.getWeekyear()) + run.getMileage());
             } else {
                 weeksMap.put(cDate.getWeekOfWeekyear(),run.getMileage());
             }
