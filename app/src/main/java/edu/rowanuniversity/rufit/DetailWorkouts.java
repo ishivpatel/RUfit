@@ -38,7 +38,7 @@ public class DetailWorkouts extends AppCompatActivity {
         DateTitle.setText(currentRun.getDate());
         CaloriesBurned.setText("" + currentRun.getCalories());
         DistanceRan.setText("" + currentRun.getMileage());
-        TimeWorkout.setText("" + currentRun.getTime());
+        TimeWorkout.setText((currentRun.getTime()/3600) + ":" + ((currentRun.getTime()/60)%60) + ":" + currentRun.getTime()%60);
         notes.setText("" +currentRun.getNotes());
         shoe.setText("" + currentRun.getShoe());
         feel.setText("" +currentRun.getFeel());
