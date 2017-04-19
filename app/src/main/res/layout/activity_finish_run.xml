@@ -12,6 +12,7 @@
         android:background="@color/Red"
         android:id="@+id/topToolBar"
         android:layout_marginBottom="4dp"
+        android:elevation="3dp"
         >
 
         <ImageView
@@ -25,7 +26,7 @@
             android:layout_width="20dp"
             android:layout_height="35dp"
             android:layout_gravity="start"
-            android:id="@+id/backbutton_addrunactivity"
+            android:id="@+id/backbutton_addRunActivity"
             android:src="@drawable/back_button"
             />
 
@@ -75,7 +76,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
                 android:ems="10"
-                android:onClick="showDatePickerDialog"/>
+                android:onClick="showDatePickerDialog"
+                android:text="date" />
         </LinearLayout>
         <LinearLayout
             android:layout_width="wrap_content"
@@ -129,7 +131,8 @@
                 android:layout_width="250dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
-                android:ems="10" />
+                android:ems="10"
+                android:text="distance" />
 
         </LinearLayout>
         <LinearLayout

@@ -27,7 +27,6 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Objects;
 
 import edu.rowanuniversity.rufit.rufitObjects.Shoe;
 
@@ -48,7 +47,7 @@ public class ShoeActivity extends AppCompatActivity implements RecyclerItemClick
 
     private GenericTypeIndicator<HashMap<String,Shoe>> generic = new GenericTypeIndicator<HashMap<String,Shoe>>() {};
     private HashMap<String,Shoe> userShoes;
-    private ImageView backbutton;
+    private ImageView backButton;
     private ImageButton newShoe;
     private FirebaseDatabase database;
     private FirebaseAuth auth;
@@ -76,8 +75,8 @@ public class ShoeActivity extends AppCompatActivity implements RecyclerItemClick
         Toolbar t = (Toolbar) findViewById(R.id.topToolBar);
         setSupportActionBar(t);
         getSupportActionBar().setTitle("");
-        backbutton = (ImageView) findViewById(R.id.backbutton_shoeactivity);
-        backbutton.setOnClickListener(new View.OnClickListener() {
+        backButton = (ImageView) findViewById(R.id.backButton_shoeActivity);
+        backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();

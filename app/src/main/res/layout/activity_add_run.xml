@@ -12,6 +12,7 @@
             android:background="@color/Red"
             android:id="@+id/topToolBar"
             android:layout_marginBottom="4dp"
+            android:elevation="3dp"
             >
 
             <ImageView
@@ -25,7 +26,7 @@
                 android:layout_width="20dp"
                 android:layout_height="35dp"
                 android:layout_gravity="start"
-                android:id="@+id/backbutton_addrunactivity"
+                android:id="@+id/backbutton_addRunActivity"
                 android:src="@drawable/back_button"
                 />
 
@@ -114,6 +115,32 @@
            android:layout_margin="2dp">
 
            <TextView
+               android:id="@+id/timeText"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_gravity="center_vertical"
+               android:text="@string/timeLabel"/>
+           <View
+               android:layout_width="0dp"
+               android:layout_height="0dp"
+               android:layout_weight="1" />
+
+           <EditText
+               android:id="@+id/editTime"
+               android:layout_width="250dp"
+               android:layout_height="wrap_content"
+               android:layout_gravity="right"
+               android:ems="10" />
+       </LinearLayout>
+       <LinearLayout
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:orientation="horizontal"
+           android:paddingLeft="8dp"
+           android:paddingRight="8dp"
+           android:layout_margin="2dp">
+
+           <TextView
                android:id="@+id/distanceText"
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
@@ -133,32 +160,7 @@
                android:inputType="numberDecimal" />
 
        </LinearLayout>
-       <LinearLayout
-           android:layout_width="wrap_content"
-           android:layout_height="wrap_content"
-           android:orientation="horizontal"
-           android:paddingLeft="8dp"
-           android:paddingRight="8dp"
-           android:layout_margin="2dp">
 
-           <TextView
-               android:id="@+id/timeText"
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               android:layout_gravity="center_vertical"
-               android:text="@string/timeLabel"/>
-           <View
-               android:layout_width="0dp"
-               android:layout_height="0dp"
-               android:layout_weight="1" />
-
-           <EditText
-               android:id="@+id/editTime"
-               android:layout_width="250dp"
-               android:layout_height="wrap_content"
-               android:layout_gravity="right"
-               android:ems="10" />
-       </LinearLayout>
        <LinearLayout
            android:layout_width="wrap_content"
            android:layout_height="wrap_content"
@@ -303,7 +305,6 @@
                android:layout_height="wrap_content"
                android:layout_gravity="right"
                android:max="4"
-               android:background="@color/Cyan"
                android:progressTint="@color/gray_very_light" />
        </LinearLayout>
        <LinearLayout

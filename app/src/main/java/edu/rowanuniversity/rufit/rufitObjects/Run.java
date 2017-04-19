@@ -1,11 +1,8 @@
 package edu.rowanuniversity.rufit.rufitObjects;
 
-import android.location.Location;
-import android.util.Log;
-import android.widget.Toast;
-
 import java.io.Serializable;
-import java.util.ArrayList;
+
+import edu.rowanuniversity.rufit.StartRunActivity;
 
 /**
  * Created by catherine on 4/2/2017.
@@ -22,7 +19,6 @@ public class Run implements Serializable {
     private String type;
     private String notes;
     private int calories;
-    private ArrayList<Location> locations;
 
     public Run(String name, String date, double mileage, int time, String shoe,
                int feel, String type, String notes, int calories) {
@@ -35,27 +31,11 @@ public class Run implements Serializable {
         this.type = type;
         this.notes = notes;
         this.calories = calories;
-        locations = new ArrayList<>();
     }
 
-    public Run() {
+    public Run() { }
 
-    }
-
-    public void addLocation(Location location) {
-        if (location != null) {
-            locations.add(location);
-        }
-        else {
-            // Do not add location
-        }
-    }
-
-    private ArrayList<Location> getLocations() {
-        return locations;
-    }
-
-    private void calculatePace() {
+    public void calculatePace() {
         if(time > -1 && mileage > -1.0) {
             double p = ((time / mileage) + (time % mileage));
             setPace((int) p);

@@ -15,7 +15,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,18 +24,15 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.List;
 
 import edu.rowanuniversity.rufit.rufitObjects.Goal;
-import edu.rowanuniversity.rufit.rufitObjects.Shoe;
 
 /**
  * Created by Catherine Dougherty on 3/19/2017.
@@ -54,7 +50,7 @@ public class GoalsActivity extends AppCompatActivity {
     private FirebaseDatabase database;
     private FirebaseAuth auth;
     private FirebaseUser user;
-    private ImageView backbutton;
+    private ImageView backButton;
     private DatabaseReference goalRef, myRef;
     private Goal userGoals;
     private String userID;
@@ -85,8 +81,8 @@ public class GoalsActivity extends AppCompatActivity {
         Toolbar t = (Toolbar) findViewById(R.id.topToolBar);
         setSupportActionBar(t);
         getSupportActionBar().setTitle("");
-        backbutton = (ImageView) findViewById(R.id.backbutton_goalactivity);
-        backbutton.setOnClickListener(new View.OnClickListener() {
+        backButton = (ImageView) findViewById(R.id.backButton_goalActivity);
+        backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
@@ -105,7 +101,6 @@ public class GoalsActivity extends AppCompatActivity {
 
         //Updates display components when database reference is changed
         goalRef.addValueEventListener(new ValueEventListener() {
-        //goalRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {    update(dataSnapshot);}
             @Override
@@ -188,8 +183,8 @@ public class GoalsActivity extends AppCompatActivity {
 
         //If user hasn't added any shoes display greeting
         if (userGoals.getMilesPerWeekTarget() > 0 ||
-                userGoals.getRunsPerWeekTarget() > 0 ||
-                userGoals.getDaysUntilRace() >= 0) {
+                userGoals.getRunsPerWeekTarget() > 0||
+                userGoals.getDaysUntilRace() > 0) {
                 goalGreeting.setVisibility(View.GONE);
         }
         displayGoal(); //Displays update information for each goal
@@ -456,4 +451,3 @@ public class GoalsActivity extends AppCompatActivity {
         alertDialog.show();
     }
 }
-

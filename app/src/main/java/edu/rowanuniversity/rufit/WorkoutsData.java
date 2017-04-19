@@ -17,5 +17,4 @@ class WorkoutsData {
         this.Distance = Distance;
         this.Time = Time;
     }
-
 }

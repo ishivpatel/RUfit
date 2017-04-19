@@ -2,19 +2,14 @@ package edu.rowanuniversity.rufit;
 
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.view.KeyEvent;
-import android.view.MotionEvent;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -24,7 +19,6 @@ import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -37,11 +31,9 @@ import com.google.firebase.database.ValueEventListener;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -71,7 +63,7 @@ public class AddRunActivity extends AppCompatActivity {
     private SeekBar seekBar;
     private Button submit, startRun;
     EditText editTime;
-    private ImageView backbutton;
+    private ImageView backButton;
     private LinearLayout shoeLayout, typeLayout;
 
     private FirebaseDatabase database;
@@ -97,9 +89,9 @@ public class AddRunActivity extends AppCompatActivity {
         Toolbar t = (Toolbar) findViewById(R.id.topToolBar);
         setSupportActionBar(t);
         getSupportActionBar().setTitle("");
-        backbutton = (ImageView) findViewById(R.id.backbutton_addrunactivity);
+        backButton = (ImageView) findViewById(R.id.backbutton_addRunActivity);
 
-        backbutton.setOnClickListener(new View.OnClickListener() {
+        backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
@@ -166,13 +158,9 @@ public class AddRunActivity extends AppCompatActivity {
                 } else {
                     userGoals.setDaysUntilRace(goalsSnapshot.child("dateOfRace").getValue().toString());
                 }
-
             }
-
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
+            public void onCancelled(DatabaseError databaseError) {}
         });
 
         editName.setSingleLine();
@@ -221,17 +209,13 @@ public class AddRunActivity extends AppCompatActivity {
                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                typeSpinner.setAdapter(adapter);
 
-
-
-
-
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //Add run to Firebase
                 run.setName(editName.getText().toString());
                 run.setNotes(notesEdit.getText().toString());
-                run.setShoe(shoeSpinner.getSelectedItem().toString());
+                run.setShoe(shoeSpinner.getSelectedItem() == null ? "" : shoeSpinner.getSelectedItem().toString());
                 run.setType(typeSpinner.getSelectedItem().toString());
                 run.setCalories(Integer.parseInt(caloriesText.getText().toString()));
                 runRef.push().setValue(run);
@@ -240,7 +224,6 @@ public class AddRunActivity extends AppCompatActivity {
                 if(userGoals.getMilesPerWeekTarget()>0) {
                     userGoals.addMiles(run.getMileage());
                 }
-
                 leaveActivity();
             }
         });
@@ -253,15 +236,15 @@ public class AddRunActivity extends AppCompatActivity {
                                           boolean fromUser) {
                 progressChanged = progress;
                 if (progress == 0) {
-                    seekBar.setBackgroundColor(Color.CYAN);
+                    seekBar.setBackgroundColor(Color.rgb(53, 123, 173));
                 } else if (progress ==1) {
-                    seekBar.setBackgroundColor(Color.GREEN);
+                    seekBar.setBackgroundColor(Color.rgb(53, 173, 56));
                 } else if (progress ==2) {
-                    seekBar.setBackgroundColor(Color.YELLOW);
+                    seekBar.setBackgroundColor(Color.rgb(247, 225, 59));
                 }else if ( progress ==3) {
                     seekBar.setBackgroundColor(Color.rgb(255,140,0));
                 }else if ( progress == 4) {
-                    seekBar.setBackgroundColor(Color.RED);
+                    seekBar.setBackgroundColor(Color.rgb(198, 19, 19));
                 }
                 run.setFeel(progress);
             }
@@ -299,7 +282,6 @@ public class AddRunActivity extends AppCompatActivity {
                         if(dayOfMonth <= 9) {
                             day = "0" + dayOfMonth;
                         }
-
                         String pickedDate = month+ "/" + day + "/" + year;
                         dateEdit.setText(pickedDate);
                         run.setDate(pickedDate);
@@ -307,7 +289,6 @@ public class AddRunActivity extends AppCompatActivity {
                 }, mYear, mMonth, mDay);
         datePickerDialog.show();
     }
-
 
     private void populateShoeSpinner(){
         final List<String> spinnerArray = new ArrayList<>();
