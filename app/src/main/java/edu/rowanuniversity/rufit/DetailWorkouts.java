@@ -21,11 +21,9 @@ import edu.rowanuniversity.rufit.rufitObjects.Run;
  */
 
 public class DetailWorkouts extends AppCompatActivity {
-<<<<<<< HEAD
+
     Button donebutton;
-=======
-    Button backButton;
->>>>>>> Bug fixes + aesthetic changes
+    ImageView backbutton;
     Run currentRun;
     TextView DateTitle;
     TextView CaloriesBurned;
@@ -33,7 +31,7 @@ public class DetailWorkouts extends AppCompatActivity {
     TextView TimeWorkout;
     TextView notes;
     TextView shoe, pace;
-    private ImageView feel1, feel2, feel3, feel4, feel5, backbutton, edit, delete;
+    private ImageView feel1, feel2, feel3, feel4, feel5, edit, delete;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,20 +84,23 @@ public class DetailWorkouts extends AppCompatActivity {
                 feel5.setColorFilter(Color.rgb(198, 19, 19));
         }
 
-<<<<<<< HEAD
 
-        donebutton = (Button) findViewById(R.id.backbutton_detail_workout);
+
+        donebutton = (Button) findViewById(R.id.backButton_detailWorkout);
 
         donebutton.setOnClickListener(new View.OnClickListener() {
-=======
-        backButton = (Button) findViewById(R.id.backButton_detailWorkout);
-        backButton.setOnClickListener(new View.OnClickListener() {
->>>>>>> Bug fixes + aesthetic changes
             @Override
-            public void onClick(View v) { finish(); }
+            public void onClick(View v) {
+                finish();
+            }
         });
-<<<<<<< HEAD
 
+        backbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         edit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -122,7 +123,5 @@ public class DetailWorkouts extends AppCompatActivity {
             }
         });
 
-=======
->>>>>>> Bug fixes + aesthetic changes
     }
 }

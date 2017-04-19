@@ -54,6 +54,7 @@ public class StatisticsActivity extends AppCompatActivity{
 
         Toolbar t = (Toolbar) findViewById(R.id.topToolBar);
         setSupportActionBar(t);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
         backButton = (ImageView) findViewById(R.id.sttstcs_backButton);
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
