@@ -26,7 +26,7 @@
                 android:layout_width="20dp"
                 android:layout_height="35dp"
                 android:layout_gravity="start"
-                android:id="@+id/backbutton_addrunactivity"
+                android:id="@+id/backbutton_addRunActivity"
                 android:src="@drawable/back_button"
                 />
 

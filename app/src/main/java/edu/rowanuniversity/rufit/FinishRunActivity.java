@@ -197,6 +197,7 @@ public class FinishRunActivity extends AppCompatActivity {
         });
     }
 
+
     private void leaveActivity() {
         Intent intent = new Intent(this, DashboardActivity.class);
         startActivity(intent);

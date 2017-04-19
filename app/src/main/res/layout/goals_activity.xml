@@ -38,7 +38,7 @@
             android:layout_width="20dp"
             android:layout_height="35dp"
             android:layout_gravity="start"
-            android:id="@+id/backbutton_goalactivity"
+            android:id="@+id/backButton_goalActivity"
             android:src="@drawable/back_button"
             />
 

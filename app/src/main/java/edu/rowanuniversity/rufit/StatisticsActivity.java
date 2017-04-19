@@ -20,7 +20,12 @@ import edu.rowanuniversity.rufit.rufitObjects.Record;
 
 
 /**
+ * StatisticsActivity.java
+ *
  * Created by Klaydon Balicanta on 4/1/17.
+ * First Significant Edit by Klaydon Balicanta on 4/18/17
+ *
+ *
  */
 
 public class StatisticsActivity extends AppCompatActivity{
@@ -28,7 +33,7 @@ public class StatisticsActivity extends AppCompatActivity{
     private FirebaseDatabase database;
     private FirebaseAuth auth;
     private FirebaseUser user;
-    private ImageView backbutton;
+    private ImageView backButton;
     DatabaseReference myRef,db, recordRef;
     Record userRecords;
     private String userID;
@@ -45,24 +50,21 @@ public class StatisticsActivity extends AppCompatActivity{
         database = FirebaseDatabase.getInstance();
         db = database.getReference();
         myRef = db.child("users").child(userID);
-        recordRef = myRef.child("records"); //would only need if adding values
+        recordRef = myRef.child("records");
 
         Toolbar t = (Toolbar) findViewById(R.id.topToolBar);
         setSupportActionBar(t);
-        //getSupportActionBar().setTitle("");
-        backbutton = (ImageView) findViewById(R.id.sttstcs_backButton);
-        backbutton.setOnClickListener(new View.OnClickListener() {
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        backButton = (ImageView) findViewById(R.id.sttstcs_backButton);
+        backButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                finish();
-            }
+            public void onClick(View v) {finish();}
         });
 
         recordRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 userRecords = new Record();
-
                 userRecords.setRecordDistance(dataSnapshot.getValue(Record.class).getRecordDistance());
                 userRecords.setRecordPace(dataSnapshot.getValue(Record.class).getRecordPace());
                 userRecords.setRecordTime(dataSnapshot.getValue(Record.class).getRecordTime());
@@ -70,17 +72,14 @@ public class StatisticsActivity extends AppCompatActivity{
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
+            public void onCancelled(DatabaseError databaseError){}
         });
-
     }
 
-
+    /**
+     * displayRecords takes the TextViews and assigns users run records to the Statistic Panel Screen
+     */
     private void displayRecords() {
-
-        //check to see if statistics are empty, and if they are, display a prompt to user saying WHAT UP YO
         TextView tvLRun = (TextView) findViewById(R.id.lngstRun_distance);
         TextView tvLRunDate = (TextView) findViewById(R.id.lngstRun_date);
         TextView tvFRunPace = (TextView) findViewById(R.id.fststPace_pace);
@@ -99,7 +98,6 @@ public class StatisticsActivity extends AppCompatActivity{
         tvFRunTimeDate.setText("Date: ");
         tvRunTotal.setText("Total Runs: ");
         tvRunDistance.setText("Total Distance Run: ");
-        //TODO: 4/8/17 setup after we implement interchangable units to do km/s or mi/s or whatever
         //TODO: 4/8/17 make runs clickable so that when you click on a run (by clicking on date or other value regarding that specific run then it will bring up the run description...if that makes sense
     }
 }

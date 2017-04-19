@@ -2,19 +2,14 @@ package edu.rowanuniversity.rufit;
 
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.view.KeyEvent;
-import android.view.MotionEvent;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -24,7 +19,6 @@ import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -37,11 +31,9 @@ import com.google.firebase.database.ValueEventListener;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -71,7 +63,7 @@ public class AddRunActivity extends AppCompatActivity {
     private SeekBar seekBar;
     private Button submit, startRun;
     EditText editTime;
-    private ImageView backbutton;
+    private ImageView backButton;
     private LinearLayout shoeLayout, typeLayout;
 
     private FirebaseDatabase database;
@@ -99,9 +91,9 @@ public class AddRunActivity extends AppCompatActivity {
         Toolbar t = (Toolbar) findViewById(R.id.topToolBar);
         setSupportActionBar(t);
         getSupportActionBar().setTitle("");
-        backbutton = (ImageView) findViewById(R.id.backbutton_addrunactivity);
+        backButton = (ImageView) findViewById(R.id.backbutton_addRunActivity);
 
-        backbutton.setOnClickListener(new View.OnClickListener() {
+        backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();

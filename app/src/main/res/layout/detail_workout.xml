@@ -305,7 +305,7 @@
         android:layout_gravity="start"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:id="@+id/backbutton_detail_workout"
+        android:id="@+id/backButton_detailWorkout"
         android:background="@drawable/rounded_button"
         android:text="Done"
         android:src="@drawable/back_button"

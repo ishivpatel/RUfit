@@ -24,7 +24,7 @@
             android:layout_width="20dp"
             android:layout_height="35dp"
             android:layout_gravity="start"
-            android:id="@+id/backbutton_aboutus"
+            android:id="@+id/backButton"
             android:src="@drawable/back_button"
             />
 

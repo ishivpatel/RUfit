@@ -32,8 +32,6 @@ import com.google.firebase.auth.FirebaseAuthInvalidUserException;
  * Created by shiv on 3/3/2017.
  */
 
-
-
 public class LoginActivity extends AppCompatActivity {
 
     private EditText inputEmail, inputPassword;
@@ -52,9 +50,7 @@ public class LoginActivity extends AppCompatActivity {
         //Get Firebase auth instance
         auth = FirebaseAuth.getInstance();
 
-
         authListener = new FirebaseAuth.AuthStateListener(){
-
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
 
@@ -93,12 +89,9 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-
-
         signUpText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 Intent intent = new Intent(LoginActivity.this, SignupActivity.class);
                 startActivity(intent);
                 finish();
@@ -136,17 +129,16 @@ public class LoginActivity extends AppCompatActivity {
                         }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        if (e instanceof FirebaseAuthInvalidCredentialsException){
+                        if (e instanceof FirebaseAuthInvalidCredentialsException) {
                             Toast.makeText(LoginActivity.this, "Invalid Password", Toast.LENGTH_LONG).show();
                         }
-                        if (e instanceof FirebaseAuthInvalidUserException){
+                        if (e instanceof FirebaseAuthInvalidUserException) {
                             Toast.makeText(LoginActivity.this, "Invalid Email/ Email not registered", Toast.LENGTH_LONG).show();
-                        }else{
+                        } else {
                             Toast.makeText(LoginActivity.this, e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
                         }
                     }
                 });
-
             }
 
         });
@@ -158,18 +150,17 @@ public class LoginActivity extends AppCompatActivity {
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        if(! task.isSuccessful()){
+                        if(! task.isSuccessful()) {
                             Toast.makeText(LoginActivity.this, "Facebook Authentication Failed", Toast.LENGTH_SHORT).show();
-                        }else{
+                        } else {
                             Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
                             startActivity(intent);
                         }
                     }
                 });
-
     }
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data){
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
     }
