@@ -204,8 +204,9 @@ public class StartRunActivity extends FragmentActivity implements OnMapReadyCall
         dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
         Date date = new Date();
         mLastUpdateTime = dateFormat.format(date).toString();
+        Toast.makeText(StartRunActivity.this, mCurrLocation.toString(), Toast.LENGTH_LONG).show();
 
-        run.addLocation(mCurrLocation);
+        //run.addLocation(mCurrLocation);
 
         mMap.clear();
         //markerList.clear();
@@ -230,7 +231,7 @@ public class StartRunActivity extends FragmentActivity implements OnMapReadyCall
         mCoordinate.put("latitude", mCurrLocation.getLatitude());
         mCoordinate.put("longitude", mCurrLocation.getLongitude());
         mLocations.put("location", mCoordinate);
-        runRef.push().setValue(mLocations);
+        //runRef.push().setValue(mLocations);
     }
 
     private void drawLocations() {
@@ -313,7 +314,7 @@ public class StartRunActivity extends FragmentActivity implements OnMapReadyCall
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mLastLocation.getLatitude(),
           //      mLastLocation.getLongitude()),MAP_ZOOM_LEVEL));
-        Toast.makeText(this,Double.toString(mLastLocation.getLatitude()),Toast.LENGTH_LONG).show();
+        //Toast.makeText(this,Double.toString(mLastLocation.getLatitude()),Toast.LENGTH_LONG).show();
     }
 
     @Override

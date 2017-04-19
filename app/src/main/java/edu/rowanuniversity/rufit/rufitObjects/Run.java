@@ -7,6 +7,8 @@ import android.widget.Toast;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import edu.rowanuniversity.rufit.StartRunActivity;
+
 /**
  * Created by catherine on 4/2/2017.
  */

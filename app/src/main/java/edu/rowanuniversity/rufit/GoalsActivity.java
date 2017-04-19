@@ -105,7 +105,6 @@ public class GoalsActivity extends AppCompatActivity {
 
         //Updates display components when database reference is changed
         goalRef.addValueEventListener(new ValueEventListener() {
-        //goalRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {    update(dataSnapshot);}
             @Override
@@ -188,8 +187,8 @@ public class GoalsActivity extends AppCompatActivity {
 
         //If user hasn't added any shoes display greeting
         if (userGoals.getMilesPerWeekTarget() > 0 ||
-                userGoals.getRunsPerWeekTarget() > 0 ||
-                userGoals.getDaysUntilRace() >= 0) {
+                userGoals.getRunsPerWeekTarget() > 0||
+                userGoals.getDaysUntilRace() > 0) {
                 goalGreeting.setVisibility(View.GONE);
         }
         displayGoal(); //Displays update information for each goal
