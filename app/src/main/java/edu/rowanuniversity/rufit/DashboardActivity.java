@@ -48,6 +48,7 @@ import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import edu.rowanuniversity.rufit.rufitObjects.Goal;
+import edu.rowanuniversity.rufit.rufitObjects.Record;
 import edu.rowanuniversity.rufit.rufitObjects.Run;
 import edu.rowanuniversity.rufit.rufitObjects.Shoe;
 import edu.rowanuniversity.rufit.rufitObjects.User;
@@ -69,6 +70,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     private HashMap<String, Run> runMap;
     private HashMap<String,Shoe> userShoes;
     private Goal userGoals;
+    private Record userRecords;
     final String ROOT = "users";
     private String text = "Welcome!";
     private  int check;
@@ -183,6 +185,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         DataSnapshot goalSnapshot = d.child("goals");
         DataSnapshot runsSnapshot = d.child("runs");
         DataSnapshot shoeSnapshot = d.child("shoes");
+        DataSnapshot recordSnapshot = d.child("records");
 
         //init goals
         userGoals = new Goal();
@@ -218,6 +221,13 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             HashMap<String, Object> temp = (HashMap<String, Object>) currentUser.get("info");
             drawerusername.setText(temp.get("username").toString());
         }
+
+        //init records
+        userRecords = new Record();
+        userRecords.setRecordDistance(Integer.parseInt(recordSnapshot.child("recordDistance").getValue().toString()));
+        userRecords.setRecordTime(Integer.parseInt(recordSnapshot.child("recordTime").getValue().toString()));
+        userRecords.setRecordPace(Integer.parseInt(recordSnapshot.child("recordPace").getValue().toString()));
+
 
         //Background updates relating to user goals
         if(check == 0) {

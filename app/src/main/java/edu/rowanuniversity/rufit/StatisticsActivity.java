@@ -33,8 +33,8 @@ public class StatisticsActivity extends AppCompatActivity{
     Record userRecords;
     private String userID;
 
-    protected void OnCreate(Bundle savedInstanceState) {
-        records = (RelativeLayout) findViewById(R.id.firstGoal);
+    protected void onCreate(Bundle savedInstanceState) {
+        records = (RelativeLayout) findViewById(R.id.statistics);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.statistics);
 
@@ -45,12 +45,12 @@ public class StatisticsActivity extends AppCompatActivity{
         database = FirebaseDatabase.getInstance();
         db = database.getReference();
         myRef = db.child("users").child(userID);
-        //recordRef = myRef.child("statistics"); //would only need if adding values
+        recordRef = myRef.child("records"); //would only need if adding values
 
         Toolbar t = (Toolbar) findViewById(R.id.topToolBar);
         setSupportActionBar(t);
-        getSupportActionBar().setTitle("");
-        backbutton = (ImageView) findViewById(R.id.backbutton_goalactivity);
+        //getSupportActionBar().setTitle("");
+        backbutton = (ImageView) findViewById(R.id.sttstcs_backButton);
         backbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -61,7 +61,12 @@ public class StatisticsActivity extends AppCompatActivity{
         recordRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                update(dataSnapshot);
+                userRecords = new Record();
+
+                userRecords.setRecordDistance(dataSnapshot.getValue(Record.class).getRecordDistance());
+                userRecords.setRecordPace(dataSnapshot.getValue(Record.class).getRecordPace());
+                userRecords.setRecordTime(dataSnapshot.getValue(Record.class).getRecordTime());
+                displayRecords();
             }
 
             @Override
@@ -70,20 +75,6 @@ public class StatisticsActivity extends AppCompatActivity{
             }
         });
 
-    }
-
-    /**
-     * Updates view to reflect current statistics stored for user in database
-     * @param dataSnapshot
-     */
-    private void update( DataSnapshot dataSnapshot) {
-        DataSnapshot d = dataSnapshot.child("statistics");
-        userRecords = new Record();
-
-        userRecords.setRecordDistance(d.getValue(Record.class).getRecordDistance());
-        userRecords.setRecordPace(d.getValue(Record.class).getRecordPace());
-        userRecords.setRecordTime(d.getValue(Record.class).getRecordTime());
-        displayRecords();
     }
 
 
@@ -96,13 +87,18 @@ public class StatisticsActivity extends AppCompatActivity{
         TextView tvFRunPaceDate = (TextView) findViewById(R.id.fststPace_date);
         TextView tvFRunTime = (TextView) findViewById(R.id.fststTime_time);
         TextView tvFRunTimeDate = (TextView) findViewById(R.id.fststTime_date);
+        TextView tvRunTotal = (TextView) findViewById(R.id.runTotal);
+        TextView tvRunDistance = (TextView) findViewById(R.id.runDistance);
 
-        tvLRun.setText("Distance - " + userRecords.getRecordDistance());
-        tvLRunDate.setText("Date - ");
-        tvFRunPace.setText("Pace - " + userRecords.getRecordPace());
-        tvFRunPaceDate.setText("Date - ");
-        tvFRunTime.setText("Time - " + userRecords.getRecordTime());
-        tvFRunTimeDate.setText("Date - ");
+
+        tvLRun.setText("Distance: " + userRecords.getRecordDistance());
+        tvLRunDate.setText("Date: ");
+        tvFRunPace.setText("Pace: " + userRecords.getRecordPace());
+        tvFRunPaceDate.setText("Date: ");
+        tvFRunTime.setText("Time: " + userRecords.getRecordTime());
+        tvFRunTimeDate.setText("Date: ");
+        tvRunTotal.setText("Total Runs: ");
+        tvRunDistance.setText("Total Distance Run: ");
         //TODO: 4/8/17 setup after we implement interchangable units to do km/s or mi/s or whatever
         //TODO: 4/8/17 make runs clickable so that when you click on a run (by clicking on date or other value regarding that specific run then it will bring up the run description...if that makes sense
     }
