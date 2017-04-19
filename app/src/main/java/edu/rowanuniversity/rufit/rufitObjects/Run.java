@@ -35,7 +35,7 @@ public class Run implements Serializable {
 
     public Run() { }
 
-    private void calculatePace() {
+    public void calculatePace() {
         if(time > -1 && mileage > -1.0) {
             double p = ((time / mileage) + (time % mileage));
             setPace((int) p);

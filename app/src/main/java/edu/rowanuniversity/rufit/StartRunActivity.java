@@ -3,8 +3,11 @@ package edu.rowanuniversity.rufit;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.icu.text.DateFormat;
+import android.icu.text.DecimalFormat;
 import android.icu.text.SimpleDateFormat;
+import android.icu.util.Calendar;
 import android.icu.util.TimeZone;
 import android.location.Criteria;
 import android.location.Location;
@@ -38,6 +41,8 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -85,6 +90,11 @@ public class StartRunActivity extends FragmentActivity implements android.locati
     private ArrayList<LatLng> locations;
     String bestProvider;
     Criteria criteria;
+    Polyline route;
+    float distanceCovered;
+    int weight;
+    private HashMap<String,Object> currentUser;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,6 +119,10 @@ public class StartRunActivity extends FragmentActivity implements android.locati
 
         run = new Run();
         locations = new ArrayList<>();
+
+        //user = dataSnapshot.getValue(generic);
+        //HashMap<String,Object> info = (HashMap<String,Object>) user.get("info");
+        //weight = Integer.parseInt(info.get("weight").toString());
 
         database = FirebaseDatabase.getInstance();
         db = database.getReference();
@@ -136,8 +150,33 @@ public class StartRunActivity extends FragmentActivity implements android.locati
             public void onClick(View v) {
                 stopLocationTracking();
                 chronometer.stop();
-                //intent.putExtra("Run",run);
-                //intent.putExtra("Locations", locations);
+
+                String[] splits = chronometer.getText().toString().split(":");
+                int time;
+                if(Integer.parseInt(splits[0]) == 0) {
+                    time = 1;
+                }
+                else {
+                    time = Integer.parseInt(splits[0]);
+                }
+                run.setTime(time);
+
+                double miles = distanceCovered * .000621371;
+                DecimalFormat df = new DecimalFormat("#.##");
+                miles = Double.valueOf(df.format(miles));
+                run.setMileage(miles);
+
+                Calendar c = Calendar.getInstance();
+                SimpleDateFormat dformat = new SimpleDateFormat("MM/dd/yyyy");
+                String formattedDate = dformat.format(c.getTime());
+                run.setDate(formattedDate);
+
+                run.calculatePace();
+
+                //TBH idk how to calculate and set calories
+                run.setCalories(693);
+
+                intent.putExtra("Run",run);
                 startActivity(intent);
             }
         }));
@@ -204,31 +243,45 @@ public class StartRunActivity extends FragmentActivity implements android.locati
     public void onLocationChanged(Location location) {
         //Toast.makeText(this, "onLocationChanged called", Toast.LENGTH_LONG).show();
         mCurrLocation = location;
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                new LatLng(mLastLocation.getLatitude(),
-                        mLastLocation.getLongitude()),
-                MAP_ZOOM_LEVEL));
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
         Date date = new Date();
         mLastUpdateTime = dateFormat.format(date).toString();
+
+        if (mLastLocation != null) {
+            float distance = mLastLocation.distanceTo(mCurrLocation);
+            distanceCovered = distanceCovered + distance;
+            double miles = distanceCovered * .000621371;
+            DecimalFormat df = new DecimalFormat("#.##");
+            miles = Double.valueOf(df.format(miles));
+            if(miles > .1) {
+                Toast.makeText(this, "distance covered: " + miles + " miles",
+                        Toast.LENGTH_SHORT).show();
+            }
+            mLastLocation = mCurrLocation;
+        }
         
         LatLng latLng = new LatLng(mCurrLocation.getLatitude(),mCurrLocation.getLongitude());
         locations.add(latLng);
-        Toast.makeText(this,"location added",Toast.LENGTH_LONG).show();
+        mMap.clear();
+        PolylineOptions options = new PolylineOptions().width(5).color(Color.BLUE).geodesic(true);
+        for (int i = 0; i < locations.size(); i++) {
+            LatLng point = locations.get(i);
+            options.add(point);
+        }
+        route = mMap.addPolyline(options);
 
-        //mMap.clear();
-        //saveToFirebase();
+        //drawLocations();
 
-        drawLocations();
-
+        /*
         LatLng mLatlng = new LatLng(mCurrLocation.getLatitude(),
                 mCurrLocation.getLongitude());
         MarkerOptions mMarkerOptions = new MarkerOptions()
                 .position(mLatlng)
                 .title(mLastUpdateTime)
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
         mMap.addMarker(mMarkerOptions);
+        */
     }
 
     private void calculateDistance() {
@@ -331,14 +384,14 @@ public class StartRunActivity extends FragmentActivity implements android.locati
             criteria = new Criteria();
             bestProvider = String.valueOf(locationManager.getBestProvider(criteria, true)).toString();
             locationManager.requestLocationUpdates(bestProvider, 1000, 0, this);
-        }
-        else {
+      }
+      else {
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                     new LatLng(mLastLocation.getLatitude(),
                             mLastLocation.getLongitude()),
                     MAP_ZOOM_LEVEL));
-        }
-        //Toast.makeText(this,"CONNECTED",Toast.LENGTH_LONG).show();
+      }
+      //Toast.makeText(this,"CONNECTED",Toast.LENGTH_LONG).show();
     }
 
     @Override
