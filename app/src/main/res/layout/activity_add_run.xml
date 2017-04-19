@@ -215,7 +215,6 @@
                android:layout_height="wrap_content"
                android:layout_gravity="right"
                android:ems="10"
-               android:text="---"
                android:textSize="16dp"
                android:paddingBottom="7dp"/>
        </LinearLayout>
