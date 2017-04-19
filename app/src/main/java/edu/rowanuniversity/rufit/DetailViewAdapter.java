@@ -18,7 +18,7 @@ import edu.rowanuniversity.rufit.rufitObjects.Run;
  * Created by shiv on 3/31/2017.
  */
 
-public class DetailViewAdapter extends RecyclerView.Adapter<DetailViewAdapter.WorkoutsViewHolder> {
+public class DetailViewAdapter extends RecyclerView.Adapter<DetailViewAdapter.WorkoutsViewHolder>  {
 
     private LayoutInflater inflater;
     private Context context;
@@ -49,6 +49,7 @@ public class DetailViewAdapter extends RecyclerView.Adapter<DetailViewAdapter.Wo
         holder.TimeWorkout.setText(String.format("%02d", currentData.getTime()/3600) + ":"
                 + String.format("%02d",currentData.getTime()/60) + ":"
                 + String.format("%02d",currentData.getTime()%60));
+
 
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
