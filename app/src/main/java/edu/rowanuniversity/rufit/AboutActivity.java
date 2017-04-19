@@ -11,14 +11,14 @@ import android.widget.ImageView;
 
 public class AboutActivity extends AppCompatActivity{
 
-    ImageView backbutton;
+    ImageView backButton;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.about_layout);
 
-        backbutton = (ImageView) findViewById(R.id.backbutton_aboutus);
+        backButton = (ImageView) findViewById(R.id.backButton);
 
-        backbutton.setOnClickListener(new View.OnClickListener() {
+        backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();

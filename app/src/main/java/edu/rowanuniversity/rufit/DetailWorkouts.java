@@ -21,7 +21,11 @@ import edu.rowanuniversity.rufit.rufitObjects.Run;
  */
 
 public class DetailWorkouts extends AppCompatActivity {
+<<<<<<< HEAD
     Button donebutton;
+=======
+    Button backButton;
+>>>>>>> Bug fixes + aesthetic changes
     Run currentRun;
     TextView DateTitle;
     TextView CaloriesBurned;
@@ -82,17 +86,19 @@ public class DetailWorkouts extends AppCompatActivity {
                 feel5.setColorFilter(Color.rgb(198, 19, 19));
         }
 
+<<<<<<< HEAD
 
         donebutton = (Button) findViewById(R.id.backbutton_detail_workout);
 
         donebutton.setOnClickListener(new View.OnClickListener() {
+=======
+        backButton = (Button) findViewById(R.id.backButton_detailWorkout);
+        backButton.setOnClickListener(new View.OnClickListener() {
+>>>>>>> Bug fixes + aesthetic changes
             @Override
-            public void onClick(View v) {
-
-
-                finish();
-            }
+            public void onClick(View v) { finish(); }
         });
+<<<<<<< HEAD
 
 
         edit.setOnClickListener(new View.OnClickListener() {
@@ -116,5 +122,7 @@ public class DetailWorkouts extends AppCompatActivity {
             }
         });
 
+=======
+>>>>>>> Bug fixes + aesthetic changes
     }
 }

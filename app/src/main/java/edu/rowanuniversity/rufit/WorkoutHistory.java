@@ -3,22 +3,17 @@ package edu.rowanuniversity.rufit;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SimpleItemAnimator;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.utils.EntryXComparator;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -35,8 +30,6 @@ import org.joda.time.format.DateTimeFormatter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -59,7 +52,7 @@ public class WorkoutHistory  extends AppCompatActivity{
     List<Entry> entries;
     LineDataSet dataSet;
     LineData lineData;
-    ImageView back_button;
+    ImageView backButton;
     ToggleSwitch toggle_switch;
     RecyclerView recyclerView;
     DetailViewAdapter adapter;
@@ -118,9 +111,9 @@ public class WorkoutHistory  extends AppCompatActivity{
 
 
         chart = (LineChart) findViewById(R.id.workout_history_chart);
-        back_button = (ImageView) findViewById(R.id.backbutton_workout_history);
+        backButton = (ImageView) findViewById(R.id.backbutton_workout_history);
         toggle_switch = (ToggleSwitch) findViewById(R.id.toggle_switch);
-        back_button.setOnClickListener(new View.OnClickListener() {
+        backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
