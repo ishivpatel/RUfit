@@ -76,7 +76,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
                 android:ems="10"
-                android:onClick="showDatePickerDialog"/>
+                android:onClick="showDatePickerDialog"
+                android:text="date" />
         </LinearLayout>
         <LinearLayout
             android:layout_width="wrap_content"
@@ -130,7 +131,8 @@
                 android:layout_width="250dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
-                android:ems="10" />
+                android:ems="10"
+                android:text="distance" />
 
         </LinearLayout>
         <LinearLayout
