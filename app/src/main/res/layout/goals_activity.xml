@@ -24,6 +24,7 @@
         android:background="@color/Red"
         android:id="@+id/topToolBar"
         android:layout_marginBottom="4dp"
+        android:elevation="3dp"
         >
 
         <ImageView

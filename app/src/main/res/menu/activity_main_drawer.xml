@@ -43,10 +43,10 @@
                 android:id="@+id/about"
                 android:icon="@drawable/about"
                 android:title="About" />
-            <item
+        <!--    <item
                 android:id="@+id/settings"
                 android:icon="@drawable/settings"
-                android:title="Settings" />
+                android:title="Settings" /> -->
             <item
                 android:id="@+id/signout"
                 android:icon="@drawable/signout"

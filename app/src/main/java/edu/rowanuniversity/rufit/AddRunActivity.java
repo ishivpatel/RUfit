@@ -223,7 +223,7 @@ public class AddRunActivity extends AppCompatActivity {
                 //Add run to Firebase
                 run.setName(editName.getText().toString());
                 run.setNotes(notesEdit.getText().toString());
-                run.setShoe(shoeSpinner.getSelectedItem().toString());
+                run.setShoe(shoeSpinner.getSelectedItem() == null ? "" : shoeSpinner.getSelectedItem().toString());
                 run.setType(typeSpinner.getSelectedItem().toString());
                 run.setCalories(Integer.parseInt(caloriesText.getText().toString()));
                 runRef.push().setValue(run);
@@ -244,15 +244,15 @@ public class AddRunActivity extends AppCompatActivity {
                                           boolean fromUser) {
                 progressChanged = progress;
                 if (progress == 0) {
-                    seekBar.setBackgroundColor(Color.CYAN);
+                    seekBar.setBackgroundColor(Color.rgb(53, 123, 173));
                 } else if (progress ==1) {
-                    seekBar.setBackgroundColor(Color.GREEN);
+                    seekBar.setBackgroundColor(Color.rgb(53, 173, 56));
                 } else if (progress ==2) {
-                    seekBar.setBackgroundColor(Color.YELLOW);
+                    seekBar.setBackgroundColor(Color.rgb(247, 225, 59));
                 }else if ( progress ==3) {
                     seekBar.setBackgroundColor(Color.rgb(255,140,0));
                 }else if ( progress == 4) {
-                    seekBar.setBackgroundColor(Color.RED);
+                    seekBar.setBackgroundColor(Color.rgb(198, 19, 19));
                 }
                 run.setFeel(progress);
             }

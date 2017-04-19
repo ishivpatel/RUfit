@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:background="@color/Red"
         android:id="@+id/topToolBar"
+        android:elevation="3dp"
         >
 
         <ImageView

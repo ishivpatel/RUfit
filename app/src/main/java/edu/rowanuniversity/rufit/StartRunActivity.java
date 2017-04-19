@@ -212,7 +212,7 @@ public class StartRunActivity extends FragmentActivity implements android.locati
         dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
         Date date = new Date();
         mLastUpdateTime = dateFormat.format(date).toString();
-
+        
         LatLng latLng = new LatLng(mCurrLocation.getLatitude(),mCurrLocation.getLongitude());
         locations.add(latLng);
         Toast.makeText(this,"location added",Toast.LENGTH_LONG).show();
@@ -326,7 +326,7 @@ public class StartRunActivity extends FragmentActivity implements android.locati
     public void onConnected(Bundle bundle) {
         checkLocationPermission();
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-        if(mLastLocation == null) {
+      if(mLastLocation == null) {
             locationManager = (LocationManager)  this.getSystemService(Context.LOCATION_SERVICE);
             criteria = new Criteria();
             bestProvider = String.valueOf(locationManager.getBestProvider(criteria, true)).toString();

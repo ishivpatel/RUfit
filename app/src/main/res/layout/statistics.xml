@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true">
@@ -37,7 +38,7 @@
             android:text="Distance of Run"
             android:textColor="@color/black"
             android:textSize="18sp"
-            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintHorizontal_bias="0.119"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="@+id/lngstRunTitle"
             app:layout_constraintTop_toBottomOf="@+id/lngstRunTitle" />
@@ -51,7 +52,7 @@
             android:text="Date of Run"
             android:textColor="@color/black"
             android:textSize="18sp"
-            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintHorizontal_bias="0.491"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="@+id/lngstRun_distance"
             app:layout_constraintTop_toBottomOf="@+id/lngstRun_distance" />
@@ -82,7 +83,7 @@
             android:text="Pace of Run"
             android:textColor="@color/black"
             android:textSize="18sp"
-            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintHorizontal_bias="0.107"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="@+id/fststPaceTitle"
             app:layout_constraintTop_toBottomOf="@+id/fststPaceTitle" />
@@ -125,7 +126,7 @@
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="43dp"
+            android:layout_marginTop="22dp"
             android:text="Record Runs"
             android:textAppearance="@style/TextLabelSignIn"
             android:textColor="@color/DarkRed"
@@ -138,69 +139,33 @@
             tools:layout_constraintTop_creator="1" />
 
         <TextView
-            android:id="@+id/runDistanceValue"
-            android:layout_width="103dp"
-            android:layout_height="21dp"
-            android:layout_marginTop="409dp"
-            android:layout_gravity="end"
-            android:text='"value"'
-            android:textAlignment="textEnd"
-            android:textColor="@color/DimGray"
-            android:textSize="18sp"
-            app:layout_constraintHorizontal_bias="0.969"
-            app:layout_constraintLeft_toLeftOf="@+id/recordsTitle"
-            app:layout_constraintRight_toRightOf="@+id/recordsTitle"
-            app:layout_constraintTop_toBottomOf="@+id/recordsTitle"
-            tools:layout_constraintLeft_creator="1"
-            tools:layout_constraintRight_creator="1"
-            tools:layout_constraintTop_creator="1" />
-
-        <TextView
-            android:id="@+id/runTotalValue"
-            android:layout_width="103dp"
-            android:layout_height="21dp"
-            android:layout_marginTop="387dp"
-            android:layout_gravity="end"
-            android:text='"value"'
-            android:textAlignment="textEnd"
-            android:textColor="@color/DimGray"
-            android:textSize="18sp"
-            app:layout_constraintHorizontal_bias="0.969"
-            app:layout_constraintLeft_toLeftOf="@+id/recordsTitle"
-            app:layout_constraintRight_toRightOf="@+id/recordsTitle"
-            app:layout_constraintTop_toBottomOf="@+id/recordsTitle"
-            tools:layout_constraintLeft_creator="1"
-            tools:layout_constraintRight_creator="1"
-            tools:layout_constraintTop_creator="1" />
-
-        <TextView
-            android:id="@+id/runDistanceTitle"
-            android:layout_width="126dp"
-            android:layout_height="24dp"
-            android:layout_marginTop="409dp"
+            android:id="@+id/runDistance"
+            android:layout_width="323dp"
+            android:layout_height="27dp"
+            android:layout_marginTop="0dp"
             android:text="Total Distance:"
             android:textColor="@color/DimGray"
             android:textSize="18sp"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintLeft_toLeftOf="@+id/recordsTitle"
-            app:layout_constraintRight_toRightOf="@+id/recordsTitle"
-            app:layout_constraintTop_toBottomOf="@+id/recordsTitle"
+            app:layout_constraintLeft_toLeftOf="@+id/runTotal"
+            app:layout_constraintRight_toRightOf="@+id/runTotal"
+            app:layout_constraintTop_toBottomOf="@+id/runTotal"
             tools:layout_constraintLeft_creator="1"
             tools:layout_constraintRight_creator="1"
             tools:layout_constraintTop_creator="1" />
 
         <TextView
-            android:id="@+id/runTotalTitle"
-            android:layout_width="103dp"
-            android:layout_height="21dp"
-            android:layout_marginTop="387dp"
+            android:id="@+id/runTotal"
+            android:layout_width="320dp"
+            android:layout_height="25dp"
+            android:layout_marginTop="1dp"
             android:text="Total Runs:"
             android:textColor="@color/DimGray"
             android:textSize="18sp"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintLeft_toLeftOf="@+id/recordsTitle"
-            app:layout_constraintRight_toRightOf="@+id/recordsTitle"
-            app:layout_constraintTop_toBottomOf="@+id/recordsTitle"
+            app:layout_constraintHorizontal_bias="0.511"
+            app:layout_constraintLeft_toLeftOf="@+id/activityTitle"
+            app:layout_constraintRight_toRightOf="@+id/activityTitle"
+            app:layout_constraintTop_toBottomOf="@+id/activityTitle"
             tools:layout_constraintLeft_creator="1"
             tools:layout_constraintRight_creator="1"
             tools:layout_constraintTop_creator="1" />
@@ -213,34 +178,14 @@
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="431dp"
+            android:layout_marginTop="24dp"
             android:text="Activity (All Time)"
             android:textAppearance="@style/TextLabelSignIn"
             android:textColor="@color/DarkRed"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/include"
-            tools:layout_constraintLeft_creator="1"
-            tools:layout_constraintRight_creator="1"
-            tools:layout_constraintTop_creator="1" />
-
-        <TextView
-            android:id="@+id/statisticsTitle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginStart="8dp"
-            android:text="Statistics"
-            android:textAppearance="@style/TextLabelSignIn"
-            android:textColor="@color/DarkRed"
-            android:textSize="36sp"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/include"
+            app:layout_constraintTop_toBottomOf="@+id/lngstRun_date"
             tools:layout_constraintLeft_creator="1"
             tools:layout_constraintRight_creator="1"
             tools:layout_constraintTop_creator="1" />
@@ -272,8 +217,8 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="@+id/fststTimeTitle"
             app:layout_constraintTop_toBottomOf="@+id/fststTimeTitle"
-            android:layout_marginTop="-15dp"
-            app:layout_constraintHorizontal_bias="0.0" />
+            android:layout_marginTop="0dp"
+            app:layout_constraintHorizontal_bias="0.11" />
 
         <TextView
             android:id="@+id/fststTime_date"
@@ -286,7 +231,16 @@
             app:layout_constraintRight_toRightOf="@+id/fststTime_time"
             app:layout_constraintTop_toBottomOf="@+id/fststTime_time"
             android:layout_marginLeft="8dp"
-            android:layout_marginTop="-1dp" />
+            android:layout_marginTop="-1dp"
+            app:layout_constraintHorizontal_bias="1.0" />
+
+        <ImageButton
+            android:id="@+id/sttstcs_backButton"
+            android:layout_width="48dp"
+            android:layout_height="0dp"
+            app:srcCompat="@drawable/back_button"
+            tools:layout_editor_absoluteY="0dp"
+            tools:layout_editor_absoluteX="16dp" />
 
     </android.support.constraint.ConstraintLayout>
 </ScrollView>

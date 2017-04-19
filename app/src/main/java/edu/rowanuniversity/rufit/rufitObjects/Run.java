@@ -2,6 +2,8 @@ package edu.rowanuniversity.rufit.rufitObjects;
 
 import java.io.Serializable;
 
+import edu.rowanuniversity.rufit.StartRunActivity;
+
 /**
  * Created by catherine on 4/2/2017.
  */

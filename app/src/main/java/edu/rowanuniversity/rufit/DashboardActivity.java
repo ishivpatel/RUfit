@@ -48,6 +48,7 @@ import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import edu.rowanuniversity.rufit.rufitObjects.Goal;
+import edu.rowanuniversity.rufit.rufitObjects.Record;
 import edu.rowanuniversity.rufit.rufitObjects.Run;
 import edu.rowanuniversity.rufit.rufitObjects.Shoe;
 import edu.rowanuniversity.rufit.rufitObjects.User;
@@ -69,6 +70,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     private HashMap<String, Run> runMap;
     private HashMap<String,Shoe> userShoes;
     private Goal userGoals;
+    private Record userRecords;
     final String ROOT = "users";
     private String text = "Welcome!";
     private  int check;
@@ -174,6 +176,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         DataSnapshot goalSnapshot = d.child("goals");
         DataSnapshot runsSnapshot = d.child("runs");
         DataSnapshot shoeSnapshot = d.child("shoes");
+        DataSnapshot recordSnapshot = d.child("records");
 
         //init goals
         userGoals = new Goal();
@@ -210,6 +213,13 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             drawerusername.setText(temp.get("username").toString());
         }
 
+        //init records
+        userRecords = new Record();
+        userRecords.setRecordDistance(Integer.parseInt(recordSnapshot.child("recordDistance").getValue().toString()));
+        userRecords.setRecordTime(Integer.parseInt(recordSnapshot.child("recordTime").getValue().toString()));
+        userRecords.setRecordPace(Integer.parseInt(recordSnapshot.child("recordPace").getValue().toString()));
+
+
         //Background updates relating to user goals
         if(check == 0) {
             refreshGoalData();
@@ -225,7 +235,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         RelativeLayout r2 = (RelativeLayout) findViewById(R.id.r2);
         TextView noGoal = (TextView) findViewById(R.id.noGoalGreeting);
 
-        if (!(userGoals.getMilesPerWeekTarget() > 0) || !(userGoals.getRunsPerWeekTarget() > 0)) {
+        if (!(userGoals.getMilesPerWeekTarget() > 0) && !(userGoals.getRunsPerWeekTarget() > 0)) {
             noGoal.setVisibility(View.VISIBLE);
         }
 
@@ -306,19 +316,19 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
             switch (mostRecentRun.getFeel()) {
                 case 0:
-                    feel.setBackgroundColor(Color.CYAN);
+                    feel.setBackgroundColor(Color.rgb(53, 123, 173));
                     break;
                 case 1:
-                    feel.setBackgroundColor(Color.GREEN);
+                    feel.setBackgroundColor(Color.rgb(53, 173, 56));
                     break;
                 case 2:
-                    feel.setBackgroundColor(Color.YELLOW);
+                    feel.setBackgroundColor(Color.rgb(247, 225, 59));
                     break;
                 case 3:
                     feel.setBackgroundColor(Color.rgb(255, 140, 0));
                     break;
                 case 4:
-                    feel.setBackgroundColor(Color.RED);
+                    feel.setBackgroundColor(Color.rgb(198, 19, 19));
                     break;
             }
         }
@@ -421,20 +431,19 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
             }
 
-
-            //While we're here, we're going to update the mileage for each shoe
-            for(String shoeKey : userShoes.keySet()) {
-                Shoe currShoe = userShoes.get(shoeKey);
-                currShoe.setMileage(0.0);
-                for(String runKey : runMap.keySet()) {
-                    if(currShoe.getName().equals(runMap.get(runKey).getShoe())) {
-                        currShoe.addMileage(runMap.get(runKey).getMileage());
+            if(userShoes != null && !userShoes.isEmpty()) {
+                //While we're here, we're going to update the mileage for each shoe
+                for (String shoeKey : userShoes.keySet()) {
+                    Shoe currShoe = userShoes.get(shoeKey);
+                    currShoe.setMileage(0.0);
+                    for (String runKey : runMap.keySet()) {
+                        if (currShoe.getName().equals(runMap.get(runKey).getShoe())) {
+                            currShoe.addMileage(runMap.get(runKey).getMileage());
+                        }
                     }
                 }
-
-
-
             }
+
         }
         userGoals.setRunsPerWeekActual(numOfRuns);
         userGoals.setMilesPerWeekActual(mileage);
@@ -476,10 +485,10 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             Intent intent = new Intent(DashboardActivity.this, AboutActivity.class);
             startActivity(intent);
         }
-        else if(id == R.id.settings){
-           /* Intent intent = new Intent(this, SettingsActivity.class);
-            startActivity(intent);*/
-        }
+       /*  else if(id == R.id.settings){
+           Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
+        }*/
         else if(id == R.id.signout){
             auth.signOut();
             Intent intent = new Intent(DashboardActivity.this, LoginActivity.class);
