@@ -1,8 +1,10 @@
 package edu.rowanuniversity.rufit;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -75,6 +77,8 @@ public class WorkoutHistory  extends AppCompatActivity{
     FirebaseUser user;
     private GenericTypeIndicator<HashMap<String,Run>> gRun = new GenericTypeIndicator<HashMap<String,Run>>() {};
     HashMap<String, Run> runMap;
+
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.workout_history);
@@ -111,6 +115,7 @@ public class WorkoutHistory  extends AppCompatActivity{
         }
 
         recyclerView = (RecyclerView) findViewById(R.id.details_recyclerView);
+
 
         chart = (LineChart) findViewById(R.id.workout_history_chart);
         back_button = (ImageView) findViewById(R.id.backbutton_workout_history);
@@ -278,6 +283,7 @@ public class WorkoutHistory  extends AppCompatActivity{
         chart.setScaleEnabled(false);
     }
 
+
     public class CustomComparator implements Comparator<Run> {
         @Override
         public int compare(Run o1, Run o2) {
@@ -292,4 +298,5 @@ public class WorkoutHistory  extends AppCompatActivity{
             return 0;
         }
     }
+
 }

@@ -13,13 +13,49 @@
         android:background="@color/Red"
         android:id="@+id/workout_details_topToolBar"
         >
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="35dp"
+            android:layout_gravity="start"
+            android:id="@+id/backbuttonnnnnn"
+            android:src="@drawable/back_button"
+            />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="30dp"
-            android:layout_gravity="center_horizontal|top"
+            android:layout_gravity="center"
+            android:paddingLeft="94dp"
+            android:paddingTop="2dp"
             android:src="@drawable/rufit_logo_nbg"
-            />
+            android:id="@+id/imageView3" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="end">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+
+                android:src="@drawable/delete"
+                android:id="@+id/del"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:src="@drawable/edit"
+                android:id="@+id/editttttt"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginRight="37dp"
+                android:layout_marginEnd="37dp" />
+
+</RelativeLayout>
 
     </android.support.v7.widget.Toolbar>
 
@@ -275,8 +311,6 @@
         android:src="@drawable/back_button"
         android:layout_margin="5dp"
         />
-
-
 
 
 </RelativeLayout>
