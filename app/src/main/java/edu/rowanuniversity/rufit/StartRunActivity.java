@@ -1,12 +1,15 @@
 package edu.rowanuniversity.rufit;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.icu.text.DateFormat;
 import android.icu.text.SimpleDateFormat;
 import android.icu.util.TimeZone;
+import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Build;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
@@ -51,7 +54,7 @@ import java.util.Map;
 
 import edu.rowanuniversity.rufit.rufitObjects.Run;
 
-public class StartRunActivity extends FragmentActivity implements OnMapReadyCallback,
+public class StartRunActivity extends FragmentActivity implements android.location.LocationListener,OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
         com.google.android.gms.location.LocationListener {
 
@@ -68,15 +71,20 @@ public class StartRunActivity extends FragmentActivity implements OnMapReadyCall
     private String userID;
     private FirebaseAuth auth;
     private FirebaseUser user;
-    public static final int MAP_ZOOM_LEVEL = 11;
+    public static final int MAP_ZOOM_LEVEL = 16;
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
     public static final long UPDATE_INTERVAL_IN_MS = 1200;
     public static final long FASTEST_UPDATE_INTERVAL_IN_MS = UPDATE_INTERVAL_IN_MS / 4;
     public static final String TAG = StartRunActivity.class.getSimpleName();
     private boolean mRequestingLocationUpdates = false;
+    private LocationManager locationManager;
     private Location mLastLocation;
     private double startLoggingTime;
     private Run run;
+    Intent intent;
+    private ArrayList<LatLng> locations;
+    String bestProvider;
+    Criteria criteria;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,18 +108,19 @@ public class StartRunActivity extends FragmentActivity implements OnMapReadyCall
         userID = user.getUid();
 
         run = new Run();
+        locations = new ArrayList<>();
 
         database = FirebaseDatabase.getInstance();
         db = database.getReference();
         myRef = db.child("users").child(userID);
         runRef = myRef.child("runs");
 
-
-
         chronometer = (Chronometer) findViewById(R.id.chronometer);
 
         start = (Button) findViewById(R.id.start_button);
         stop = (Button) findViewById(R.id.stop_button);
+
+        intent = new Intent(this,FinishRunActivity.class);
 
         start.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -127,7 +136,9 @@ public class StartRunActivity extends FragmentActivity implements OnMapReadyCall
             public void onClick(View v) {
                 stopLocationTracking();
                 chronometer.stop();
-                leaveActivity();
+                //intent.putExtra("Run",run);
+                //intent.putExtra("Locations", locations);
+                startActivity(intent);
             }
         }));
     }
@@ -155,18 +166,11 @@ public class StartRunActivity extends FragmentActivity implements OnMapReadyCall
         }
     }
 
-    private void leaveActivity() {
-        Intent intent = new Intent(this, FinishRunActivity.class);
-        startActivity(intent);
-    }
-
     /**
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera.
      * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
+     * it inside the SupportMapFragment.
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -193,25 +197,28 @@ public class StartRunActivity extends FragmentActivity implements OnMapReadyCall
                 .addApi(LocationServices.API)
                 .build();
         mGoogleApiClient.connect();
-        Toast.makeText(this,"Google API Clinet connected",Toast.LENGTH_LONG).show();
+        //Toast.makeText(this,"Google API Clinet connected",Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void onLocationChanged(Location location) {
-        Toast.makeText(this, "onLocationChanged called", Toast.LENGTH_LONG).show();
+        //Toast.makeText(this, "onLocationChanged called", Toast.LENGTH_LONG).show();
         mCurrLocation = location;
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                new LatLng(mLastLocation.getLatitude(),
+                        mLastLocation.getLongitude()),
+                MAP_ZOOM_LEVEL));
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
         Date date = new Date();
         mLastUpdateTime = dateFormat.format(date).toString();
-        Toast.makeText(StartRunActivity.this, mCurrLocation.toString(), Toast.LENGTH_LONG).show();
+        
+        LatLng latLng = new LatLng(mCurrLocation.getLatitude(),mCurrLocation.getLongitude());
+        locations.add(latLng);
+        Toast.makeText(this,"location added",Toast.LENGTH_LONG).show();
 
-        //run.addLocation(mCurrLocation);
-
-        mMap.clear();
-        //markerList.clear();
-
-        saveToFirebase();
+        //mMap.clear();
+        //saveToFirebase();
 
         drawLocations();
 
@@ -221,7 +228,15 @@ public class StartRunActivity extends FragmentActivity implements OnMapReadyCall
                 .position(mLatlng)
                 .title(mLastUpdateTime)
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
-        Marker mMarker = mMap.addMarker(mMarkerOptions);
+        mMap.addMarker(mMarkerOptions);
+    }
+
+    private void calculateDistance() {
+
+    }
+
+    private void calculateTime() {
+
     }
 
     private void saveToFirebase() {
@@ -235,6 +250,7 @@ public class StartRunActivity extends FragmentActivity implements OnMapReadyCall
     }
 
     private void drawLocations() {
+        Toast.makeText(this,"Drawing Locations",Toast.LENGTH_SHORT);
         Query queryRef = myRef.orderByChild("timestamp").startAt(startLoggingTime);
         queryRef.addChildEventListener(new ChildEventListener() {
             LatLngBounds bounds;
@@ -274,7 +290,6 @@ public class StartRunActivity extends FragmentActivity implements OnMapReadyCall
         });
     }
 
-    /*
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
 
@@ -289,7 +304,6 @@ public class StartRunActivity extends FragmentActivity implements OnMapReadyCall
     public void onProviderDisabled(String provider) {
 
     }
-    */
 
     private void startLogging() {
         Toast.makeText(this, "logging started", Toast.LENGTH_LONG).show();
@@ -312,9 +326,19 @@ public class StartRunActivity extends FragmentActivity implements OnMapReadyCall
     public void onConnected(Bundle bundle) {
         checkLocationPermission();
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-        //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mLastLocation.getLatitude(),
-          //      mLastLocation.getLongitude()),MAP_ZOOM_LEVEL));
-        //Toast.makeText(this,Double.toString(mLastLocation.getLatitude()),Toast.LENGTH_LONG).show();
+      if(mLastLocation == null) {
+            locationManager = (LocationManager)  this.getSystemService(Context.LOCATION_SERVICE);
+            criteria = new Criteria();
+            bestProvider = String.valueOf(locationManager.getBestProvider(criteria, true)).toString();
+            locationManager.requestLocationUpdates(bestProvider, 1000, 0, this);
+        }
+        else {
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                    new LatLng(mLastLocation.getLatitude(),
+                            mLastLocation.getLongitude()),
+                    MAP_ZOOM_LEVEL));
+        }
+        //Toast.makeText(this,"CONNECTED",Toast.LENGTH_LONG).show();
     }
 
     @Override

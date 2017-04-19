@@ -133,9 +133,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                     .into(userImage);
 
 
-        }catch (Exception e){
-
-        }
+        }catch (Exception e) {}
         userImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -146,24 +144,17 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             }
         });
 
-
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 updateDashboardData(dataSnapshot);
             }
-
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
+            public void onCancelled(DatabaseError databaseError) { }
         });
-
-        drawerusername.setText(currentUser == null ? text : ((HashMap<String,Object>) currentUser.get("info")).get("username").toString());
-
+        drawerusername.setText(currentUser == null ? text :
+                ((HashMap<String,Object>) currentUser.get("info")).get("username").toString());
     }
-
-
 
     public void onResume(){
         super.onResume();

@@ -166,13 +166,9 @@ public class AddRunActivity extends AppCompatActivity {
                 } else {
                     userGoals.setDaysUntilRace(goalsSnapshot.child("dateOfRace").getValue().toString());
                 }
-
             }
-
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
+            public void onCancelled(DatabaseError databaseError) {}
         });
 
         editName.setSingleLine();
@@ -221,10 +217,6 @@ public class AddRunActivity extends AppCompatActivity {
                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                typeSpinner.setAdapter(adapter);
 
-
-
-
-
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -240,7 +232,6 @@ public class AddRunActivity extends AppCompatActivity {
                 if(userGoals.getMilesPerWeekTarget()>0) {
                     userGoals.addMiles(run.getMileage());
                 }
-
                 leaveActivity();
             }
         });
@@ -299,7 +290,6 @@ public class AddRunActivity extends AppCompatActivity {
                         if(dayOfMonth <= 9) {
                             day = "0" + dayOfMonth;
                         }
-
                         String pickedDate = month+ "/" + day + "/" + year;
                         dateEdit.setText(pickedDate);
                         run.setDate(pickedDate);
@@ -307,7 +297,6 @@ public class AddRunActivity extends AppCompatActivity {
                 }, mYear, mMonth, mDay);
         datePickerDialog.show();
     }
-
 
     private void populateShoeSpinner(){
         final List<String> spinnerArray = new ArrayList<>();
