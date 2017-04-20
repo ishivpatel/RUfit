@@ -75,6 +75,8 @@ public class AddRunActivity extends AppCompatActivity {
     private HashMap<String,Object> currentUser;
     private Goal userGoals;
     private HashMap<String,Shoe> shoes;
+    ArrayAdapter<String> typeAdapter;
+    ArrayAdapter<String> shoeAdapter;
     private GenericTypeIndicator<HashMap<String,Shoe>> sGeneric = new GenericTypeIndicator<HashMap<String,Shoe>>() {};
     private GenericTypeIndicator<User<String,Object>> generic = new GenericTypeIndicator<User<String,Object>>() {};
     private int check = 0;
@@ -84,7 +86,7 @@ public class AddRunActivity extends AppCompatActivity {
         super.onCreate(SavedInstanceState);
         setContentView(R.layout.activity_add_run);
 
-        Intent intent = getIntent();
+
 
         Toolbar t = (Toolbar) findViewById(R.id.topToolBar);
         setSupportActionBar(t);
@@ -177,15 +179,7 @@ public class AddRunActivity extends AppCompatActivity {
         editDistance.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                double caloriesRate = weight * 0.75;
-                double calories = caloriesRate * Double.parseDouble(v.getText().toString());
-                caloriesText.setText("" + Math.round(calories));
-                run.setMileage(Double.parseDouble(v.getText().toString()));
-                if(!editTime.getText().toString().isEmpty()) {
-                    int mins = run.getPace() / 60;
-                    int sec = run.getPace() % 60;
-                    paceDisplay.setText(String.format("%02d", mins) + ":" + String.format("%02d", sec));
-                }
+                distanceDataChange(v);
                 return false;
             }
         });
@@ -200,41 +194,20 @@ public class AddRunActivity extends AppCompatActivity {
         });
 
         //TYPE
-        final List<String> spinnerArray1 = new ArrayList<>();
-        for(int i = 0; i <RunType.values().length; i++) {
-            spinnerArray1.add((RunType.values()[i]).toString());
-        }
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-                this, android.R.layout.simple_spinner_item, spinnerArray1);
-               adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-               typeSpinner.setAdapter(adapter);
+        populateTypeSpinner();
 
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Add run to Firebase
-                run.setName(editName.getText().toString());
-                run.setNotes(notesEdit.getText().toString());
-                run.setShoe(shoeSpinner.getSelectedItem() == null ? "" : shoeSpinner.getSelectedItem().toString());
-                run.setType(typeSpinner.getSelectedItem().toString());
-                run.setCalories(Integer.parseInt(caloriesText.getText().toString()));
-                runRef.push().setValue(run);
-
-                //Update goals
-                if(userGoals.getMilesPerWeekTarget()>0) {
-                    userGoals.addMiles(run.getMileage());
-                }
-                leaveActivity();
+                submitRun();
             }
         });
 
-        seekBar.setProgress(0);
+        seekBar.setBackgroundColor(Color.rgb(53, 123, 173));
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            int progressChanged = 0;
 
             public void onProgressChanged(SeekBar seekBar, int progress,
                                           boolean fromUser) {
-                progressChanged = progress;
                 if (progress == 0) {
                     seekBar.setBackgroundColor(Color.rgb(53, 123, 173));
                 } else if (progress ==1) {
@@ -246,7 +219,7 @@ public class AddRunActivity extends AppCompatActivity {
                 }else if ( progress == 4) {
                     seekBar.setBackgroundColor(Color.rgb(198, 19, 19));
                 }
-                run.setFeel(progress);
+
             }
 
             @Override
@@ -255,6 +228,11 @@ public class AddRunActivity extends AppCompatActivity {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {}
         });
+
+        if (getIntent().hasExtra("run")) {
+            run = (Run) getIntent().getSerializableExtra("run");
+            setData();
+        }
     }
 
     private void  pickDate() {
@@ -299,13 +277,71 @@ public class AddRunActivity extends AppCompatActivity {
             for (String s : shoes.keySet()) {
                 spinnerArray2.add(shoes.get(s).getName());
             }
-            ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(
+            shoeAdapter = new ArrayAdapter<String>(
                     this, android.R.layout.simple_spinner_item, spinnerArray2);
-            adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            shoeSpinner.setAdapter(adapter2);
+            shoeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            shoeSpinner.setAdapter(shoeAdapter);
+            if(run.getShoe() != null) {
+                shoeSpinner.setSelection(shoeAdapter.getPosition(run.getShoe()));
+            }
+
         }
         check = 1;
 
+    }
+
+    private void populateTypeSpinner() {
+        final List<String> spinnerArray1 = new ArrayList<>();
+        for (int i = 0; i < RunType.values().length; i++) {
+            spinnerArray1.add((RunType.values()[i]).toString());
+        }
+        ArrayAdapter<String> typeAdapter = new ArrayAdapter<String>(
+                this, android.R.layout.simple_spinner_item, spinnerArray1);
+        typeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        typeSpinner.setAdapter(typeAdapter);
+        if(run.getType() != null) {
+            typeSpinner.setSelection(typeAdapter.getPosition(run.getType()));
+        }
+    }
+
+    private void distanceDataChange(TextView v) {
+        double caloriesRate = weight * 0.75;
+        double calories = caloriesRate * Double.parseDouble(v.getText().toString());
+        caloriesText.setText("" + Math.round(calories));
+        run.setMileage(Double.parseDouble(v.getText().toString()));
+        if(!editTime.getText().toString().isEmpty()) {
+            int mins = run.getPace() / 60;
+            int sec = run.getPace() % 60;
+            paceDisplay.setText(String.format("%02d", mins) + ":" + String.format("%02d", sec));
+        }
+    }
+
+    private void submitRun() {
+        //Add run to Firebase
+        run.setName(editName.getText().toString());
+        run.setNotes(notesEdit.getText().toString());
+        run.setShoe(shoeSpinner.getSelectedItem() == null ? "" : shoeSpinner.getSelectedItem().toString());
+        run.setType(typeSpinner.getSelectedItem().toString());
+        run.setCalories(Integer.parseInt(caloriesText.getText().toString()));
+        run.setFeel(seekBar.getProgress());
+        runRef.push().setValue(run);
+
+        //Update goals
+        if(userGoals.getMilesPerWeekTarget()>0) {
+            userGoals.addMiles(run.getMileage());
+        }
+        leaveActivity();
+    }
+
+    private void setData() {
+        editTime.setText(String.format("%02d",run.getTime()/3600) + ":" + String.format("%02d", run.getTime()/60) + ":" + String.format("%02d", run.getTime()%60));
+        editDistance.setText("" +run.getMileage());
+        editName.setText("" + run.getName());
+        dateEdit.setText("" + run.getDate());
+        notesEdit.setText(run.getNotes() == null ? "" :  run.getNotes().toString());
+        caloriesText.setText("" + run.getCalories());
+        paceDisplay.setText(String.format("%02d", run.getPace() / 60) + ":" + String.format("%02d", run.getPace() % 60));
+        seekBar.setProgress(run.getFeel());
     }
 
     private void leaveActivity() {
