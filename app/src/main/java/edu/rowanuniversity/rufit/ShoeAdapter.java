@@ -35,7 +35,7 @@ public class ShoeAdapter extends RecyclerView.Adapter<ShoeAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(ShoeAdapter.ViewHolder viewHolder, int i) {
         viewHolder.shoeName.setText(shoes.get(keys[i]).getName());
-        viewHolder.shoeMileage.setText((shoes.get(keys[i]).getMileage() +" miles"));
+        viewHolder.shoeMileage.setText((Math.round(shoes.get(keys[i]).getMileage() * 100.0)/100.0) +" miles");
     }
 
     @Override
