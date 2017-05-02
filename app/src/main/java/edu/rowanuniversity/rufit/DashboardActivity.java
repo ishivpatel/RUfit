@@ -373,6 +373,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     Toast.makeText(getApplicationContext(), "Uploaded", Toast.LENGTH_SHORT).show();
                     mProgressDialog.dismiss();
+                    @SuppressWarnings("VisibleForTests")
                     Uri downloadUri = taskSnapshot.getDownloadUrl();
                     Picasso.with(getApplicationContext()).load(downloadUri).fit().centerCrop().into(userImage);
                 }

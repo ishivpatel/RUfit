@@ -1,6 +1,7 @@
 package edu.rowanuniversity.rufit;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -10,6 +11,11 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -33,6 +39,14 @@ public class DetailWorkouts extends AppCompatActivity {
     TextView shoe, pace;
     private ImageView feel1, feel2, feel3, feel4, feel5, edit, delete;
 
+    FirebaseAuth auth;
+    FirebaseDatabase database;
+    DatabaseReference runRef;
+    final String ROOT = "users";
+    FirebaseUser user;
+
+
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.detail_workout);
@@ -52,6 +66,12 @@ public class DetailWorkouts extends AppCompatActivity {
         backbutton = (ImageView) findViewById(R.id.backbuttonnnnnn);
         edit = (ImageView) findViewById(R.id.editttttt);
         delete = (ImageView) findViewById(R.id.del);
+
+        auth = FirebaseAuth.getInstance();
+        database = FirebaseDatabase.getInstance();
+        user = auth.getCurrentUser();
+        runRef = database.getReference(ROOT).child(user.getUid()).child("runs");
+
 
         DateTitle.setText(currentRun.getDate());
         CaloriesBurned.setText("" + currentRun.getCalories());
@@ -105,7 +125,10 @@ public class DetailWorkouts extends AppCompatActivity {
         edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(DetailWorkouts.this, AddRunActivity.class);
+                intent.putExtra("run",currentRun);
+                startActivity(intent);
+                finish();
             }
         });
 
@@ -118,8 +141,18 @@ public class DetailWorkouts extends AppCompatActivity {
                 a.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        runRef.child(currentRun.getId()).removeValue();
+                        finish();
                     }
                 });
+                a.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                        a.create();
+                a.show();
             }
         });
 

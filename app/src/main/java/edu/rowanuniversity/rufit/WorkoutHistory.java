@@ -65,7 +65,7 @@ public class WorkoutHistory  extends AppCompatActivity{
     private int check = 0;
     FirebaseAuth auth;
     FirebaseDatabase database;
-    DatabaseReference myRef;
+    DatabaseReference myRef, runRef;
     final String ROOT = "users";
     FirebaseUser user;
     private GenericTypeIndicator<HashMap<String,Run>> gRun = new GenericTypeIndicator<HashMap<String,Run>>() {};
@@ -86,6 +86,7 @@ public class WorkoutHistory  extends AppCompatActivity{
             user = auth.getCurrentUser();
             //Unique UUID For each user for Database
             myRef  = database.getReference(ROOT).child(user.getUid());
+            runRef = myRef.child("runs");
 
             myRef.addValueEventListener(new ValueEventListener() {
                 @Override
@@ -181,6 +182,7 @@ public class WorkoutHistory  extends AppCompatActivity{
 
         for (String key : runMap.keySet()) {
             Run run = runMap.get(key);
+            run.setId(key);
             //Date stored as MM/dd/yyyy
             DateTime dateOfRun = formatter.parseDateTime(run.getDate());
             if(dateOfRun.isAfter(weekAgo)) {

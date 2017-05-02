@@ -9,6 +9,7 @@ import edu.rowanuniversity.rufit.StartRunActivity;
  */
 
 public class Run implements Serializable {
+    private String id;
     private String name;
     private String date;
     private double mileage;
@@ -40,6 +41,14 @@ public class Run implements Serializable {
             double p = ((time / mileage) + (time % mileage));
             setPace((int) p);
         }
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public int getCalories() {
