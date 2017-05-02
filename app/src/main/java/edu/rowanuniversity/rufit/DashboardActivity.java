@@ -478,7 +478,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             startActivity(intent);
         } else if(id == R.id.statistics) {
             Intent intent = new Intent(this, StatisticsActivity.class);
-            //getIntent()
+            intent.putExtra("Runs", user.getEmail()); //TODO DO THIS KLAYDON
             startActivity(intent);
         } else if(id == R.id.personalInfo){
             Intent intent = new Intent(this, PersonalInfoActivity.class);

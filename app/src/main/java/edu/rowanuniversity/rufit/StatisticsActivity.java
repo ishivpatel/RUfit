@@ -14,9 +14,20 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
+
 import edu.rowanuniversity.rufit.rufitObjects.Record;
+import edu.rowanuniversity.rufit.rufitObjects.Run;
 
 
 /**
@@ -37,6 +48,19 @@ public class StatisticsActivity extends AppCompatActivity{
     DatabaseReference myRef,db, recordRef;
     Record userRecords;
     private String userID;
+    /*The following was added with the intent of adding functionality to run data access*/
+    ArrayList<Run> dailyData;
+    ArrayList<Run> weeklyData;
+    ArrayList<Run> monthlyData;
+    ArrayList<Run> allRunData;
+
+    Map<Integer,Double> weeksMap;
+    Map<Integer,Double> monthsMap;
+    Map<Integer,Double> daysMap;
+    HashMap<String, Run> runMap;
+    /*-------------------------------------*/
+
+    private GenericTypeIndicator<HashMap<String,Run>> gRun = new GenericTypeIndicator<HashMap<String,Run>>() {};
 
     protected void onCreate(Bundle savedInstanceState) {
         records = (RelativeLayout) findViewById(R.id.statistics);
@@ -80,6 +104,9 @@ public class StatisticsActivity extends AppCompatActivity{
      * displayRecords takes the TextViews and assigns users run records to the Statistic Panel Screen
      */
     private void displayRecords() {
+        //TODO: access the specific run information to access date infor on longest/fastest
+        //TODO: before storing the longest/fastest data, store the run id and then have that accessible so the user can click on that run
+        //TODO: differentiate the runs when they're listed
         TextView tvLRun = (TextView) findViewById(R.id.lngstRun_distance);
         TextView tvLRunDate = (TextView) findViewById(R.id.lngstRun_date);
         TextView tvFRunPace = (TextView) findViewById(R.id.fststPace_pace);
@@ -89,15 +116,82 @@ public class StatisticsActivity extends AppCompatActivity{
         TextView tvRunTotal = (TextView) findViewById(R.id.runTotal);
         TextView tvRunDistance = (TextView) findViewById(R.id.runDistance);
 
-
+        //Record Runs
         tvLRun.setText("Distance: " + userRecords.getRecordDistance());
         tvLRunDate.setText("Date: ");
         tvFRunPace.setText("Pace: " + userRecords.getRecordPace());
         tvFRunPaceDate.setText("Date: ");
         tvFRunTime.setText("Time: " + userRecords.getRecordTime());
         tvFRunTimeDate.setText("Date: ");
+
+        //Cumuluative Run Information, Initially it's all time
+        //TODO: set a clicker to switch to the past day/week/year and simulate what's happening in workouthistory
         tvRunTotal.setText("Total Runs: ");
         tvRunDistance.setText("Total Distance Run: ");
-        //TODO: 4/8/17 make runs clickable so that when you click on a run (by clicking on date or other value regarding that specific run then it will bring up the run description...if that makes sense
+    }
+
+    private void getRunInfo(DataSnapshot runSnapshot) {
+        runMap = runSnapshot.getValue(gRun);
+        //dailyData = new ArrayList<>();      //Run data to be used in graphical display for WorkoutHistory
+        //weeklyData = new ArrayList<>();     //Run data to be used in graphical display for WorkoutHistory
+        //monthlyData = new ArrayList<>();    //Run data to be used in graphical display for WorkoutHistory
+        allRunData = new ArrayList<>();     //Run data to be used in run and distance accumulator for Statistics
+        //weeksMap = new TreeMap<Integer, Double>();
+        //monthsMap = new TreeMap<Integer, Double>();
+        //daysMap = new TreeMap<Integer, Double>();
+
+        DateTime now =DateTime.now();
+        //Get current year and current week of the year
+
+        DateTime weekAgo = now.minusWeeks(1);
+        DateTime monthAgo = now.minusMonths(1);
+        DateTime yearAgo = now.minusYears(1);
+
+        DateTimeFormatter formatter = DateTimeFormat.forPattern("MM/dd/yyyy");
+
+
+        for (String key : runMap.keySet()) {
+            Run run = runMap.get(key);
+            //Date stored as MM/dd/yyyy
+            DateTime dateOfRun = formatter.parseDateTime(run.getDate());
+            if(dateOfRun.isAfter(weekAgo)) {
+                dailyData.add(run);
+            }
+            if (dateOfRun.isAfter(monthAgo)) {
+                weeklyData.add(run);
+            }
+            if (dateOfRun.isAfter(yearAgo)) {
+                monthlyData.add(run);
+            }
+
+
+            DateTime cDate = formatter.parseDateTime(run.getDate());
+
+            //Gets total mileage for a each month
+            //To be used in monthly
+            if(monthsMap.containsKey(cDate.getMonthOfYear()) && !monthsMap.isEmpty()) {
+                monthsMap.put(cDate.getMonthOfYear(),monthsMap.get(cDate.getMonthOfYear()) + run.getMileage());
+            } else {
+                monthsMap.put(cDate.getMonthOfYear(),run.getMileage());
+            }
+
+
+            //Gets a total of the mileage for a given week
+            // To be used in displaying weekly mileage totals
+            if(weeksMap.containsKey(cDate.getWeekyear()) && !weeksMap.isEmpty()) {
+                weeksMap.put(cDate.getWeekyear(),weeksMap.get(cDate.getWeekyear()) + run.getMileage());
+            } else {
+                weeksMap.put(cDate.getWeekOfWeekyear(),run.getMileage());
+            }
+
+            //Gets a total of the mileage for a given day
+            //To be used in displaying daily mileage
+            if(daysMap.containsKey(cDate.getDayOfWeek()) && !daysMap.isEmpty()) {
+                daysMap.put(cDate.getDayOfWeek(),daysMap.get(cDate.getDayOfWeek()) + run.getMileage());
+            } else {
+                daysMap.put(cDate.getDayOfWeek(),run.getMileage());
+            }
+        }
+        //check = 1;
     }
 }

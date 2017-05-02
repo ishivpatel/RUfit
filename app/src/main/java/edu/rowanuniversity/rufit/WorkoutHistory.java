@@ -59,6 +59,7 @@ public class WorkoutHistory  extends AppCompatActivity{
     ArrayList<Run> dailyData;
     ArrayList<Run> weeklyData;
     ArrayList<Run> monthlyData;
+    ArrayList<Run> allRunData;
     Map<Integer,Double> weeksMap;
     Map<Integer,Double> monthsMap;
     Map<Integer,Double> daysMap;
@@ -163,9 +164,10 @@ public class WorkoutHistory  extends AppCompatActivity{
 
     private void getRuns(DataSnapshot runSnapshot) {
         runMap = runSnapshot.getValue(gRun);
-        dailyData = new ArrayList<>();
-        weeklyData = new ArrayList<>();
-        monthlyData = new ArrayList<>();
+        dailyData = new ArrayList<>();      //Run data to be used in graphical display for WorkoutHistory
+        weeklyData = new ArrayList<>();     //Run data to be used in graphical display for WorkoutHistory
+        monthlyData = new ArrayList<>();    //Run data to be used in graphical display for WorkoutHistory
+        allRunData = new ArrayList<>();     //Run data to be used in run and distance accumulator for Statistics
         weeksMap = new TreeMap<Integer, Double>();
         monthsMap = new TreeMap<Integer, Double>();
         daysMap = new TreeMap<Integer, Double>();
