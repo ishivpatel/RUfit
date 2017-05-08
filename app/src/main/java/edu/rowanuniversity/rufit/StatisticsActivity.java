@@ -24,8 +24,6 @@ import edu.rowanuniversity.rufit.rufitObjects.Record;
  *
  * Created by Klaydon Balicanta on 4/1/17.
  * First Significant Edit by Klaydon Balicanta on 4/18/17
- *
- *
  */
 
 public class StatisticsActivity extends AppCompatActivity{
