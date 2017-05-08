@@ -52,31 +52,30 @@ import edu.rowanuniversity.rufit.timedurationpicker.TimeDurationUtil;
  * Created by Naomi on 3/28/2017.
  *
  * Allows a user to manually enter a previous run.
- * TODO: CATHERINE BROK THE SPINNER IDFK WHAT I DID IM SORRY
+ * Also used when user edits a selected run.
+ *
  */
 
 public class AddRunActivity extends AppCompatActivity {
 
-    private TextView distanceText, timeText, paceText, paceDisplay, dateText, typeText, feelText, notesText, caloriesText;
-    private EditText editDistance, dateEdit, notesEdit, editName, typeEdit, shoeEdit;
+    private TextView paceDisplay, caloriesText;
+    private EditText editDistance, dateEdit, notesEdit, editName;
     private Spinner typeSpinner, shoeSpinner;
     private SeekBar seekBar;
-    private Button submit, startRun;
-    EditText editTime;
+    private Button submit;
+    private EditText editTime;
     private ImageView backButton;
-    private LinearLayout shoeLayout, typeLayout;
 
     private FirebaseDatabase database;
     private FirebaseAuth auth;
     private FirebaseUser user;
-    private DatabaseReference myRef, runRef,shoeRef, goalRef;
+    private DatabaseReference myRef, runRef;
     private String userID;
-    Run run = new Run();
+    private Run run = new Run();
     private HashMap<String,Object> currentUser;
     private Goal userGoals;
     private HashMap<String,Shoe> shoes;
-    ArrayAdapter<String> typeAdapter;
-    ArrayAdapter<String> shoeAdapter;
+    private ArrayAdapter<String> shoeAdapter;
     private GenericTypeIndicator<HashMap<String,Shoe>> sGeneric = new GenericTypeIndicator<HashMap<String,Shoe>>() {};
     private GenericTypeIndicator<User<String,Object>> generic = new GenericTypeIndicator<User<String,Object>>() {};
     private int check = 0;
@@ -86,13 +85,11 @@ public class AddRunActivity extends AppCompatActivity {
         super.onCreate(SavedInstanceState);
         setContentView(R.layout.activity_add_run);
 
-
-
+        //Add back button to toolbar
         Toolbar t = (Toolbar) findViewById(R.id.topToolBar);
         setSupportActionBar(t);
         getSupportActionBar().setTitle("");
         backButton = (ImageView) findViewById(R.id.backbutton_addRunActivity);
-
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -100,39 +97,36 @@ public class AddRunActivity extends AppCompatActivity {
             }
         });
 
+        //Drop-down spinner for type and shoes
         typeSpinner = (Spinner) findViewById(R.id.typeSpinner) ;
         shoeSpinner = (Spinner) findViewById(R.id.shoeSpinner);
 
-        distanceText = (TextView) findViewById(R.id.distanceText);
-        timeText = (TextView) findViewById(R.id.timeText);
-        paceText = (TextView) findViewById(R.id.paceText);
+        //Display labels for calculated pace and calories
         paceDisplay = (TextView) findViewById(R.id.paceDisplay);
-        dateText = (TextView) findViewById(R.id.dateText);
-        typeText = (TextView) findViewById(R.id.typeText);
-        feelText = (TextView) findViewById(R.id.feelText);
-        notesText = (TextView) findViewById(R.id.notesText);
         caloriesText = (TextView) findViewById(R.id.caloriesEdit);
 
+        //Edit text fields for run data
         editName = (EditText) findViewById(R.id.editName);
         editDistance = (EditText) findViewById(R.id.editDistance);
         editTime = (EditText) findViewById(R.id.editTime);
         dateEdit = (EditText) findViewById(R.id.dateEdit);
         notesEdit = (EditText) findViewById(R.id.notesEdit);
 
+        //Bar for run difficulty
         seekBar = (SeekBar) findViewById(R.id.seekBar);
+
+        //Save run button
         submit = (Button) findViewById(R.id.submit);
-        //startRun = (Button) findViewById(R.id.startRun);
 
         //retrieve current user
         auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
         userID = user.getUid();
+
         //database instance
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference().child("users").child(userID);
         runRef = myRef.child("runs");
-        shoeRef = myRef.child("shoes");
-        goalRef = myRef.child("goals");
 
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -140,11 +134,14 @@ public class AddRunActivity extends AppCompatActivity {
                 //Retrieve user shoes
                 shoes = new HashMap<>();
                 shoes = dataSnapshot.child("shoes").getValue(sGeneric);
+
+                //App acts wierd due to listener consistently being set off
+                //Setting shoe spinner once fixes it
                 if(check == 0) {
                     populateShoeSpinner();
                 }
 
-                //Retrive User's weight
+                //Retrieve User's weight for pace calculation
                 currentUser = dataSnapshot.getValue(generic);
                 HashMap<String,Object> info = (HashMap<String,Object>) currentUser.get("info");
                 weight = Integer.parseInt(info.get("weight").toString());
@@ -208,6 +205,7 @@ public class AddRunActivity extends AppCompatActivity {
 
             public void onProgressChanged(SeekBar seekBar, int progress,
                                           boolean fromUser) {
+                //Depedning on user input, color of seekbar changes
                 if (progress == 0) {
                     seekBar.setBackgroundColor(Color.rgb(53, 123, 173));
                 } else if (progress ==1) {
@@ -229,17 +227,23 @@ public class AddRunActivity extends AppCompatActivity {
             public void onStopTrackingTouch(SeekBar seekBar) {}
         });
 
+        //Gets data from run passed through activities when editing a run activity.
         if (getIntent().hasExtra("run")) {
             run = (Run) getIntent().getSerializableExtra("run");
             setData();
         }
     }
 
+    /**
+     * When user taps date field, a calendar dialog pops up requesting user to select date of activity.
+     */
     private void  pickDate() {
         final Calendar c = Calendar.getInstance();
         int mYear = c.get(Calendar.YEAR);
         int mMonth = c.get(Calendar.MONTH);
         int mDay = c.get(Calendar.DAY_OF_MONTH);
+
+        //Used for editting run feature. Gets date of run being editted and sets calendar to date.
         if(!dateEdit.getText().toString().equals("")) {
             String pattern =  "MM/dd/yyyy";
             DateTime date = DateTime.parse(dateEdit.getText().toString(), DateTimeFormat.forPattern(pattern));
@@ -268,6 +272,9 @@ public class AddRunActivity extends AppCompatActivity {
         datePickerDialog.show();
     }
 
+    /**
+     * Takes shoes currently stored by user and displays them within spinner for selection.
+     */
     private void populateShoeSpinner(){
         final List<String> spinnerArray = new ArrayList<>();
         spinnerArray.add("None");
@@ -286,10 +293,15 @@ public class AddRunActivity extends AppCompatActivity {
             }
 
         }
+
+        //Ensure spinner is populated only once
         check = 1;
 
     }
 
+    /**
+     * Creates spinner with a variety of different types of runs for user.
+     */
     private void populateTypeSpinner() {
         final List<String> spinnerArray1 = new ArrayList<>();
         for (int i = 0; i < RunType.values().length; i++) {
@@ -304,6 +316,10 @@ public class AddRunActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * When user enters a distance, calories are calculated and pace displayed.
+     * @param v
+     */
     private void distanceDataChange(TextView v) {
         double caloriesRate = weight * 0.75;
         double calories = caloriesRate * Double.parseDouble(v.getText().toString());
@@ -316,6 +332,9 @@ public class AddRunActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Sets fields of local run object and stores to Firebase
+     */
     private void submitRun() {
         //Add run to Firebase
         run.setName(editName.getText().toString());
@@ -333,6 +352,9 @@ public class AddRunActivity extends AppCompatActivity {
         leaveActivity();
     }
 
+    /**
+     * For editing run, sets fields of the current run being modified.
+     */
     private void setData() {
         editTime.setText(String.format("%02d",run.getTime()/3600) + ":" + String.format("%02d", run.getTime()/60) + ":" + String.format("%02d", run.getTime()%60));
         editDistance.setText("" +run.getMileage());
@@ -344,6 +366,9 @@ public class AddRunActivity extends AppCompatActivity {
         seekBar.setProgress(run.getFeel());
     }
 
+    /**
+     * Goes back to dashboard
+     */
     private void leaveActivity() {
         Intent intent = new Intent(this, DashboardActivity.class);
         startActivity(intent);
@@ -353,6 +378,9 @@ public class AddRunActivity extends AppCompatActivity {
         super.onResume();
     }
 
+    /**
+     * Inner class used for time picker dialog.
+     */
     @SuppressLint("ValidFragment")
     public class PickerDialogFragment extends TimeDurationPickerDialogFragment {
 

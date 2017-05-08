@@ -40,7 +40,6 @@ import edu.rowanuniversity.rufit.rufitObjects.Goal;
  * Purpose : Main activity for displaying and editting user's personal information
  * Last Update : 04.08.2017
  *
- * TODO : Calculate progress on each goal, especially the ones that depends on the RUN DATAAAAA
  */
 
 public class GoalsActivity extends AppCompatActivity {
