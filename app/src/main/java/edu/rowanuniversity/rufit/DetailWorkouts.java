@@ -24,6 +24,9 @@ import edu.rowanuniversity.rufit.rufitObjects.Run;
 
 /**
  * Created by shiv on 3/31/2017.
+ *
+ * Display a detailed display of a workout.
+ * Allows user to move to editing or deleting currently selected run.
  */
 
 public class DetailWorkouts extends AppCompatActivity {
@@ -67,21 +70,21 @@ public class DetailWorkouts extends AppCompatActivity {
         edit = (ImageView) findViewById(R.id.editttttt);
         delete = (ImageView) findViewById(R.id.del);
 
+        //Retrieve user and Firebase instance
         auth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
         user = auth.getCurrentUser();
         runRef = database.getReference(ROOT).child(user.getUid()).child("runs");
 
-
+        //Initialize text displays
         DateTitle.setText(currentRun.getDate());
         CaloriesBurned.setText("" + currentRun.getCalories());
         DistanceRan.setText("" + currentRun.getMileage());
-
         TimeWorkout.setText(String.format("%02d",currentRun.getTime()/3600) + ":" + String.format("%02d", currentRun.getTime()/60) + ":" + String.format("%02d", currentRun.getTime()%60));
         pace.setText(String.format("%02d", currentRun.getPace()/60) + ":" + String.format("%02d", currentRun.getPace()%60));
         notes.setText(currentRun.getNotes() == null ? "" : currentRun.getNotes());
-
         shoe.setText("" + currentRun.getShoe());
+        //Initalize difficulty display
         switch(currentRun.getFeel()) {
             case 0 : feel1.setColorFilter(Color.rgb(53, 123, 173));
                 break;
@@ -107,13 +110,13 @@ public class DetailWorkouts extends AppCompatActivity {
 
 
         donebutton = (Button) findViewById(R.id.backButton_detailWorkout);
-
         donebutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
+
 
         backbutton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -122,6 +125,7 @@ public class DetailWorkouts extends AppCompatActivity {
             }
         });
 
+        //Edit current run
         edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -132,6 +136,7 @@ public class DetailWorkouts extends AppCompatActivity {
             }
         });
 
+        //Delete run
         delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

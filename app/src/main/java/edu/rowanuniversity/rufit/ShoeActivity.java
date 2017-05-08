@@ -39,8 +39,6 @@ import edu.rowanuniversity.rufit.rufitObjects.Shoe;
  *
  * TODO : Slight upgrade would to keep track of number of runs user has linked with
  *      a certain shoe and also total duration of time spent running with that shoe.
- * TODO: Bug when your deleting the last shoe on your list, it doesnt disappear from display
- *      but is removed from db
  */
 
 public class ShoeActivity extends AppCompatActivity implements RecyclerItemClickListener.OnItemClickListener{
