@@ -12,7 +12,7 @@
     <string name="navigation_drawer_open">open</string>
     <string name="navigation_drawer_close">close</string>
     <string name="about_us_details">RUfit is a run tracking app.
-                                    \n Track and log your Runs</string>
+                                    \n Don\'t forget to put those miles in!</string>
     <string name="about_label">About RUfit</string>
     <string name="facebook_app_id">1406276819423761</string>
     <string name="title_activity_add_run">AddRunActivity</string>
@@ -127,5 +127,13 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_m">MActivity</string>
     <string name="title_activity_finish_run">FinishRunActivity</string>
+    <string name="about_creators_title">Created by</string>
+    <string name="cath">Catherine Dougherty</string>
+    <string name="naomi">Naomi Wombough</string>
+    <string name="erin">Erin Quigley</string>
+    <string name="shiv">Shiv Patel</string>
+    <string name="klaydon">Klaydon Balicanta</string>
+    <string name="start">START</string>
+    <string name="end">END RUN</string>
 
 </resources>
