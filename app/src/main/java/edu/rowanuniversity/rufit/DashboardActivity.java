@@ -129,6 +129,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         try{
             Glide.with(getApplicationContext()).using(new FirebaseImageLoader())
                     .load(mStorage.child(user.getUid()))
+                    .override(100,100)
                     .error(R.drawable.rufit_userimage)
                     .into(userImage);
 
@@ -375,7 +376,10 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                     mProgressDialog.dismiss();
                     @SuppressWarnings("VisibleForTests")
                     Uri downloadUri = taskSnapshot.getDownloadUrl();
-                    Picasso.with(getApplicationContext()).load(downloadUri).fit().centerCrop().into(userImage);
+                    Picasso.with(getApplicationContext())
+                            .load(downloadUri)
+                            .resize(100,100)
+                            .centerCrop().into(userImage);
                 }
             });
 
