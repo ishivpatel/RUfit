@@ -26,6 +26,8 @@ public class AboutActivity extends AppCompatActivity{
 
 
         mAdView = (AdView) findViewById(R.id.adView);
+        //TODO: Remove addtestdevice when publishing
+        //.addTestDevice("33B94B00F5CAA55399EDAF22E5C8821F")
         AdRequest adRequest = new AdRequest.Builder().addTestDevice("33B94B00F5CAA55399EDAF22E5C8821F").build();
         mAdView.loadAd(adRequest);
 
