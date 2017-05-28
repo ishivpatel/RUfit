@@ -43,7 +43,7 @@ public class FinishRunActivity extends AppCompatActivity {
     private EditText editName,notesEdit;
     private Spinner shoeSpinner, typeSpinner;
     private SeekBar seekBar;
-    private Button submit;
+    private Button submit, delete;
 
     private FirebaseDatabase database;
     private FirebaseAuth auth;
@@ -80,6 +80,7 @@ public class FinishRunActivity extends AppCompatActivity {
 
         seekBar = (SeekBar) findViewById(R.id.seekBar);
         submit = (Button) findViewById(R.id.submit);
+        delete = (Button) findViewById(R.id.delete);
 
         distanceView.setText(Double.toString(run.getMileage()));
         int time = run.getTime();
@@ -193,6 +194,13 @@ public class FinishRunActivity extends AppCompatActivity {
                 }
 
                 leaveActivity();
+            }
+        });
+
+        delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               leaveActivity();
             }
         });
     }

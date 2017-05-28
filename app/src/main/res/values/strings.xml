@@ -51,5 +51,7 @@
     <string name="StartRun">StartRun</string>
     <string name="startrunbutton">Click to Run</string>
     <string name="startsubtext">If you\'re ready, so are we!</string>
+    <string name="delete">Delete</string>
+    <string name="save">Save</string>
 
 </resources>
