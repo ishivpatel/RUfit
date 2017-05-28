@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -33,24 +34,15 @@
     </android.support.v7.widget.Toolbar>
 
 
-    <Button
-        android:id="@+id/submit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|center"
-        android:layout_margin="@dimen/fab_margin"
-        app:backgroundTint="@color/Red"
-        android:background="@drawable/rectangle_button"
-        android:text="Save"
-        android:textColor="@color/AntiqueWhite"
-        android:elevation="4dp"
-        />
+
+
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginTop="60dp">
+        android:layout_marginTop="60dp"
+        android:id="@+id/finish_run_linear">
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -336,15 +328,42 @@
                 android:inputType="textMultiLine" />
         </LinearLayout>
     </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/finish_run_linear"
+        android:orientation="horizontal"
+        android:padding="5dp"
+        android:weightSum="2"
+        android:layout_alignParentBottom="true">
 
-    <RelativeLayout
-        android:id="@+id/layoutID"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_gravity="center"
-        android:orientation="vertical">
+        <Button
+            android:id="@+id/submit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/rectangle_button"
+            android:text="@string/save"
+            android:textColor="@color/AntiqueWhite"
+            android:layout_margin="15dp"
+            android:layout_weight="1"
+            android:elevation="4dp"
+            />
+        <Button
+            android:id="@+id/delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:background="@drawable/rectangle_button"
+            android:text="@string/delete"
+            android:textColor="@color/AntiqueWhite"
+            android:elevation="4dp"
+            android:layout_margin="15dp"
+            />
+
+    </LinearLayout>
 
 
-    </RelativeLayout>
 
-</android.support.design.widget.CoordinatorLayout>
+</RelativeLayout>
