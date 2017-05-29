@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "225300816088",
+    "firebase_url": "https://rufit-ef0f9.firebaseio.com",
+    "project_id": "rufit-ef0f9",
+    "storage_bucket": "rufit-ef0f9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:225300816088:android:434891596061aa81",
+        "android_client_info": {
+          "package_name": "edu.rowanuniversity.rufit"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "225300816088-1qei5re1vtsg7ihprniou28kjql6i4nd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "edu.rowanuniversity.rufit",
+            "certificate_hash": "639b1df781d47619db612426f7927812bbd5b91e"
+          }
+        },
+        {
+          "client_id": "225300816088-rr578pgep7qjjkh911ipelb732n4v5ap.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAeUcoIhXL4Shf9MM0i14nv3KrQrmlSRrY"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "225300816088-rr578pgep7qjjkh911ipelb732n4v5ap.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

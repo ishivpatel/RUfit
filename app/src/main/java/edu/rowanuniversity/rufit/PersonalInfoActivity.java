@@ -3,6 +3,7 @@ package edu.rowanuniversity.rufit;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -50,6 +51,7 @@ public class PersonalInfoActivity extends AppCompatActivity {
     private ImageView backbutton;
     DatabaseReference myRef;
     private String userID;
+    Button done;
     final Context context = this;
     private Info uInfo; //Object holding user's current personal information
 
@@ -62,6 +64,13 @@ public class PersonalInfoActivity extends AppCompatActivity {
         setSupportActionBar(t);
         getSupportActionBar().setTitle("");
         backbutton = (ImageView) findViewById(R.id.backbutton_personalinfoactivity);
+        done = (Button) findViewById(R.id.done);
+        done.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(PersonalInfoActivity.this, DashboardActivity.class));
+            }
+        });
 
         backbutton.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -28,6 +28,7 @@ public class Goal {
     }
 
     public Goal() {
+
     }
 
     public void setMilesPerWeekActual(double milesPerWeekActual) { this.milesPerWeekActual = milesPerWeekActual;}
