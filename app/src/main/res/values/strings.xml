@@ -53,5 +53,6 @@
     <string name="startsubtext">If you\'re ready, so are we!</string>
     <string name="delete">Delete</string>
     <string name="save">Save</string>
+    <string name="done">Done</string>
 
 </resources>

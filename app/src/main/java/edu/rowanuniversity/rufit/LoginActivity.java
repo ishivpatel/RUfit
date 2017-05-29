@@ -27,6 +27,21 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.HashMap;
+
+import edu.rowanuniversity.rufit.rufitObjects.Goal;
+import edu.rowanuniversity.rufit.rufitObjects.Info;
+import edu.rowanuniversity.rufit.rufitObjects.Record;
+import edu.rowanuniversity.rufit.rufitObjects.Run;
+import edu.rowanuniversity.rufit.rufitObjects.Shoe;
+import edu.rowanuniversity.rufit.rufitObjects.User;
 
 /**
  * Created by shiv on 3/3/2017.
@@ -70,8 +85,8 @@ public class LoginActivity extends AppCompatActivity {
         inputPassword = (EditText) findViewById(R.id.user_password);
         btnLogin = (Button) findViewById(R.id.signin_button);
         signUpText = (TextView)  findViewById(R.id.sign_up_text);
-        fbLogin = (LoginButton) findViewById(R.id.fb_loginbutton);
-        fbLogin.setReadPermissions("email");
+        //fbLogin = (LoginButton) findViewById(R.id.fb_loginbutton);
+        /*fbLogin.setReadPermissions("email");
         fbLogin.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
@@ -87,7 +102,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onError(FacebookException error) {
 
             }
-        });
+        });*/
 
         signUpText.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -145,7 +160,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void handelFacebookAccessToken(AccessToken accessToken) {
-        AuthCredential credential = FacebookAuthProvider.getCredential(accessToken.getToken());
+        final AuthCredential credential = FacebookAuthProvider.getCredential(accessToken.getToken());
         auth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -153,6 +168,7 @@ public class LoginActivity extends AppCompatActivity {
                         if(! task.isSuccessful()) {
                             Toast.makeText(LoginActivity.this, "Facebook Authentication Failed", Toast.LENGTH_SHORT).show();
                         } else {
+
                             Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
                             startActivity(intent);
                         }
