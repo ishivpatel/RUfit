@@ -46,6 +46,7 @@
     <string name="klaydon">Klaydon Balicanta</string>
     <string name="start">START</string>
     <string name="end">END RUN</string>
+    <string name="google_maps_key">AIzaSyCDorDqcT_E6SNERLfTntGmI7CZI0tnAq4</string>
 
     <string name="adMob">ca-app-pub-9034152468980902~1352908072</string>
     <string name="StartRun">StartRun</string>

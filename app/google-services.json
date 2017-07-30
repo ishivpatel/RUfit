@@ -15,6 +15,22 @@
       },
       "oauth_client": [
         {
+          "client_id": "225300816088-4oqlaq00r3jngev2foi4p0bei74e51hr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "edu.rowanuniversity.rufit",
+            "certificate_hash": "f2b35f613065b4034c65105d728d8f884edd60e3"
+          }
+        },
+        {
+          "client_id": "225300816088-n6csvd853h6uia77j91o1rl38taoqn96.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "edu.rowanuniversity.rufit",
+            "certificate_hash": "58b6eac30d4188ecfbd663ac968b48eb83ccd961"
+          }
+        },
+        {
           "client_id": "225300816088-1qei5re1vtsg7ihprniou28kjql6i4nd.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -29,7 +45,7 @@
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAeUcoIhXL4Shf9MM0i14nv3KrQrmlSRrY"
+          "current_key": "AIzaSyCn3DMEL_w44UXPi6YrpRI4TvWLuintVT0"
         }
       ],
       "services": {
@@ -39,6 +55,13 @@
         "appinvite_service": {
           "status": 2,
           "other_platform_oauth_client": [
+            {
+              "client_id": "225300816088-14db927ibq2ctfv6v758feicpl4279k1.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "ishivpatel.RUfit"
+              }
+            },
             {
               "client_id": "225300816088-rr578pgep7qjjkh911ipelb732n4v5ap.apps.googleusercontent.com",
               "client_type": 3
